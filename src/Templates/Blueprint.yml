@@ -1,0 +1,6 @@
+paths:
+    templates: templates
+    commands: commands
+
+namespaces:
+    commands: Commands
