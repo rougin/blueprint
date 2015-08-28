@@ -1,2 +1,6 @@
 #!/usr/bin/env php
-<?php include('blueprint.php'); ?>
+<?php
+
+$blueprint = include('blueprint.php');
+
+$blueprint->console->run();

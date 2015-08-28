@@ -4,13 +4,13 @@
  * Define the VENDOR path
  */
 
-define('VENDOR', realpath('vendor') . '/');
+$vendor = realpath('vendor');
 
 /**
  * Include the Composer Autoloader
  */
 
-require VENDOR . 'autoload.php';
+require $vendor . '/autoload.php';
 
 use Symfony\Component\Yaml\Exception\ParseException;
 use Rougin\Blueprint\Commands\InitializationCommand;
@@ -28,14 +28,21 @@ $injector = new Injector;
 
 $blueprint = $injector->make('Rougin\Blueprint\Blueprint');
 
+$blueprint->console->setName('Blueprint');
+$blueprint->console->setVersion('0.1.1');
+
+if (!defined('BLUEPRINT_FILENAME')) {
+    define('BLUEPRINT_FILENAME', 'blueprint.yml');
+}
+
 /**
- * Check if blueprint.yml exists in the working directory
+ * Check if BLUEPRINT_FILENAME exists in the working directory
  */
 
-if (!file_exists('blueprint.yml')) {
+if (!file_exists(BLUEPRINT_FILENAME)) {
     $blueprint->console->add(new InitializationCommand);
 
-    return $blueprint->console->run();
+    return $blueprint;
 }
 
 /**
@@ -46,25 +53,52 @@ try {
     $yml = str_replace(
         '%%CURRENT_DIRECTORY%%',
         __DIR__,
-        file_get_contents('blueprint.yml')
+        file_get_contents(BLUEPRINT_FILENAME)
     );
 
     $blueprint->parse($yml);
-} catch (ParseException $e) {
-    echo 'Unable to parse the YAML string: ' . $e->getMessage();
+} catch (ParseException $exception) {
+    $blueprint->addError(
+        'Unable to parse the YAML string: ' .
+        $exception->getMessage()
+    );
+
+    return $blueprint;
 }
+
+/**
+ * Check if the commands and templates path exists
+ */
+
+if (!is_dir($blueprint->getCommandPath())) {
+    $blueprint->addError(
+        'Oops! We cannot find the directory "' .
+        $blueprint->getCommandPath() . '"!'
+    );
+
+    return $blueprint;
+} else if (!is_dir($blueprint->getTemplatePath())) {
+    $blueprint->addError(
+        'Oops! We cannot find the directory "' .
+        $blueprint->getTemplatePath() . '"!'
+    );
+
+    return $blueprint;
+}
+
+/**
+ * Define constants
+ */
+
+define('BLUEPRINT_COMMANDS', $blueprint->getCommandPath());
+define('BLUEPRINT_TEMPLATES', $blueprint->getTemplatePath());
 
 /**
  * Preload the Twig_Environment in order make it as a dependency
  */
 
-define('COMMANDS', $blueprint->getCommandPath());
-define('TEMPLATES', $blueprint->getTemplatePath());
-
-$templates = $blueprint->getTemplatePath();
-
-$injector->delegate('Twig_Environment', function () use ($injector, $templates) {
-    $loader = new Twig_Loader_Filesystem($templates);
+$injector->delegate('Twig_Environment', function () use ($injector) {
+    $loader = new Twig_Loader_Filesystem(BLUEPRINT_TEMPLATES);
     $twig = new Twig_Environment($loader);
 
     return $twig;
@@ -91,22 +125,34 @@ foreach ($files as $path) {
         $path->__toString()
     );
 
+    if (strpos($file, '.php') === FALSE) {
+        continue;
+    }
+
+    $className = preg_replace('/\\.[^.\\s]{3,4}$/', '', $file);
+    $class = $blueprint->getCommandNamespace() . $className;
+
     /**
      * Instantiate/provision the specified class instance
      */
 
-    $className = preg_replace('/\\.[^.\\s]{3,4}$/', '', $file);
-    $class = $injector->make($blueprint->getCommandNamespace() . $className);
+    try {
+        /**
+         * Add it to the list of available commands
+         */
 
-    /**
-     * Add it to the list of commands
-     */
+        if (is_subclass_of($class, 'Rougin\Blueprint\AbstractCommand')) {
+            $command = $injector->make($class);
 
-    $blueprint->console->add($class);
+            $blueprint->console->add($command);
+        }
+    } catch (Auryn\InjectionException $exception) {
+        $blueprint->addError($exception->getMessage());
+    }
 }
 
 /**
  * Run the console application
  */
 
-$blueprint->console->run();
+return $blueprint;

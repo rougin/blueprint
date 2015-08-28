@@ -7,7 +7,8 @@
         "twig/twig": "^1.19",
         "symfony/console": "^2.7",
         "symfony/yaml": "^2.7",
-        "rdlowrey/auryn": "^1.0"
+        "rdlowrey/auryn": "^1.0",
+        "kevinlebrun/colors.php": "^0.4.1"
     },
     "license": "MIT",
     "authors": [

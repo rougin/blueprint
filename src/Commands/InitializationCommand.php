@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class InitializationCommand extends Command
 {
     /**
-     * Set the configurations of the specified command
+     * Set the configurations of the current command
      *
      * @return void
      */
@@ -19,11 +19,11 @@ class InitializationCommand extends Command
     {
         $this
             ->setName('init')
-            ->setDescription('Create a blueprint.yml')
+            ->setDescription('Create a ' . BLUEPRINT_FILENAME)
             ->addArgument(
                 'path',
                 InputArgument::OPTIONAL,
-                'Path to place blueprint.yml'
+                'Path to place ' . BLUEPRINT_FILENAME
             )->addArgument(
                 'template_path',
                 InputArgument::OPTIONAL,
@@ -32,7 +32,7 @@ class InitializationCommand extends Command
     }
 
     /**
-     * Execute the command
+     * Execute the current command
      * 
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -42,14 +42,13 @@ class InitializationCommand extends Command
     {
         $template = file_get_contents(__DIR__ . '/../Templates/Command.php');
         $blueprint = file_get_contents(__DIR__ . '/../Templates/Blueprint.yml');
-        $path = 'blueprint.yml';
 
-        $file = fopen($path, 'wb');
-        file_put_contents($path, $blueprint);
+        $file = fopen(BLUEPRINT_FILENAME, 'wb');
+        file_put_contents(BLUEPRINT_FILENAME, $blueprint);
         fclose($file);
 
         return $output->writeln(
-            '<info>"blueprint.yml" has been created successfully!</info>'
+            '<info>"' . BLUEPRINT_FILENAME . '" has been created successfully!</info>'
         );
     }
 }
