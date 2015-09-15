@@ -2,9 +2,9 @@
 
 namespace Rougin\Blueprint;
 
+use Colors\Color;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Yaml\Parser;
-use Colors\Color;
 
 /**
  * Blueprint
@@ -47,7 +47,7 @@ class Blueprint
     }
 
     /**
-     * Get the templates path
+     * Gets the templates path.
      * 
      * @return string
      */
@@ -57,7 +57,7 @@ class Blueprint
     }
 
     /**
-     * Get the commands path
+     * Gets the commands path.
      * 
      * @return string
      */
@@ -67,8 +67,9 @@ class Blueprint
     }
 
     /**
-     * Get the namespace of the commands path
-     * @return [type] [description]
+     * Gets the namespace of the commands path.
+     * 
+     * @return string
      */
     public function getCommandNamespace()
     {
@@ -76,10 +77,10 @@ class Blueprint
     }
 
     /**
-     * Parse the file and get its specified paths
+     * Parses the file and gets its specified paths.
      * 
      * @param  string $file
-     * @return Rougin\Blueprint\Blueprint
+     * @return Blueprint
      */
     public function parse($file)
     {
@@ -93,7 +94,7 @@ class Blueprint
     }
 
     /**
-     * Add an error message
+     * Adds an error message.
      * 
      * @param  string $message
      * @return void
@@ -107,7 +108,7 @@ class Blueprint
     }
 
     /**
-     * Shows an error message
+     * Shows an error message.
      * 
      * @param  string $message
      * @return string

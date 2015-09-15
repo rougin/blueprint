@@ -1,58 +1,44 @@
 <?php
 
-/**
- * Define the VENDOR path
- */
-
+// Define the VENDOR path
 $vendor = realpath('vendor');
 
-/**
- * Include the Composer Autoloader
- */
-
+// Include the Composer Autoloader
 require $vendor . '/autoload.php';
 
-use Symfony\Component\Yaml\Exception\ParseException;
-use Rougin\Blueprint\Commands\InitializationCommand;
 use Auryn\Injector;
+use Rougin\Blueprint\Commands\InitializationCommand;
+use Symfony\Component\Yaml\Exception\ParseException;
 
-/**
- * Load the dependency injector
- */
-
+// Load the dependency injector
 $injector = new Injector;
 
-/**
- * Initialize Blueprint
- */
-
+// Initialize Blueprint
 $blueprint = $injector->make('Rougin\Blueprint\Blueprint');
 
 $blueprint->console->setName('Blueprint');
 $blueprint->console->setVersion('0.1.1');
 
-if (!defined('BLUEPRINT_FILENAME')) {
+if ( ! defined('BLUEPRINT_FILENAME')) {
     define('BLUEPRINT_FILENAME', 'blueprint.yml');
 }
 
-/**
- * Check if BLUEPRINT_FILENAME exists in the working directory
- */
+if ( ! defined('BLUEPRINT_DIRECTORY')) {
+    define('BLUEPRINT_DIRECTORY', __DIR__);
+}
 
-if (!file_exists(BLUEPRINT_FILENAME)) {
+// Check if BLUEPRINT_FILENAME exists in the working directory
+if ( ! file_exists(BLUEPRINT_FILENAME)) {
     $blueprint->console->add(new InitializationCommand);
 
     return $blueprint;
 }
 
-/**
- * Parse the blueprint.yml
- */
-
+// Parse the blueprint.yml
 try {
     $yml = str_replace(
         '%%CURRENT_DIRECTORY%%',
-        __DIR__,
+        BLUEPRINT_DIRECTORY,
         file_get_contents(BLUEPRINT_FILENAME)
     );
 
@@ -66,18 +52,17 @@ try {
     return $blueprint;
 }
 
-/**
- * Check if the commands and templates path exists
- */
-
-if (!is_dir($blueprint->getCommandPath())) {
+// Check if the commands and templates path exists
+if ( ! is_dir($blueprint->getCommandPath())) {
     $blueprint->addError(
         'Oops! We cannot find the directory "' .
         $blueprint->getCommandPath() . '"!'
     );
 
     return $blueprint;
-} else if (!is_dir($blueprint->getTemplatePath())) {
+} 
+
+if ( ! is_dir($blueprint->getTemplatePath())) {
     $blueprint->addError(
         'Oops! We cannot find the directory "' .
         $blueprint->getTemplatePath() . '"!'
@@ -86,17 +71,11 @@ if (!is_dir($blueprint->getCommandPath())) {
     return $blueprint;
 }
 
-/**
- * Define constants
- */
-
+// Define constants
 define('BLUEPRINT_COMMANDS', $blueprint->getCommandPath());
 define('BLUEPRINT_TEMPLATES', $blueprint->getTemplatePath());
 
-/**
- * Preload the Twig_Environment in order make it as a dependency
- */
-
+// Preload the Twig_Environment in order make it as a dependency
 $injector->delegate('Twig_Environment', function () use ($injector) {
     $loader = new Twig_Loader_Filesystem(BLUEPRINT_TEMPLATES);
     $twig = new Twig_Environment($loader);
@@ -104,10 +83,7 @@ $injector->delegate('Twig_Environment', function () use ($injector) {
     return $twig;
 });
 
-/**
- * Search the following commands based on the specified directory
- */
-
+// Search the following commands based on the specified directory
 $directory = new RecursiveDirectoryIterator(
     $blueprint->getCommandPath(),
     FilesystemIterator::SKIP_DOTS
@@ -132,15 +108,9 @@ foreach ($files as $path) {
     $className = preg_replace('/\\.[^.\\s]{3,4}$/', '', $file);
     $class = $blueprint->getCommandNamespace() . $className;
 
-    /**
-     * Instantiate/provision the specified class instance
-     */
-
+    // Instantiate/provision the specified class instance
     try {
-        /**
-         * Add it to the list of available commands
-         */
-
+        // Add it to the list of available commands
         if (is_subclass_of($class, 'Rougin\Blueprint\AbstractCommand')) {
             $command = $injector->make($class);
 
@@ -151,8 +121,5 @@ foreach ($files as $path) {
     }
 }
 
-/**
- * Run the console application
- */
-
+// Run the console application
 return $blueprint;
