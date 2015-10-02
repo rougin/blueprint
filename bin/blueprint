@@ -3,4 +3,4 @@
 
 $blueprint = include('blueprint.php');
 
-$blueprint->console->run();
+$blueprint->run();

@@ -8,7 +8,7 @@ use Twig_Environment;
 /**
  * Abstract Command
  *
- * Extends Command class with Twig's renderer
+ * Extends the Symfony\Console\Command class with Twig's renderer.
  * 
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>

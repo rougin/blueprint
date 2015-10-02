@@ -2,7 +2,7 @@
 
 namespace Rougin\Blueprint\Commands;
 
-use Rougin\Blueprint\AbstractCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -11,15 +11,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Initialization Command
  *
- * Creates a blueprint.yml or a defined file name in the current directory
+ * Creates a blueprint.yml or a defined file name in the specified directory.
  * 
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
-class InitializationCommand extends AbstractCommand
+class InitializationCommand extends Command
 {
     /**
-     * Set the configurations of the current command
+     * Sets the configurations of the current command.
      *
      * @return void
      */
@@ -40,15 +40,15 @@ class InitializationCommand extends AbstractCommand
     }
 
     /**
-     * Execute the current command
+     * Executes the current command.
      * 
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
+     * @return void|string
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $blueprint = $this->renderer->render('Blueprint.yml');
+        $blueprint = file_get_contents(__DIR__ . '/../Templates/blueprint.yml');
 
         $file = fopen(BLUEPRINT_FILENAME, 'wb');
         file_put_contents(BLUEPRINT_FILENAME, $blueprint);

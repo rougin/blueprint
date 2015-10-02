@@ -2,9 +2,9 @@
 
 namespace Rougin\Blueprint;
 
-use Colors\Color;
+use Auryn\InjectionException;
+use Auryn\Injector;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Yaml\Parser;
 
 /**
  * Blueprint
@@ -16,34 +16,19 @@ use Symfony\Component\Yaml\Parser;
  */
 class Blueprint
 {
-    protected $color;
-    protected $errorMessage;
-    protected $templates;
-    protected $commands = [
-        'path' => '',
-        'namespace' => '',
-    ];
+    protected $paths;
 
     public $console;
-    public $hasError;
-    public $parser;
+    public $injector;
 
     /**
      * @param Application $console
-     * @param Color       $color
-     * @param Parser      $parser
+     * @param Injector    $injector
      */
-    public function __construct(
-        Application $console,
-        Color $color,
-        Parser $parser
-    ) {
-        $this->color = $color;
+    public function __construct(Application $console, Injector $injector)
+    {
         $this->console = $console;
-        $this->parser = $parser;
-
-        $this->commands['path'] = __DIR__;
-        $this->templates = __DIR__;
+        $this->injector = $injector;
     }
 
     /**
@@ -53,7 +38,7 @@ class Blueprint
      */
     public function getTemplatePath()
     {
-        return $this->templates;
+        return $this->paths['templates'];
     }
 
     /**
@@ -63,7 +48,7 @@ class Blueprint
      */
     public function getCommandPath()
     {
-        return $this->commands['path'];
+        return $this->paths['commands'];
     }
 
     /**
@@ -73,50 +58,49 @@ class Blueprint
      */
     public function getCommandNamespace()
     {
-        return $this->commands['namespace'];
+        return $this->paths['namespace'];
     }
 
     /**
-     * Parses the file and gets its specified paths.
+     * Gets the list of directory paths.
      * 
-     * @param  string $file
-     * @return Blueprint
-     */
-    public function parse($file)
-    {
-        $result = $this->parser->parse($file);
-
-        $this->commands['path'] = $result['paths']['commands'];
-        $this->commands['namespace'] = $result['namespaces']['commands'];
-        $this->templates = $result['paths']['templates'];
-
-        return $this;
-    }
-
-    /**
-     * Adds an error message.
-     * 
-     * @param  string $message
+     * @param  array  $result
      * @return void
      */
-    public function addError($message)
+    public function getPaths(array $result)
     {
-        $this->hasError = TRUE;
-        $this->errorMessage = $message;
-
-        return $this;
+        $this->paths['commands'] = $result['paths']['commands'];
+        $this->paths['namespace'] = $result['namespaces']['commands'];
+        $this->paths['templates'] = $result['paths']['templates'];
     }
 
     /**
-     * Shows an error message.
+     * Runs the current console.
      * 
-     * @param  string $message
-     * @return string
+     * @return boolean
      */
-    public function showError()
+    public function run()
     {
-        return $this->color
-            ->fg('white')
-            ->bg('red', $this->errorMessage) . PHP_EOL;
+        $commandPath = strlen($this->paths['commands'] . DIRECTORY_SEPARATOR);
+        $files = glob($this->paths['commands'] . '/*.php');
+
+        foreach ($files as $file) {
+            $className = preg_replace(
+                '/\\.[^.\\s]{3,4}$/', '',
+                substr($file, $commandPath)
+            );
+
+            try {
+                $command = $this->injector->make(
+                    $this->paths['namespace'] . '\\' . $className
+                );
+
+                $this->console->add($command);
+            } catch (InjectionException $exception) {
+                exit($exception->getMessage() . PHP_EOL);
+            }
+        }
+
+        return $this->console->run();
     }
 }

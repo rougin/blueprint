@@ -1,28 +1,27 @@
 # Blueprint
 
-[![Latest Stable Version](https://poser.pugx.org/rougin/blueprint/v/stable)](https://packagist.org/packages/rougin/blueprint) [![Total Downloads](https://poser.pugx.org/rougin/blueprint/downloads)](https://packagist.org/packages/rougin/blueprint) [![Latest Unstable Version](https://poser.pugx.org/rougin/blueprint/v/unstable)](https://packagist.org/packages/rougin/blueprint) [![License](https://poser.pugx.org/rougin/blueprint/license)](https://packagist.org/packages/rougin/blueprint) [![endorse](https://api.coderwall.com/rougin/endorsecount.png)](https://coderwall.com/rougin)
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Build Status][ico-travis]][link-travis]
+[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Total Downloads][ico-downloads]][link-downloads]
 
-[Blueprint](http://rougin.github.io/blueprint/) is a tool for generating files for your PHP projects.
+A tool for generating files for your PHP projects.
 
-# Installation
+## Install
 
-Install ```Blueprint``` via [Composer](https://getcomposer.org):
+Via Composer
 
-```$ composer require rougin/blueprint```
+``` bash
+$ composer require rougin/blueprint
+```
 
-```Blueprint``` can be executed using:
-
-```$ php vendor/bin/blueprint```
-
-Initialize a ```blueprint.yml``` to the current working directory by:
-
-```$ php vendor/bin/blueprint init```
-
-# Usage
+## Usage
 
 Before doing something, you must specify the ```blueprint.yml``` where to find your commands and templates and its namespaces
 
-```yml
+``` yml
 paths:
     templates: %%CURRENT_DIRECTORY%%/templates
     commands: %%CURRENT_DIRECTORY%%/commands
@@ -31,11 +30,11 @@ namespaces:
     commands: Acme\Console\Commands
 ```
 
-First, let's create a command that will create a simple PHP class. With that, let's create a template for that:
+In this example, let's create a command that will create a simple PHP class. With that, let's create a template for that:
 
 **templates/NewClass.php**
 
-```php
+``` php
 <?php
 /**
  * {{ name }}
@@ -60,7 +59,7 @@ Then, let's create a command that will generate that said template into a file:
 
 If your familiar with [Symfony's Console Component](http://symfony.com/doc/current/components/console/introduction.html) (which I used in this library), take note that we use an ```AbstractCommand``` in the example below. This class extends to a ```Command``` class and includes a [Twig](http://twig.sensiolabs.org/) template engine for helping you to generate files (if you want).
 
-```php
+``` php
 namespace Acme\Console\Commands;
 
 use Rougin\Blueprint\AbstractCommand;
@@ -132,17 +131,19 @@ class CreateClassCommand extends AbstractCommand
 }
 ```
 
-Lastly, you can now create a new simple class using:
+You can now create a new simple class using:
 
-```php vendor/bin/blueprint create:class HelloWorld.php```
+``` bash
+$ php vendor/bin/blueprint create:class HelloWorld.php
+```
 
-# Extensibility
+#### Extensibility
 
 You can also create a new generator by extending ```Blueprint``` to your console application:
 
 **NOTE:** The example below is based from [Combustor](https://github.com/rougin/combustor), a tool for speeding up web development in [CodeIgniter](codeigniter.com).
 
-```php
+``` php
 ...
 
 $filePath = realpath(__DIR__ . '/../combustor.yml');
@@ -156,12 +157,10 @@ define('BLUEPRINT_DIRECTORY', $directory);
 // Load the Blueprint library
 $blueprint = include($vendor . '/rougin/blueprint/bin/blueprint.php');
 
-if ($blueprint->hasError) {
-    exit($blueprint->showError());
-}
-
 $blueprint->console->setName('Combustor');
 $blueprint->console->setVersion('1.1.3');
+
+...
 
 // Run the Combustor console application
 $blueprint->console->run();
@@ -173,10 +172,44 @@ If you define a ```BLUEPRINT_FILENAME```, make sure that the specified file exis
 
 You can also change the properties (like name and version) of your console application using the ```$blueprint->console``` variable with the help of [Symfony's Console Component](http://symfony.com/doc/current/components/console/introduction.html).
 
-# References
+## Change log
 
-* [Auryn](https://github.com/rdlowrey/Auryn) - used to include and resolve the dependencies of the commands easier
-* [Colors](https://github.com/kevinlebrun/colors.php) - responsible for having colors in error messages
-* [Symfony's Console Component](http://symfony.com/doc/current/components/console/introduction.html) - the "brain" of this library
-* [Symfony's YAML Component](http://symfony.com/doc/current/components/yaml/introduction.html) - gets data from .yml files
-* [Twig](http://twig.sensiolabs.org/) - the "hand" of this library
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+
+## Testing
+
+``` bash
+$ composer test
+```
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Security
+
+If you discover any security related issues, please email rougingutib@gmail.com instead of using the issue tracker.
+
+## Credits
+
+- [Rougin Royce Gutib][link-author]
+- [All Contributors][link-contributors]
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+[ico-version]: https://img.shields.io/packagist/v/rougin/blueprint.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/rougin/blueprint/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/rougin/blueprint.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/rougin/blueprint.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/rougin/blueprint.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/rougin/blueprint
+[link-travis]: https://travis-ci.org/rougin/blueprint
+[link-scrutinizer]: https://scrutinizer-ci.com/g/rougin/blueprint/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/rougin/blueprint
+[link-downloads]: https://packagist.org/packages/rougin/blueprint
+[link-author]: https://github.com/rougin
+[link-contributors]: ../../contributors
