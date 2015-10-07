@@ -30,9 +30,7 @@ namespaces:
     commands: Acme\Console\Commands
 ```
 
-In this example, let's create a command that will create a simple PHP class. With that, let's create a template for that:
-
-**templates/NewClass.php**
+In this example, let's create a command that will create a simple PHP class:
 
 ``` php
 <?php
@@ -54,10 +52,6 @@ class {{ name | title }}
 ```
 
 Then, let's create a command that will generate that said template into a file:
-
-**commands/CreateClassCommand.php**
-
-If your familiar with [Symfony's Console Component](http://symfony.com/doc/current/components/console/introduction.html) (which I used in this library), take note that we use an ```AbstractCommand``` in the example below. This class extends to a ```Command``` class and includes a [Twig](http://twig.sensiolabs.org/) template engine for helping you to generate files (if you want).
 
 ``` php
 namespace Acme\Console\Commands;
@@ -166,9 +160,7 @@ $blueprint->console->setVersion('1.1.3');
 $blueprint->console->run();
 ```
 
-If you want to use other file names other than ```blueprint.yml```, you can specify it in ```BLUEPRINT_FILENAME``` constant. Same for the working directory of your application, use ```BLUEPRINT_DIRECTORY``` for that.
-
-If you define a ```BLUEPRINT_FILENAME```, make sure that the specified file exists or ```Blueprint``` will return an error.
+If you want to use other file names other than ```blueprint.yml```, you can specify it in a ```BLUEPRINT_FILENAME``` constant. Use ```BLUEPRINT_DIRECTORY``` for the working directory of your application.
 
 You can also change the properties (like name and version) of your console application using the ```$blueprint->console``` variable with the help of [Symfony's Console Component](http://symfony.com/doc/current/components/console/introduction.html).
 
