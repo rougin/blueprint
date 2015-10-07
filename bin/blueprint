@@ -1,6 +1,10 @@
 #!/usr/bin/env php
 <?php
 
+// Include the Composer Autoloader
+require realpath('vendor') . '/autoload.php';
+
+// Load and runs the application
 $blueprint = include('blueprint.php');
 
 $blueprint->run();

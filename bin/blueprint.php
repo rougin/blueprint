@@ -1,7 +1,12 @@
 <?php
 
-// Include the Composer Autoloader
-require realpath('vendor') . '/autoload.php';
+if ( ! defined('BLUEPRINT_FILENAME')) {
+    define('BLUEPRINT_FILENAME', 'blueprint.yml');
+}
+
+if ( ! defined('BLUEPRINT_DIRECTORY')) {
+    define('BLUEPRINT_DIRECTORY', getcwd());
+}
 
 $blueprint = new Rougin\Blueprint\Blueprint(
     new Symfony\Component\Console\Application,
@@ -11,14 +16,6 @@ $blueprint = new Rougin\Blueprint\Blueprint(
 // Information of the command application
 $blueprint->console->setName('Blueprint');
 $blueprint->console->setVersion('0.1.1');
-
-if ( ! defined('BLUEPRINT_FILENAME')) {
-    define('BLUEPRINT_FILENAME', 'blueprint.yml');
-}
-
-if ( ! defined('BLUEPRINT_DIRECTORY')) {
-    define('BLUEPRINT_DIRECTORY', getcwd());
-}
 
 // Adds a "init" command if the file does not exists
 if ( ! file_exists(BLUEPRINT_FILENAME)) {

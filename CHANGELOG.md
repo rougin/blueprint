@@ -2,12 +2,12 @@
 
 All Notable changes to `Blueprint` will be documented in this file
 
-## [0.1.2](https://github.com/rougin/transcribe/compare/v0.1.1...v0.1.2) - 2015-07-19
+## [0.1.2](https://github.com/rougin/transcribe/compare/v0.1.1...v0.1.2) - 2015-08-28
 
 ### Changed
 - Main logic of the application
 
-## [0.1.1](https://github.com/rougin/transcribe/compare/v0.1.0...v0.1.1) - 2015-07-19
+## [0.1.1](https://github.com/rougin/transcribe/compare/v0.1.0...v0.1.1) - 2015-08-09
 
 ### Added
 - Extensibility of `Blueprint` class

@@ -64,20 +64,26 @@ class Blueprint
     /**
      * Gets the list of directory paths.
      * 
-     * @param  array  $result
+     * @param  mixed  $result
      * @return void
      */
-    public function getPaths(array $result)
+    public function getPaths($result)
     {
+        if ( ! is_array($result)) {
+            return;
+        }
+
         $this->paths['commands'] = $result['paths']['commands'];
         $this->paths['namespace'] = $result['namespaces']['commands'];
         $this->paths['templates'] = $result['paths']['templates'];
+
+        return;
     }
 
     /**
      * Runs the current console.
      * 
-     * @return boolean
+     * @return boolean|void
      */
     public function run()
     {
@@ -97,7 +103,9 @@ class Blueprint
 
                 $this->console->add($command);
             } catch (InjectionException $exception) {
-                exit($exception->getMessage() . PHP_EOL);
+                echo $exception->getMessage() . PHP_EOL;
+
+                return;
             }
         }
 
