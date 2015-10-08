@@ -1,13 +1,5 @@
 <?php
 
-if ( ! defined('BLUEPRINT_FILENAME')) {
-    define('BLUEPRINT_FILENAME', 'blueprint.yml');
-}
-
-if ( ! defined('BLUEPRINT_DIRECTORY')) {
-    define('BLUEPRINT_DIRECTORY', getcwd());
-}
-
 $blueprint = new Rougin\Blueprint\Blueprint(
     new Symfony\Component\Console\Application,
     new Auryn\Injector
