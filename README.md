@@ -19,7 +19,15 @@ $ composer require rougin/blueprint
 
 ## Usage
 
-Before doing something, you must specify the ```blueprint.yml``` where to find your commands and templates and its namespaces
+#### Creating a new ```blueprint.yml```
+
+``` bash
+$ php vendor/bin/blueprint init
+```
+
+#### Example
+
+Before doing something, you must specify the ```blueprint.yml``` where to find your commands and templates and its namespace
 
 ``` yml
 paths:
@@ -140,29 +148,37 @@ You can also create a new generator by extending ```Blueprint``` to your console
 ``` php
 ...
 
-$filePath = realpath(__DIR__ . '/../combustor.yml');
-$directory = str_replace('/combustor.yml', '', $filePath);
-
-define('BLUEPRINT_FILENAME', $filePath);
-define('BLUEPRINT_DIRECTORY', $directory);
-
-...
-
 // Load the Blueprint library
-$blueprint = include($vendor . '/rougin/blueprint/bin/blueprint.php');
+$combustor = new Rougin\Blueprint\Blueprint(
+    new Symfony\Component\Console\Application,
+    new Auryn\Injector
+);
 
-$blueprint->console->setName('Combustor');
-$blueprint->console->setVersion('1.1.3');
+$combustor
+    ->setTemplatePath(__DIR__ . '/../src/Templates')
+    ->setCommandPath(__DIR__ . '/../src/Commands')
+    ->setCommandNamespace('Rougin\Combustor\Commands');
 
-...
+$combustor->console->setName('Combustor');
+$combustor->console->setVersion('1.1.3');
+
+$combustor->injector->delegate('CI_Controller', function () {
+    $sparkPlug = new Rougin\SparkPlug\SparkPlug($GLOBALS, $_SERVER);
+
+    return $sparkPlug->getCodeIgniter();
+});
+
+$combustor->injector->delegate('Rougin\Describe\Describe', function () use ($db) {
+    return new Rougin\Describe\Describe(
+        new Rougin\Describe\Driver\CodeIgniterDriver($db)
+    );
+});
 
 // Run the Combustor console application
-$blueprint->console->run();
+$combustor->run();
 ```
 
-If you want to use other file names other than ```blueprint.yml```, you can specify it in a ```BLUEPRINT_FILENAME``` constant. Use ```BLUEPRINT_DIRECTORY``` for the working directory of your application.
-
-You can also change the properties (like name and version) of your console application using the ```$blueprint->console``` variable with the help of [Symfony's Console Component](http://symfony.com/doc/current/components/console/introduction.html).
+You can also change the properties (like name and version) of your console application using the ```$combustor->console``` variable with the help of [Symfony's Console Component](http://symfony.com/doc/current/components/console/introduction.html).
 
 ## Change log
 

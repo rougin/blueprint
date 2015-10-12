@@ -1,5 +1,12 @@
 <?php
 
+// Parses the data from a YAML format
+$parser = new Rougin\Blueprint\Parser(
+    new Symfony\Component\Yaml\Parser
+);
+
+$content = $parser->parse('blueprint.yml', getcwd());
+
 $blueprint = new Rougin\Blueprint\Blueprint(
     new Symfony\Component\Console\Application,
     new Auryn\Injector
@@ -10,7 +17,7 @@ $blueprint->console->setName('Blueprint');
 $blueprint->console->setVersion('0.1.1');
 
 // Adds a "init" command if the file does not exists
-if ( ! file_exists(BLUEPRINT_FILENAME)) {
+if ( ! file_exists('blueprint.yml')) {
     $blueprint->console->add(
         new Rougin\Blueprint\Commands\InitializationCommand
     );
@@ -18,18 +25,10 @@ if ( ! file_exists(BLUEPRINT_FILENAME)) {
     return $blueprint;
 }
 
-$parser = new Symfony\Component\Yaml\Parser;
-$file = file_get_contents(BLUEPRINT_FILENAME);
-$yml = str_replace('%%CURRENT_DIRECTORY%%', BLUEPRINT_DIRECTORY, $file);
-
-// Gets the array from the parsed YML file
-$blueprint->getPaths($parser->parse($yml));
-
-// Preloads the "Twig_Environment" in order make it as a dependency
-$blueprint->injector->delegate('Twig_Environment', function () use ($blueprint) {
-    $loader = new \Twig_Loader_Filesystem($blueprint->getTemplatePath());
-
-    return new \Twig_Environment($loader);
-});
+// Set paths from the parsed result
+$blueprint
+    ->setTemplatePath($content['paths']['templates'])
+    ->setCommandPath($content['paths']['commands'])
+    ->setCommandNamespace($content['namespaces']['commands']);
 
 return $blueprint;

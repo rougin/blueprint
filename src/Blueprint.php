@@ -5,6 +5,8 @@ namespace Rougin\Blueprint;
 use Auryn\InjectionException;
 use Auryn\Injector;
 use Symfony\Component\Console\Application;
+use Twig_Environment;
+use Twig_Loader_Filesystem;
 
 /**
  * Blueprint
@@ -62,22 +64,39 @@ class Blueprint
     }
 
     /**
-     * Gets the list of directory paths.
+     * Sets the templates path.
      * 
-     * @param  mixed  $result
-     * @return void
+     * @return string
      */
-    public function getPaths($result)
+    public function setTemplatePath($path)
     {
-        if ( ! is_array($result)) {
-            return;
-        }
+        $this->paths['templates'] = $path;
 
-        $this->paths['commands'] = $result['paths']['commands'];
-        $this->paths['namespace'] = $result['namespaces']['commands'];
-        $this->paths['templates'] = $result['paths']['templates'];
+        return $this;
+    }
 
-        return;
+    /**
+     * Sets the commands path.
+     * 
+     * @return string
+     */
+    public function setCommandPath($path)
+    {
+        $this->paths['commands'] = $path;
+
+        return $this;
+    }
+
+    /**
+     * Sets the namespace of the commands path.
+     * 
+     * @return string
+     */
+    public function setCommandNamespace($path)
+    {
+        $this->paths['namespace'] = $path;
+
+        return $this;
     }
 
     /**
@@ -87,6 +106,13 @@ class Blueprint
      */
     public function run()
     {
+        // Preloads the "Twig_Environment" in order make it as a dependency
+        $this->injector->delegate('Twig_Environment', function () {
+            $loader = new Twig_Loader_Filesystem($this->getTemplatePath());
+
+            return new Twig_Environment($loader);
+        });
+
         $commandPath = strlen($this->paths['commands'] . DIRECTORY_SEPARATOR);
         $files = glob($this->paths['commands'] . '/*.php');
 
