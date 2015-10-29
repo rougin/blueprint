@@ -19,6 +19,10 @@
         "phpunit/phpunit" : "4.*",
         "scrutinizer/ocular": "~1.1"
     },
+    "bin": [
+        "bin/blueprint",
+        "bin/blueprint.php"
+    ],
     "autoload": {
         "psr-4": {
             "Rougin\\Blueprint\\": "src"

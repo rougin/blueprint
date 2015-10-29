@@ -2,6 +2,11 @@
 
 All Notable changes to `Blueprint` will be documented in this file
 
+## [0.1.4](https://github.com/rougin/blueprint/compare/v0.1.3...v0.1.4) - 2015-10-20
+
+### Added
+- Executables in `composer.json`
+
 ## [0.1.3](https://github.com/rougin/blueprint/compare/v0.1.2...v0.1.3) - 2015-10-20
 
 ### Changed
