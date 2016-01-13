@@ -2,11 +2,12 @@
 
 namespace Rougin\Blueprint;
 
-use Auryn\InjectionException;
 use Auryn\Injector;
-use Symfony\Component\Console\Application;
+use ReflectionClass;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
+use Auryn\InjectionException;
+use Symfony\Component\Console\Application;
 
 /**
  * Blueprint
@@ -122,12 +123,16 @@ class Blueprint
                 substr($file, $commandPath)
             );
 
-            try {
-                $command = $this->injector->make(
-                    $this->paths['namespace'] . '\\' . $className
-                );
+            $className = $this->paths['namespace'] . '\\' . $className;
 
-                $this->console->add($command);
+            try {
+                $reflection = new ReflectionClass($className);
+
+                if ( ! $reflection->isAbstract()) {
+                    $command = $this->injector->make($className);
+
+                    $this->console->add($command);
+                }
             } catch (InjectionException $exception) {
                 echo $exception->getMessage() . PHP_EOL;
 
