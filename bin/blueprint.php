@@ -14,7 +14,7 @@ $blueprint = new Rougin\Blueprint\Blueprint(
 
 // Information of the command application
 $blueprint->console->setName('Blueprint');
-$blueprint->console->setVersion('0.1.1');
+$blueprint->console->setVersion('0.1.5');
 
 // Adds a "init" command if the file does not exists
 if ( ! file_exists('blueprint.yml')) {
