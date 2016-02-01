@@ -31,8 +31,8 @@ Before doing something, you must specify the ```blueprint.yml``` where to find y
 
 ``` yml
 paths:
-    templates: %%CURRENT_DIRECTORY%%/templates
-    commands: %%CURRENT_DIRECTORY%%/commands
+    templates: %%CURRENT_DIRECTORY%%/Templates
+    commands: %%CURRENT_DIRECTORY%%/Commands
 
 namespaces:
     commands: Acme\Console\Commands

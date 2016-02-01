@@ -1,6 +1,6 @@
 paths:
-    templates: %%CURRENT_DIRECTORY%%/templates
-    commands: %%CURRENT_DIRECTORY%%/commands
+    templates: %%CURRENT_DIRECTORY%%/Templates
+    commands: %%CURRENT_DIRECTORY%%/Commands
 
 namespaces:
     commands: Commands
