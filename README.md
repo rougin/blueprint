@@ -7,7 +7,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A tool for generating files for your PHP projects.
+Creates file-generating commands for your PHP applications.
 
 ## Install
 
@@ -64,10 +64,10 @@ Then, let's create a command that will generate that said template into a file:
 ``` php
 namespace Acme\Console\Commands;
 
-use Rougin\Blueprint\AbstractCommand;
+use Rougin\Blueprint\Commands\AbstractCommand;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateClassCommand extends AbstractCommand
@@ -84,46 +84,35 @@ class CreateClassCommand extends AbstractCommand
             )->addArgument(
                 'description',
                 InputArgument::OPTIONAL,
-                'Description of the class'
+                'Description of the class',
+                'A simple class'
             )->addArgument(
                 'author',
                 InputArgument::OPTIONAL,
-                'Author of the class'
+                'Author of the class',
+                'John Doe'
             )->addArgument(
                 'path',
                 InputArgument::OPTIONAL,
-                'Path where to save the created class'
+                'Path where to save the created class',
+                __DIR__
             )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('name');
-
-        $description = ($input->getArgument('description'))
-            ? $input->getArgument('description')
-            : 'A simple class';
-
-        $author = ($input->getArgument('author'))
-            ? $input->getArgument('author')
-            : 'John Doe';
-
-        $path = ($input->getArgument('path'))
-            ? $input->getArgument('path')
-            : __DIR__;
-
         $data = [
-            'name' => $name,
-            'description' => $description,
-            'author' => $author
+            'name' => $input->getArgument('name'),
+            'description' => $input->getArgument('description'),
+            'author' => $input->getArgument('author')
         ];
 
         // Gets the "NewClass.php" file from "templates" directory
         $class = $this->renderer->render('NewClass.php', $data);
 
-        $file = fopen($path . '/' . $name, 'wb');
-        file_put_contents($path . '/' . $name, $class);
+        $file = fopen($input->getArgument('path') . '/' . $name, 'wb');
+        file_put_contents($input->getArgument('path') . '/' . $name, $class);
         fclose($file);
 
         $text = '"' . $path . '/' . $name . '" has been created successfully!';
@@ -146,36 +135,29 @@ You can also create a new generator by extending ```Blueprint``` to your console
 **NOTE:** The example below is based from [Combustor](https://github.com/rougin/combustor), a tool for speeding up web development in [CodeIgniter](codeigniter.com).
 
 ``` php
-...
+$injector = new Auryn\Injector;
+$console = new Symfony\Component\Console\Application;
+$app = new Rougin\Blueprint\Blueprint($console, $injector);
 
-// Load the Blueprint library
-$combustor = new Rougin\Blueprint\Blueprint(
-    new Symfony\Component\Console\Application,
-    new Auryn\Injector
-);
+$app->console->setName('Combustor');
+$app->console->setVersion('1.2.0');
 
-$combustor
+$app
     ->setTemplatePath(__DIR__ . '/../src/Templates')
     ->setCommandPath(__DIR__ . '/../src/Commands')
     ->setCommandNamespace('Rougin\Combustor\Commands');
 
-$combustor->console->setName('Combustor');
-$combustor->console->setVersion('1.1.3');
-
-$combustor->injector->delegate('CI_Controller', function () {
-    $sparkPlug = new Rougin\SparkPlug\SparkPlug($GLOBALS, $_SERVER);
-
-    return $sparkPlug->getCodeIgniter();
+$app->injector->delegate('CI_Controller', function () {
+    return Rougin\SparkPlug\Instance::create();
 });
 
-$combustor->injector->delegate('Rougin\Describe\Describe', function () use ($db) {
-    return new Rougin\Describe\Describe(
-        new Rougin\Describe\Driver\CodeIgniterDriver($db)
-    );
+$app->injector->delegate('Rougin\Describe\Describe', function () {
+    ...
+
+    return new Rougin\Describe\Describe;
 });
 
-// Run the Combustor console application
-$combustor->run();
+$app->run();
 ```
 
 You can also change the properties (like name and version) of your console application using the ```$combustor->console``` variable with the help of [Symfony's Console Component](http://symfony.com/doc/current/components/console/introduction.html).

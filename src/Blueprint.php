@@ -3,10 +3,6 @@
 namespace Rougin\Blueprint;
 
 use Auryn\Injector;
-use ReflectionClass;
-use Twig_Environment;
-use Twig_Loader_Filesystem;
-use Auryn\InjectionException;
 use Symfony\Component\Console\Application;
 
 /**
@@ -19,14 +15,28 @@ use Symfony\Component\Console\Application;
  */
 class Blueprint
 {
-    protected $paths;
-
+    /**
+     * @var \Symfony\Component\Console\Application
+     */
     public $console;
+
+    /**
+     * @var \Auryn\Injector
+     */
     public $injector;
 
     /**
-     * @param Application $console
-     * @param Injector    $injector
+     * @var array
+     */
+    protected $paths = [
+        'commands' => '',
+        'namespace' => '',
+        'templates' => '',
+    ];
+
+    /**
+     * @param \Symfony\Component\Console\Application $console
+     * @param \Auryn\Injector $injector
      */
     public function __construct(Application $console, Injector $injector)
     {
@@ -45,26 +55,6 @@ class Blueprint
     }
 
     /**
-     * Gets the commands path.
-     * 
-     * @return string
-     */
-    public function getCommandPath()
-    {
-        return $this->paths['commands'];
-    }
-
-    /**
-     * Gets the namespace of the commands path.
-     * 
-     * @return string
-     */
-    public function getCommandNamespace()
-    {
-        return $this->paths['namespace'];
-    }
-
-    /**
      * Sets the templates path.
      * 
      * @return string
@@ -73,7 +63,22 @@ class Blueprint
     {
         $this->paths['templates'] = $path;
 
+        $loader = new \Twig_Loader_Filesystem($path);
+        $twig = new \Twig_Environment($loader);
+
+        $this->injector->share($twig);
+
         return $this;
+    }
+
+    /**
+     * Gets the commands path.
+     * 
+     * @return string
+     */
+    public function getCommandPath()
+    {
+        return $this->paths['commands'];
     }
 
     /**
@@ -86,6 +91,16 @@ class Blueprint
         $this->paths['commands'] = $path;
 
         return $this;
+    }
+
+    /**
+     * Gets the namespace of the commands path.
+     * 
+     * @return string
+     */
+    public function getCommandNamespace()
+    {
+        return $this->paths['namespace'];
     }
 
     /**
@@ -102,44 +117,41 @@ class Blueprint
 
     /**
      * Runs the current console.
-     * 
-     * @return boolean|void
+     *
+     * @param  boolean $returnConsoleApp
+     * @return \Symfony\Component\Console\Application|boolean|void
      */
-    public function run()
+    public function run($returnConsoleApp = false)
     {
-        // Preloads the "Twig_Environment" in order make it as a dependency
-        $this->injector->delegate('Twig_Environment', function () {
-            $loader = new Twig_Loader_Filesystem($this->getTemplatePath());
+        $console = $this->getConsoleApp();
 
-            return new Twig_Environment($loader);
-        });
+        return ($returnConsoleApp) ? $console : $console->run();
+    }
 
-        $commandPath = strlen($this->paths['commands'] . DIRECTORY_SEPARATOR);
+    /**
+     * Sets up Twig and gets all commands from the specified path.
+     * 
+     * @return void
+     */
+    protected function getConsoleApp()
+    {
+        $pattern = '/\\.[^.\\s]{3,4}$/';
         $files = glob($this->paths['commands'] . '/*.php');
+        $path = strlen($this->paths['commands'] . DIRECTORY_SEPARATOR);
 
         foreach ($files as $file) {
-            $className = preg_replace(
-                '/\\.[^.\\s]{3,4}$/', '',
-                substr($file, $commandPath)
-            );
-
+            $className = preg_replace($pattern, '', substr($file, $path));
             $className = $this->paths['namespace'] . '\\' . $className;
 
-            try {
-                $reflection = new ReflectionClass($className);
+            $class = new \ReflectionClass($className);
 
-                if ( ! $reflection->isAbstract()) {
-                    $command = $this->injector->make($className);
-
-                    $this->console->add($command);
-                }
-            } catch (InjectionException $exception) {
-                echo $exception->getMessage() . PHP_EOL;
-
-                return;
+            if ($class->isAbstract()) {
+                continue;
             }
+
+            $this->console->add($this->injector->make($className));
         }
 
-        return $this->console->run();
+        return $this->console;
     }
 }

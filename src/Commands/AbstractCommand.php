@@ -1,9 +1,9 @@
 <?php
 
-namespace Rougin\Blueprint;
+namespace Rougin\Blueprint\Commands;
 
-use Symfony\Component\Console\Command\Command;
 use Twig_Environment;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * Abstract Command
@@ -15,10 +15,13 @@ use Twig_Environment;
  */
 abstract class AbstractCommand extends Command
 {
+    /**
+     * @var \Twig_Environment
+     */
     protected $renderer;
 
     /**
-     * @param Twig_Environment $renderer
+     * @param \Twig_Environment $renderer
      */
     public function __construct(Twig_Environment $renderer)
     {

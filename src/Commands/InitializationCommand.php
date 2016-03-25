@@ -3,10 +3,12 @@
 namespace Rougin\Blueprint\Commands;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Rougin\Blueprint\Common\File;
 
 /**
  * Initialization Command
@@ -27,32 +29,24 @@ class InitializationCommand extends Command
     {
         $this
             ->setName('init')
-            ->setDescription('Create a ' . BLUEPRINT_FILENAME)
-            ->addArgument(
-                'path',
-                InputArgument::OPTIONAL,
-                'Path to place ' . BLUEPRINT_FILENAME
-            )->addArgument(
-                'template_path',
-                InputArgument::OPTIONAL,
-                'Path to the template directory'
-            );
+            ->setDescription('Creates a ' . BLUEPRINT_FILENAME);
     }
 
     /**
      * Executes the current command.
      * 
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param  \Symfony\Component\Console\Input\InputInterface  $input
+     * @param  \Symfony\Component\Console\Input\OutputInterface $output
      * @return void|string
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $blueprint = file_get_contents(__DIR__ . '/../Templates/blueprint.yml');
+        $template = new File(__DIR__ . '/../Templates/blueprint.yml', 'r');
+        $yml = new File(BLUEPRINT_FILENAME);
 
-        $file = fopen(BLUEPRINT_FILENAME, 'wb');
-        file_put_contents(BLUEPRINT_FILENAME, $blueprint);
-        fclose($file);
+        $yml->putContents($template->getContents());
+        $yml->chmod(0777);
+        $yml->close();
 
         $text = '"' . BLUEPRINT_FILENAME . '" has been created successfully!';
 

@@ -1,19 +1,21 @@
 {
     "name": "rougin/blueprint",
-    "description": "A tool for generating files for your PHP projects",
+    "description": "Creates file-generating commands for your PHP applications",
     "keywords": [
         "blueprint",
-        "template",
+        "command",
+        "console",
+        "file",
         "generator",
         "php"
+        "template"
     ],
     "require": {
         "php": ">=5.3.0",
-        "twig/twig": "^1.19",
+        "rdlowrey/auryn": "^1.0",
         "symfony/console": "^2.7",
         "symfony/yaml": "^2.7",
-        "rdlowrey/auryn": "^1.0",
-        "kevinlebrun/colors.php": "^1.0"
+        "twig/twig": "^1.19"
     },
     "require-dev": {
         "phpunit/phpunit" : "4.*",
@@ -30,7 +32,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Rougin\\Blueprint\\Test\\": "tests"
+            "Rougin\\Blueprint\\": "tests"
         }
     },
     "scripts": {
@@ -38,7 +40,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.2-dev"
+            "dev-master": "0.3-dev"
         }
     }
 }
