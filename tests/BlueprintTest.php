@@ -40,7 +40,8 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
         $namespace = 'Rougin\Blueprint\TestApp\Commands';
         $consoleApp = 'Symfony\Component\Console\Application';
 
-        $this->blueprint->setCommandPath($commands)
+        $this->blueprint
+            ->setCommandPath($commands)
             ->setCommandNamespace($namespace)
             ->setTemplatePath($templates);
 

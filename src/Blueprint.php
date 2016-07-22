@@ -29,7 +29,7 @@ class Blueprint
      * @var array
      */
     protected $paths = [
-        'commands' => '',
+        'commands'  => '',
         'namespace' => '',
         'templates' => '',
     ];
@@ -40,7 +40,7 @@ class Blueprint
      */
     public function __construct(Application $console, Injector $injector)
     {
-        $this->console = $console;
+        $this->console  = $console;
         $this->injector = $injector;
     }
 
@@ -57,7 +57,8 @@ class Blueprint
     /**
      * Sets the templates path.
      * 
-     * @return string
+     * @param  string $path
+     * @return self
      */
     public function setTemplatePath($path)
     {
@@ -84,7 +85,8 @@ class Blueprint
     /**
      * Sets the commands path.
      * 
-     * @return string
+     * @param  string $path
+     * @return self
      */
     public function setCommandPath($path)
     {
@@ -105,8 +107,9 @@ class Blueprint
 
     /**
      * Sets the namespace of the commands path.
-     * 
-     * @return string
+     *
+     * @param  string $path
+     * @return self
      */
     public function setCommandNamespace($path)
     {
@@ -142,6 +145,8 @@ class Blueprint
         foreach ($files as $file) {
             $className = preg_replace($pattern, '', substr($file, $path));
             $className = $this->paths['namespace'] . '\\' . $className;
+
+            require $file;
 
             $class = new \ReflectionClass($className);
 
