@@ -2,6 +2,11 @@
 
 All Notable changes to `Blueprint` will be documented in this file
 
+## [0.2.1](https://github.com/rougin/blueprint/compare/v0.2.0...v0.2.1) - 2016-07-22
+
+### Changed
+- Version of `Symfony` components
+
 ## [0.2.0](https://github.com/rougin/blueprint/compare/v0.1.5...v0.2.0) - 2016-03-25
 
 ### Added
