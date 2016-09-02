@@ -2,6 +2,11 @@
 
 All Notable changes to `Blueprint` will be documented in this file
 
+## [0.3.0](https://github.com/rougin/blueprint/compare/v0.2.1...v0.3.0) - 2016-08-01
+
+### Added
+- Additional parameter in Blueprint::setTemplatePath for setting up `Twig_Environment`
+
 ## [0.2.1](https://github.com/rougin/blueprint/compare/v0.2.0...v0.2.1) - 2016-07-22
 
 ### Changed

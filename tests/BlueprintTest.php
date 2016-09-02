@@ -30,14 +30,14 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
 
     /**
      * Tests Blueprint::run.
-     * 
+     *
      * @return void
      */
     public function testRun()
     {
-        $commands = __DIR__ . '/TestApp/Commands';
-        $templates = __DIR__ . '/TestApp/Templates';
-        $namespace = 'Rougin\Blueprint\TestApp\Commands';
+        $commands   = __DIR__ . '/TestApp/Commands';
+        $templates  = __DIR__ . '/TestApp/Templates';
+        $namespace  = 'Rougin\Blueprint\TestApp\Commands';
         $consoleApp = 'Symfony\Component\Console\Application';
 
         $this->blueprint
@@ -56,7 +56,7 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
 
     /**
      * Tests Rougin\Blueprint\Commands\InitializationCommand.
-     * 
+     *
      * @return void
      */
     public function testInitializationCommand()

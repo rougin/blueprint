@@ -9,7 +9,7 @@ use Symfony\Component\Console\Command\Command;
  * Abstract Command
  *
  * Extends the Symfony\Console\Command class with Twig's renderer.
- * 
+ *
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */

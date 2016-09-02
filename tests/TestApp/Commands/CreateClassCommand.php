@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Create Class Command
- * 
+ *
  * @package TestApp
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
@@ -17,7 +17,7 @@ class CreateClassCommand extends AbstractCommand
 {
     /**
      * Configures the current command.
-     * 
+     *
      * @return void
      */
     protected function configure()
@@ -50,7 +50,7 @@ class CreateClassCommand extends AbstractCommand
 
     /**
      * Executes the current command.
-     * 
+     *
      * @param  \Symfony\Component\Console\Input\InputInterface  $input
      * @param  \Symfony\Component\Console\Input\OutputInterface $output
      * @return boolean|void

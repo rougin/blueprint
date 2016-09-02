@@ -3,13 +3,16 @@
 namespace Rougin\Blueprint;
 
 use Auryn\Injector;
+use ReflectionClass;
+use Twig_Environment;
+use Twig_Loader_Filesystem;
 use Symfony\Component\Console\Application;
 
 /**
  * Blueprint
  *
  * A tool for generating files or templates for your PHP projects
- * 
+ *
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
@@ -46,7 +49,7 @@ class Blueprint
 
     /**
      * Gets the templates path.
-     * 
+     *
      * @return string
      */
     public function getTemplatePath()
@@ -56,16 +59,18 @@ class Blueprint
 
     /**
      * Sets the templates path.
-     * 
+     *
      * @param  string $path
      * @return self
      */
-    public function setTemplatePath($path)
+    public function setTemplatePath($path, Twig_Environment $twig = null)
     {
         $this->paths['templates'] = $path;
 
-        $loader = new \Twig_Loader_Filesystem($path);
-        $twig = new \Twig_Environment($loader);
+        if (is_null($twig)) {
+            $loader = new Twig_Loader_Filesystem($path);
+            $twig   = new Twig_Environment($loader);
+        }
 
         $this->injector->share($twig);
 
@@ -74,7 +79,7 @@ class Blueprint
 
     /**
      * Gets the commands path.
-     * 
+     *
      * @return string
      */
     public function getCommandPath()
@@ -84,7 +89,7 @@ class Blueprint
 
     /**
      * Sets the commands path.
-     * 
+     *
      * @param  string $path
      * @return self
      */
@@ -97,7 +102,7 @@ class Blueprint
 
     /**
      * Gets the namespace of the commands path.
-     * 
+     *
      * @return string
      */
     public function getCommandNamespace()
@@ -133,14 +138,14 @@ class Blueprint
 
     /**
      * Sets up Twig and gets all commands from the specified path.
-     * 
+     *
      * @return void
      */
     protected function getConsoleApp()
     {
+        $files   = glob($this->paths['commands'] . '/*.php');
+        $path    = strlen($this->paths['commands'] . DIRECTORY_SEPARATOR);
         $pattern = '/\\.[^.\\s]{3,4}$/';
-        $files = glob($this->paths['commands'] . '/*.php');
-        $path = strlen($this->paths['commands'] . DIRECTORY_SEPARATOR);
 
         foreach ($files as $file) {
             $className = preg_replace($pattern, '', substr($file, $path));
@@ -148,7 +153,7 @@ class Blueprint
 
             require $file;
 
-            $class = new \ReflectionClass($className);
+            $class = new ReflectionClass($className);
 
             if ($class->isAbstract()) {
                 continue;

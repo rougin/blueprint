@@ -14,7 +14,7 @@ use Rougin\Blueprint\Common\File;
  * Initialization Command
  *
  * Creates a blueprint.yml or a defined file name in the specified directory.
- * 
+ *
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
@@ -34,7 +34,7 @@ class InitializationCommand extends Command
 
     /**
      * Executes the current command.
-     * 
+     *
      * @param  \Symfony\Component\Console\Input\InputInterface  $input
      * @param  \Symfony\Component\Console\Input\OutputInterface $output
      * @return void|string
@@ -42,7 +42,7 @@ class InitializationCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $template = new File(__DIR__ . '/../Templates/blueprint.yml', 'r');
-        $yml = new File(BLUEPRINT_FILENAME);
+        $yml      = new File(BLUEPRINT_FILENAME);
 
         $yml->putContents($template->getContents());
         $yml->chmod(0777);
