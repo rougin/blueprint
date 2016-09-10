@@ -2,13 +2,8 @@
 
 namespace Rougin\Blueprint\Commands;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use Rougin\Blueprint\Common\File;
 
 /**
  * Initialization Command
@@ -18,8 +13,23 @@ use Rougin\Blueprint\Common\File;
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
-class InitializationCommand extends Command
+class InitializationCommand extends AbstractCommand
 {
+    protected $filename = 'blueprint.yml';
+
+    /**
+     * Checks whether the command is enabled or not in the current environment.
+     *
+     * Override this to check for x or y and return false if the command can not
+     * run properly under the current conditions.
+     *
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return ! file_exists($this->filename);
+    }
+
     /**
      * Sets the configurations of the current command.
      *
@@ -27,9 +37,13 @@ class InitializationCommand extends Command
      */
     protected function configure()
     {
+        if (defined('BLUEPRINT_FILENAME')) {
+            $this->filename = BLUEPRINT_FILENAME;
+        }
+
         $this
             ->setName('init')
-            ->setDescription('Creates a ' . BLUEPRINT_FILENAME);
+            ->setDescription('Creates a ' . $this->filename);
     }
 
     /**
@@ -41,14 +55,12 @@ class InitializationCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $template = new File(__DIR__ . '/../Templates/blueprint.yml', 'r');
-        $yml      = new File(BLUEPRINT_FILENAME);
+        $filename = defined('BLUEPRINT_FILENAME') ? BLUEPRINT_FILENAME : $this->filename;
+        $template = file_get_contents(__DIR__ . '/../Templates/blueprint.yml');
 
-        $yml->putContents($template->getContents());
-        $yml->chmod(0777);
-        $yml->close();
+        $this->filesystem->write($filename, $template);
 
-        $text = '"' . BLUEPRINT_FILENAME . '" has been created successfully!';
+        $text = '"' . $filename . '" has been created successfully!';
 
         return $output->writeln('<info>' . $text . '</info>');
     }

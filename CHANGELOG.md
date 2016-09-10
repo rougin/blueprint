@@ -2,6 +2,15 @@
 
 All Notable changes to `Blueprint` will be documented in this file
 
+## [Unreleased](https://github.com/rougin/blueprint/compare/v0.3.0...HEAD) - [CURRENT_DATE]
+
+### Added
+- `Commands\GreetCommand`
+- `Console` for preparing the application easily
+
+### Changed
+- `File` to `League\Flysystem`
+
 ## [0.3.0](https://github.com/rougin/blueprint/compare/v0.2.1...v0.3.0) - 2016-08-01
 
 ### Added

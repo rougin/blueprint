@@ -2,10 +2,6 @@
 
 namespace Rougin\Blueprint;
 
-use Auryn\Injector;
-use ReflectionClass;
-use Twig_Environment;
-use Twig_Loader_Filesystem;
 use Symfony\Component\Console\Application;
 
 /**
@@ -39,9 +35,9 @@ class Blueprint
 
     /**
      * @param \Symfony\Component\Console\Application $console
-     * @param \Auryn\Injector $injector
+     * @param \Auryn\Injector                        $injector
      */
-    public function __construct(Application $console, Injector $injector)
+    public function __construct(Application $console, \Auryn\Injector $injector)
     {
         $this->console  = $console;
         $this->injector = $injector;
@@ -63,13 +59,13 @@ class Blueprint
      * @param  string $path
      * @return self
      */
-    public function setTemplatePath($path, Twig_Environment $twig = null)
+    public function setTemplatePath($path, \Twig_Environment $twig = null)
     {
         $this->paths['templates'] = $path;
 
         if (is_null($twig)) {
-            $loader = new Twig_Loader_Filesystem($path);
-            $twig   = new Twig_Environment($loader);
+            $loader = new \Twig_Loader_Filesystem($path);
+            $twig   = new \Twig_Environment($loader);
         }
 
         $this->injector->share($twig);
@@ -127,7 +123,7 @@ class Blueprint
      * Runs the current console.
      *
      * @param  boolean $returnConsoleApp
-     * @return \Symfony\Component\Console\Application|boolean|void
+     * @return \Symfony\Component\Console\Application|boolean
      */
     public function run($returnConsoleApp = false)
     {
@@ -143,17 +139,15 @@ class Blueprint
      */
     protected function getConsoleApp()
     {
-        $files   = glob($this->paths['commands'] . '/*.php');
-        $path    = strlen($this->paths['commands'] . DIRECTORY_SEPARATOR);
+        $files   = glob($this->getCommandPath() . '/*.php');
+        $path    = strlen($this->getCommandPath() . DIRECTORY_SEPARATOR);
         $pattern = '/\\.[^.\\s]{3,4}$/';
 
         foreach ($files as $file) {
             $className = preg_replace($pattern, '', substr($file, $path));
-            $className = $this->paths['namespace'] . '\\' . $className;
+            $className = $this->getCommandNamespace() . '\\' . $className;
 
-            require $file;
-
-            $class = new ReflectionClass($className);
+            $class = new \ReflectionClass($className);
 
             if ($class->isAbstract()) {
                 continue;

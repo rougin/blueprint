@@ -3,12 +3,11 @@
 namespace Rougin\Blueprint\Commands;
 
 use Twig_Environment;
+use League\Flysystem\Filesystem;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * Abstract Command
- *
- * Extends the Symfony\Console\Command class with Twig's renderer.
  *
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
@@ -16,17 +15,24 @@ use Symfony\Component\Console\Command\Command;
 abstract class AbstractCommand extends Command
 {
     /**
+     * @var \League\Flysystem\Filesystem
+     */
+    protected $filesystem;
+
+    /**
      * @var \Twig_Environment
      */
     protected $renderer;
 
     /**
-     * @param \Twig_Environment $renderer
+     * @param \League\Flysystem\Filesystem $filesystem
+     * @param \Twig_Environment            $renderer
      */
-    public function __construct(Twig_Environment $renderer)
+    public function __construct(Filesystem $filesystem, Twig_Environment $renderer = null)
     {
         parent::__construct();
 
-        $this->renderer = $renderer;
+        $this->filesystem = $filesystem;
+        $this->renderer   = $renderer;
     }
 }

@@ -2,56 +2,30 @@
 
 namespace Rougin\Blueprint;
 
-use Auryn\Injector;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-use Rougin\Blueprint\Blueprint;
-use Rougin\Blueprint\Commands\InitializationCommand;
+use Rougin\Blueprint\Console;
 
 use PHPUnit_Framework_TestCase;
 
+/**
+ * Blueprint Test
+ *
+ * @package Blueprint
+ * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ */
 class BlueprintTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Rougin\Blueprint\Blueprint
-     */
-    protected $blueprint;
-
-    /**
-     * Sets up Blueprint application
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        $this->blueprint = new Blueprint(new Application, new Injector);
-    }
-
-    /**
-     * Tests Blueprint::run.
+     * Tests \Rougin\Blueprint\Blueprint::run.
      *
      * @return void
      */
     public function testRun()
     {
-        $commands   = __DIR__ . '/TestApp/Commands';
-        $templates  = __DIR__ . '/TestApp/Templates';
-        $namespace  = 'Rougin\Blueprint\TestApp\Commands';
-        $consoleApp = 'Symfony\Component\Console\Application';
+        $console = Console::boot()->run(true);
 
-        $this->blueprint
-            ->setCommandPath($commands)
-            ->setCommandNamespace($namespace)
-            ->setTemplatePath($templates);
-
-        $this->assertEquals($commands, $this->blueprint->getCommandPath());
-        $this->assertEquals($namespace, $this->blueprint->getCommandNamespace());
-        $this->assertEquals($templates, $this->blueprint->getTemplatePath());
-
-        $console = $this->blueprint->run(true);
-
-        $this->assertInstanceOf($consoleApp, $console);
+        $this->assertInstanceOf('Symfony\Component\Console\Application', $console);
     }
 
     /**
@@ -63,10 +37,57 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
     {
         define('BLUEPRINT_FILENAME', 'blueprint.yml');
 
-        $command = new CommandTester(new InitializationCommand);
+        $blueprint = Console::boot();
+        $className = 'Rougin\Blueprint\Commands\InitializationCommand';
+        $instance  = $blueprint->injector->make($className);
+
+        $command = new CommandTester($instance);
         $command->execute([]);
 
         $this->assertFileExists(BLUEPRINT_FILENAME);
+
+        unlink(BLUEPRINT_FILENAME);
+    }
+
+    /**
+     * Tests \Rougin\Blueprint\Blueprint::setTemplatePath.
+     *
+     * @return void
+     */
+    public function testSetTemplatePath()
+    {
+        $separator = DIRECTORY_SEPARATOR;
+        $templates = str_replace('tests', 'src', __DIR__) . $separator . 'Templates';
+
+        $blueprint = Console::boot();
+
+        $blueprint->setTemplatePath($templates);
+
+        $this->assertEquals($templates, $blueprint->getTemplatePath());
+    }
+
+    /**
+     * Tests Rougin\Blueprint\Commands\GreetCommand.
+     *
+     * @return void
+     */
+    public function testGreetCommand()
+    {
+        $blueprint = Console::boot(__DIR__ . '/blueprint.yml');
+
+        $className = 'Rougin\Blueprint\Commands\InitializationCommand';
+        $instance  = $blueprint->injector->make($className);
+
+        $command = new CommandTester($instance);
+        $command->execute([]);
+
+        $className = 'Rougin\Blueprint\Commands\GreetCommand';
+        $instance  = $blueprint->injector->make($className);
+
+        $command = new CommandTester($instance);
+        $command->execute([ '--yell' => true ]);
+
+        $this->assertRegExp('/HELLO STRANGER!/', $command->getDisplay());
 
         unlink(BLUEPRINT_FILENAME);
     }

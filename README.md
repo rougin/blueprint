@@ -19,15 +19,13 @@ $ composer require rougin/blueprint
 
 ## Usage
 
-#### Creating a new ```blueprint.yml```
+### Creating a new ```blueprint.yml```
 
 ``` bash
 $ php vendor/bin/blueprint init
 ```
 
-#### Example
-
-Before doing something, you must specify the ```blueprint.yml``` where to find your commands and templates and its namespace
+Before doing something, you must specify the ```blueprint.yml``` where to find your commands and templates and its namespace:
 
 ``` yml
 paths:
@@ -38,7 +36,25 @@ namespaces:
     commands: Acme\Console\Commands
 ```
 
+Also set the PSR-4 autoloader in composer.json and run `composer dump-autoload` after:
+
+``` json
+{
+    // ..
+    "autoload": {
+        "psr-4": {
+            "Acme\\Console\\": "src"
+        }
+    }
+    // ..
+}
+```
+
+### Example
+
 In this example, let's create a command that will create a simple PHP class:
+
+**%%CURRENT_DIRECTORY%%/Templates/NewClass.php**
 
 ``` php
 <?php
@@ -56,10 +72,11 @@ class {{ name | title }}
         return 'Hello world!';
     }
 }
-?>
 ```
 
 Then, let's create a command that will generate that said template into a file:
+
+**%%CURRENT_DIRECTORY%%/Commands/NewClass.php**
 
 ``` php
 namespace Acme\Console\Commands;
@@ -128,39 +145,62 @@ You can now create a new simple class using:
 $ php vendor/bin/blueprint create:class HelloWorld.php
 ```
 
-#### Extensibility
+### Extensibility
 
 You can also create a new generator by extending ```Blueprint``` to your console application:
 
 **NOTE:** The example below is based from [Combustor](https://github.com/rougin/combustor), a tool for speeding up web development in [CodeIgniter](codeigniter.com).
 
 ``` php
-$injector = new Auryn\Injector;
-$console = new Symfony\Component\Console\Application;
-$app = new Rougin\Blueprint\Blueprint($console, $injector);
+$injector  = new Auryn\Injector;
+$console   = new Symfony\Component\Console\Application;
+$combustor = new Rougin\Blueprint\Blueprint($console, $injector);
 
-$app->console->setName('Combustor');
-$app->console->setVersion('1.2.0');
+$combustor->console->setName('Combustor');
+$combustor->console->setVersion('1.2.0');
 
-$app
+$combustor
     ->setTemplatePath(__DIR__ . '/../src/Templates')
     ->setCommandPath(__DIR__ . '/../src/Commands')
     ->setCommandNamespace('Rougin\Combustor\Commands');
 
-$app->injector->delegate('CI_Controller', function () {
+$combustor->injector->delegate('CI_Controller', function () {
     return Rougin\SparkPlug\Instance::create();
 });
 
-$app->injector->delegate('Rougin\Describe\Describe', function () {
+$combustor->injector->delegate('Rougin\Describe\Describe', function () {
     ...
 
     return new Rougin\Describe\Describe;
 });
 
-$app->run();
+$combustor->run();
 ```
 
 You can also change the properties (like name and version) of your console application using the ```$combustor->console``` variable with the help of [Symfony's Console Component](http://symfony.com/doc/current/components/console/introduction.html).
+
+Another example is using the `Console::boot` method (as of `v0.4.0`):
+
+``` php
+$injector = new Auryn\Injector;
+
+// Sets the dependencies here using the injector
+$injector->delegate('CI_Controller', function () {
+    return Rougin\SparkPlug\Instance::create();
+});
+
+$injector->delegate('Rougin\Describe\Describe', function () {
+    return new Rougin\Describe\Describe;
+});
+
+// Checks the data from combustor.yml
+$combustor = Rougin\Blueprint\Console::boot('combustor.yml', $injector);
+
+$combustor->console->setName('Combustor');
+$combustor->console->setVersion('1.2.2');
+
+$combustor->run();
+```
 
 ## Change log
 
