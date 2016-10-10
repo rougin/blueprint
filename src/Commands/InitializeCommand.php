@@ -6,14 +6,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Initialization Command
+ * Initialize Command
  *
  * Creates a blueprint.yml or a defined file name in the specified directory.
  *
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
-class InitializationCommand extends AbstractCommand
+class InitializeCommand extends AbstractCommand
 {
     protected $filename = 'blueprint.yml';
 
@@ -41,9 +41,7 @@ class InitializationCommand extends AbstractCommand
             $this->filename = BLUEPRINT_FILENAME;
         }
 
-        $this
-            ->setName('init')
-            ->setDescription('Creates a ' . $this->filename);
+        $this->setName('init')->setDescription('Creates a ' . $this->filename);
     }
 
     /**

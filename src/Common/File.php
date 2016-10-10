@@ -6,6 +6,7 @@ namespace Rougin\Blueprint\Common;
  * File
  *
  * A simple object-oriented interface for handling files.
+ * NOTE: To be removed in v1.0.0
  *
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
