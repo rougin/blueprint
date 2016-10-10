@@ -29,16 +29,16 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Rougin\Blueprint\Commands\InitializationCommand.
+     * Tests Rougin\Blueprint\Commands\InitializeCommand.
      *
      * @return void
      */
-    public function testInitializationCommand()
+    public function testInitializeCommand()
     {
         define('BLUEPRINT_FILENAME', 'blueprint.yml');
 
         $blueprint = Console::boot();
-        $className = 'Rougin\Blueprint\Commands\InitializationCommand';
+        $className = 'Rougin\Blueprint\Commands\InitializeCommand';
         $instance  = $blueprint->injector->make($className);
 
         $command = new CommandTester($instance);
@@ -75,7 +75,7 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
     {
         $blueprint = Console::boot(__DIR__ . '/blueprint.yml');
 
-        $className = 'Rougin\Blueprint\Commands\InitializationCommand';
+        $className = 'Rougin\Blueprint\Commands\InitializeCommand';
         $instance  = $blueprint->injector->make($className);
 
         $command = new CommandTester($instance);
