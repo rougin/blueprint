@@ -120,9 +120,9 @@ class CreateClassCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $data = [
-            'name' => $input->getArgument('name'),
+            'author'      => $input->getArgument('author'),
             'description' => $input->getArgument('description'),
-            'author' => $input->getArgument('author')
+            'name'        => $input->getArgument('name'),
         ];
 
         // Gets the "NewClass.php" file from "templates" directory
