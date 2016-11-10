@@ -56,10 +56,12 @@ class Blueprint
     /**
      * Sets the templates path.
      *
-     * @param  string $path
+     * @param  string            $path
+     * @param  \Twig_Environment $twig
+     * @param  array             $extensions
      * @return self
      */
-    public function setTemplatePath($path, \Twig_Environment $twig = null)
+    public function setTemplatePath($path, \Twig_Environment $twig = null, $extensions = [])
     {
         $this->paths['templates'] = $path;
 
@@ -67,6 +69,8 @@ class Blueprint
             $loader = new \Twig_Loader_Filesystem($path);
             $twig   = new \Twig_Environment($loader);
         }
+
+        $twig->setExtensions($extensions);
 
         $this->injector->share($twig);
 
