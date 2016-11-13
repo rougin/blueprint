@@ -6,6 +6,7 @@ All Notable changes to `Blueprint` will be documented in this file
 
 ### Added
 - Support for Twig extensions
+- Support for specified directory
 
 ## [0.4.0](https://github.com/rougin/blueprint/compare/v0.3.0...v0.4.0) - [2016-10-10]
 
