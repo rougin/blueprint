@@ -57,7 +57,6 @@ In this example, let's create a command that will create a simple PHP class:
 **%%CURRENT_DIRECTORY%%/Templates/NewClass.php**
 
 ``` php
-<?php
 /**
  * {{ name }}
  *
@@ -81,40 +80,22 @@ Then, let's create a command that will generate that said template into a file:
 ``` php
 namespace Acme\Console\Commands;
 
-use Rougin\Blueprint\Commands\AbstractCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CreateClassCommand extends AbstractCommand
+class CreateClassCommand extends \Rougin\Blueprint\Commands\AbstractCommand
 {
     protected function configure()
     {
         $this
             ->setName('create:class')
             ->setDescription('Create a new class')
-            ->addArgument(
-                'name',
-                InputArgument::REQUIRED,
-                'Name of the class'
-            )->addArgument(
-                'description',
-                InputArgument::OPTIONAL,
-                'Description of the class',
-                'A simple class'
-            )->addArgument(
-                'author',
-                InputArgument::OPTIONAL,
-                'Author of the class',
-                'John Doe'
-            )->addArgument(
-                'path',
-                InputArgument::OPTIONAL,
-                'Path where to save the created class',
-                __DIR__
-            )
-        ;
+            ->addArgument('name', InputArgument::REQUIRED, 'Name of the class')
+            ->addArgument('description', InputArgument::OPTIONAL, 'Description of the class', 'A simple class')
+            ->addArgument('author', InputArgument::OPTIONAL, 'Author of the class', 'John Doe')
+            ->addArgument('path', InputArgument::OPTIONAL, 'Path where to save the created class', __DIR__);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -157,7 +138,7 @@ $console   = new Symfony\Component\Console\Application;
 $combustor = new Rougin\Blueprint\Blueprint($console, $injector);
 
 $combustor->console->setName('Combustor');
-$combustor->console->setVersion('1.2.0');
+$combustor->console->setVersion('1.2.3');
 
 $combustor
     ->setTemplatePath(__DIR__ . '/../src/Templates')
@@ -197,7 +178,7 @@ $injector->delegate('Rougin\Describe\Describe', function () {
 $combustor = Rougin\Blueprint\Console::boot('combustor.yml', $injector);
 
 $combustor->console->setName('Combustor');
-$combustor->console->setVersion('1.2.2');
+$combustor->console->setVersion('1.2.3');
 
 $combustor->run();
 ```

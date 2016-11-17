@@ -35,7 +35,7 @@ class Console
      * @param  string          $filename
      * @param  \Auryn\Injector $injector
      * @param  string|null     $directory
-     * @return \Rougin\Blueprint\Blueprint|\Symfony\Component\Console\Application
+     * @return \Rougin\Blueprint\Blueprint
      */
     public static function boot($filename = null, Injector $injector = null, $directory = null)
     {
@@ -50,8 +50,8 @@ class Console
         // Add League's Flysystem to injector
         $injector->share(new Filesystem(new Local($directory)));
 
-        $console   = new Application(self::$name, self::$version);
-        $blueprint = new Blueprint($console, $injector);
+        $symfony   = new Application(self::$name, self::$version);
+        $blueprint = new Blueprint($symfony, $injector);
 
         // Sets the path to default in Blueprint
         if (! file_exists($filename)) {
@@ -64,7 +64,7 @@ class Console
         // Parses the data from a YAML format
         $contents = file_get_contents($filename);
         $contents = str_replace([ '\\', '/' ], DIRECTORY_SEPARATOR, $contents);
-        $contents = str_replace('%%CURRENT_DIRECTORY%%', $directory, $contents);
+        $contents = str_replace('%%CURRENT_DIRECTORY%%', getcwd(), $contents);
 
         extract(Yaml::parse($contents));
 
