@@ -30,7 +30,7 @@ class Console
      * @param  string|null     $directory
      * @return \Rougin\Blueprint\Blueprint
      */
-    public function boot($filename, \Auryn\Injector $injector, $directory = null)
+    public static function boot($filename, \Auryn\Injector $injector, $directory = null)
     {
         if (is_null($directory) || empty($directory)) {
             $directory = getcwd();
@@ -65,17 +65,5 @@ class Console
         $blueprint->setCommandNamespace($result['namespaces']['commands']);
 
         return $blueprint;
-    }
-
-    /**
-     * Handle dynamic static method calls into the method.
-     *
-     * @param  string $method
-     * @param  array  $parameters
-     * @return mixed
-     */
-    public static function __callStatic($method, $parameters)
-    {
-        return call_user_func_array([ $this, $method ], $parameters);
     }
 }
