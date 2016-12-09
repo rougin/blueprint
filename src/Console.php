@@ -2,13 +2,6 @@
 
 namespace Rougin\Blueprint;
 
-use Auryn\Injector;
-use Rougin\Blueprint\Blueprint;
-use League\Flysystem\Filesystem;
-use Symfony\Component\Yaml\Yaml;
-use League\Flysystem\Adapter\Local;
-use Symfony\Component\Console\Application;
-
 /**
  * Blueprint Console
  *
@@ -27,7 +20,7 @@ class Console
     /**
      * @var string
      */
-    protected static $version = '0.4.0';
+    protected static $version = '0.5.0';
 
     /**
      * Prepares the console application.
@@ -37,21 +30,19 @@ class Console
      * @param  string|null     $directory
      * @return \Rougin\Blueprint\Blueprint
      */
-    public static function boot($filename = null, Injector $injector = null, $directory = null)
+    public function boot($filename, \Auryn\Injector $injector, $directory = null)
     {
-        if (is_null($injector)) {
-            $injector = new Injector;
-        }
-
-        if (is_null($directory)) {
+        if (is_null($directory) || empty($directory)) {
             $directory = getcwd();
         }
 
         // Add League's Flysystem to injector
-        $injector->share(new Filesystem(new Local($directory)));
+        $adapter = new \League\Flysystem\Adapter\Local($directory);
 
-        $symfony   = new Application(self::$name, self::$version);
-        $blueprint = new Blueprint($symfony, $injector);
+        $injector->share(new \League\Flysystem\Filesystem($adapter));
+
+        $symfony   = new \Symfony\Component\Console\Application(self::$name, self::$version);
+        $blueprint = new \Rougin\Blueprint\Blueprint($symfony, $injector);
 
         // Sets the path to default in Blueprint
         if (! file_exists($filename)) {
@@ -66,13 +57,25 @@ class Console
         $contents = str_replace([ '\\', '/' ], DIRECTORY_SEPARATOR, $contents);
         $contents = str_replace('%%CURRENT_DIRECTORY%%', getcwd(), $contents);
 
-        extract(Yaml::parse($contents));
+        $result = \Symfony\Component\Yaml\Yaml::parse($contents);
 
         // Set paths from the parsed result
-        $blueprint->setTemplatePath($paths['templates']);
-        $blueprint->setCommandPath($paths['commands']);
-        $blueprint->setCommandNamespace($namespaces['commands']);
+        $blueprint->setTemplatePath($result['paths']['templates']);
+        $blueprint->setCommandPath($result['paths']['commands']);
+        $blueprint->setCommandNamespace($result['namespaces']['commands']);
 
         return $blueprint;
+    }
+
+    /**
+     * Handle dynamic static method calls into the method.
+     *
+     * @param  string $method
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public static function __callStatic($method, $parameters)
+    {
+        return call_user_func_array([ $this, $method ], $parameters);
     }
 }

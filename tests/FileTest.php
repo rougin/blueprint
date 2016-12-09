@@ -2,17 +2,13 @@
 
 namespace Rougin\Blueprint;
 
-use Rougin\Blueprint\Common\File;
-
-use PHPUnit_Framework_TestCase;
-
 /**
  * File Test
  *
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
-class FileTest extends PHPUnit_Framework_TestCase
+class FileTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests a newly created file.
@@ -21,7 +17,7 @@ class FileTest extends PHPUnit_Framework_TestCase
      */
     public function testNewFile()
     {
-        $testFile = new File('test.php');
+        $testFile = new \Rougin\Blueprint\Common\File('test.php');
         $contents = 'hello world!';
 
         $testFile->putContents($contents);

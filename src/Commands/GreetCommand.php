@@ -40,17 +40,8 @@ class GreetCommand extends AbstractCommand
         $this
             ->setName('greet')
             ->setDescription('Greet someone')
-            ->addArgument(
-                'name',
-                InputArgument::OPTIONAL,
-                'Who do you want to greet?'
-            )
-            ->addOption(
-                'yell',
-                null,
-                InputOption::VALUE_NONE,
-                'If set, the task will yell in uppercase letters'
-            )
+            ->addArgument('name', InputArgument::OPTIONAL, 'Who do you want to greet?')
+            ->addOption('yell', null, InputOption::VALUE_NONE, 'If set, the task will yell in uppercase letters')
         ;
     }
 

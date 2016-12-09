@@ -2,12 +2,10 @@
 
 namespace Rougin\Blueprint;
 
-use Symfony\Component\Console\Application;
-
 /**
  * Blueprint
  *
- * A tool for generating files or templates for your PHP projects
+ * A tool for generating files or templates for your PHP projects.
  *
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
@@ -37,7 +35,7 @@ class Blueprint
      * @param \Symfony\Component\Console\Application $console
      * @param \Auryn\Injector                        $injector
      */
-    public function __construct(Application $console, \Auryn\Injector $injector)
+    public function __construct(\Symfony\Component\Console\Application $console, \Auryn\Injector $injector)
     {
         $this->console  = $console;
         $this->injector = $injector;

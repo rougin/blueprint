@@ -6,16 +6,26 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 use Rougin\Blueprint\Console;
 
-use PHPUnit_Framework_TestCase;
-
 /**
  * Blueprint Test
  *
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
-class BlueprintTest extends PHPUnit_Framework_TestCase
+class BlueprintTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * Sets up the filename to be used.
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        if (! defined('BLUEPRINT_FILENAME')) {
+            define('BLUEPRINT_FILENAME', 'blueprint.yml');
+        }
+    }
+
     /**
      * Tests \Rougin\Blueprint\Blueprint::run.
      *
@@ -23,7 +33,7 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
      */
     public function testRun()
     {
-        $console = Console::boot()->run(true);
+        $console = Console::boot(BLUEPRINT_FILENAME, new \Auryn\Injector)->run(true);
 
         $this->assertInstanceOf('Symfony\Component\Console\Application', $console);
     }
@@ -35,9 +45,7 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
      */
     public function testInitializeCommand()
     {
-        define('BLUEPRINT_FILENAME', 'blueprint.yml');
-
-        $blueprint = Console::boot();
+        $blueprint = Console::boot(BLUEPRINT_FILENAME, new \Auryn\Injector);
         $className = 'Rougin\Blueprint\Commands\InitializeCommand';
         $instance  = $blueprint->injector->make($className);
 
@@ -59,7 +67,7 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
         $separator = DIRECTORY_SEPARATOR;
         $templates = str_replace('tests', 'src', __DIR__) . $separator . 'Templates';
 
-        $blueprint = Console::boot();
+        $blueprint = Console::boot(BLUEPRINT_FILENAME, new \Auryn\Injector);
 
         $blueprint->setTemplatePath($templates);
 
@@ -73,7 +81,7 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
      */
     public function testGreetCommand()
     {
-        $blueprint = Console::boot(__DIR__ . '/blueprint.yml');
+        $blueprint = Console::boot(__DIR__ . '/blueprint.yml', new \Auryn\Injector);
 
         $className = 'Rougin\Blueprint\Commands\InitializeCommand';
         $instance  = $blueprint->injector->make($className);
