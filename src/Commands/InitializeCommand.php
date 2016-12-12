@@ -15,6 +15,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InitializeCommand extends AbstractCommand
 {
+    /**
+     * @var string
+     */
     protected $filename = 'blueprint.yml';
 
     /**
