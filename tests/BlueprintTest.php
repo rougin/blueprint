@@ -33,7 +33,7 @@ class BlueprintTest extends \PHPUnit_Framework_TestCase
      */
     public function testRun()
     {
-        $console = Console::boot(BLUEPRINT_FILENAME, new \Auryn\Injector)->run(true);
+        $console = Console::boot(BLUEPRINT_FILENAME, new \Auryn\Injector, getcwd())->run(true);
 
         $this->assertInstanceOf('Symfony\Component\Console\Application', $console);
     }
@@ -45,7 +45,7 @@ class BlueprintTest extends \PHPUnit_Framework_TestCase
      */
     public function testInitializeCommand()
     {
-        $blueprint = Console::boot(BLUEPRINT_FILENAME, new \Auryn\Injector);
+        $blueprint = Console::boot(BLUEPRINT_FILENAME);
         $className = 'Rougin\Blueprint\Commands\InitializeCommand';
         $instance  = $blueprint->injector->make($className);
 
@@ -67,7 +67,7 @@ class BlueprintTest extends \PHPUnit_Framework_TestCase
         $separator = DIRECTORY_SEPARATOR;
         $templates = str_replace('tests', 'src', __DIR__) . $separator . 'Templates';
 
-        $blueprint = Console::boot(BLUEPRINT_FILENAME, new \Auryn\Injector);
+        $blueprint = Console::boot(BLUEPRINT_FILENAME);
 
         $blueprint->setTemplatePath($templates);
 
@@ -81,7 +81,7 @@ class BlueprintTest extends \PHPUnit_Framework_TestCase
      */
     public function testGreetCommand()
     {
-        $blueprint = Console::boot(__DIR__ . '/blueprint.yml', new \Auryn\Injector);
+        $blueprint = Console::boot(__DIR__ . '/blueprint.yml');
 
         $className = 'Rougin\Blueprint\Commands\InitializeCommand';
         $instance  = $blueprint->injector->make($className);

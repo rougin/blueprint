@@ -25,16 +25,14 @@ class Console
     /**
      * Prepares the console application.
      *
-     * @param  string          $filename
-     * @param  \Auryn\Injector $injector
-     * @param  string|null     $directory
+     * @param  string               $filename
+     * @param  \Auryn\Injector|null $injector
+     * @param  string|null          $directory
      * @return \Rougin\Blueprint\Blueprint
      */
-    public static function boot($filename, \Auryn\Injector $injector, $directory = null)
+    public static function boot($filename, \Auryn\Injector $injector = null, $directory = null)
     {
-        if (is_null($directory) || empty($directory)) {
-            $directory = getcwd();
-        }
+        list($directory, $injector) = self::prepareArguments($directory, $injector);
 
         // Add League's Flysystem to injector
         $adapter = new \League\Flysystem\Adapter\Local($directory);
@@ -65,5 +63,27 @@ class Console
         $blueprint->setCommandNamespace($result['namespaces']['commands']);
 
         return $blueprint;
+    }
+
+    /**
+     * Prepares the injector and the directory to be used.
+     *
+     * @param  string|null          $directory
+     * @param  \Auryn\Injector|null $injector
+     * @return array
+     */
+    private static function prepareArguments($directory = null, \Auryn\Injector $injector = null)
+    {
+        $arguments = [ getcwd(), new \Auryn\Injector ];
+
+        if (! is_null($directory)) {
+            $arguments[0] = $directory;
+        }
+
+        if (! is_null($injector)) {
+            $arguments[1] = $injector;
+        }
+
+        return $arguments;
     }
 }
