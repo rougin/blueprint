@@ -2,8 +2,6 @@
 
 namespace Rougin\Blueprint\Commands;
 
-use League\Flysystem\Filesystem;
-
 /**
  * Abstract Command
  *
@@ -26,7 +24,7 @@ abstract class AbstractCommand extends \Symfony\Component\Console\Command\Comman
      * @param \League\Flysystem\Filesystem $filesystem
      * @param \Twig_Environment            $renderer
      */
-    public function __construct(Filesystem $filesystem, \Twig_Environment $renderer = null)
+    public function __construct(\League\Flysystem\Filesystem $filesystem, \Twig_Environment $renderer)
     {
         parent::__construct();
 

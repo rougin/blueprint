@@ -2,7 +2,7 @@
 
 All Notable changes to `Blueprint` will be documented in this file
 
-## [Unreleased](https://github.com/rougin/blueprint/compare/v0.4.0...HEAD) - [CURRENT_DATE]
+## [0.5.0](https://github.com/rougin/blueprint/compare/v0.4.0...v0.5.0) - [CURRENT_DATE]
 
 ### Added
 - Support for Twig extensions
