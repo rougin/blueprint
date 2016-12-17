@@ -35,12 +35,14 @@ class Console
         list($directory, $injector) = self::prepareArguments($directory, $injector);
 
         // Add League's Flysystem to injector
-        $adapter = new \League\Flysystem\Adapter\Local($directory);
+        $folder = new \League\Flysystem\Adapter\Local($directory);
+        $system = new \League\Flysystem\Filesystem($folder);
 
-        $injector->share(new \League\Flysystem\Filesystem($adapter));
+        $injector->share($system);
 
-        $symfony   = new \Symfony\Component\Console\Application(self::$name, self::$version);
-        $blueprint = new \Rougin\Blueprint\Blueprint($symfony, $injector);
+        // Define the Blueprint instance
+        $application = new \Symfony\Component\Console\Application(self::$name, self::$version);
+        $blueprint   = new \Rougin\Blueprint\Blueprint($application, $injector);
 
         // Sets the path to default in Blueprint
         if (! file_exists($filename)) {
@@ -50,19 +52,7 @@ class Console
             return $blueprint;
         }
 
-        // Parses the data from a YAML format
-        $contents = file_get_contents($filename);
-        $contents = str_replace([ '\\', '/' ], DIRECTORY_SEPARATOR, $contents);
-        $contents = str_replace('%%CURRENT_DIRECTORY%%', getcwd(), $contents);
-
-        $result = \Symfony\Component\Yaml\Yaml::parse($contents);
-
-        // Set paths from the parsed result
-        $blueprint->setTemplatePath($result['paths']['templates']);
-        $blueprint->setCommandPath($result['paths']['commands']);
-        $blueprint->setCommandNamespace($result['namespaces']['commands']);
-
-        return $blueprint;
+        return self::preparePaths($blueprint, $filename);
     }
 
     /**
@@ -85,5 +75,29 @@ class Console
         }
 
         return $arguments;
+    }
+
+    /**
+     * Prepares the paths that are defined from a YAML file.
+     *
+     * @param  \Rougin\Blueprint\Blueprint $blueprint
+     * @param  string                      $filename
+     * @return \Rougin\Blueprint\Blueprint
+     */
+    private static function preparePaths(\Rougin\Blueprint\Blueprint $blueprint, $filename)
+    {
+        // Parses the data from a YAML format
+        $contents = file_get_contents($filename);
+        $contents = str_replace([ '\\', '/' ], DIRECTORY_SEPARATOR, $contents);
+        $contents = str_replace('%%CURRENT_DIRECTORY%%', getcwd(), $contents);
+
+        $result = \Symfony\Component\Yaml\Yaml::parse($contents);
+
+        // Set paths from the parsed result
+        $blueprint->setTemplatePath($result['paths']['templates']);
+        $blueprint->setCommandPath($result['paths']['commands']);
+        $blueprint->setCommandNamespace($result['namespaces']['commands']);
+
+        return $blueprint;
     }
 }
