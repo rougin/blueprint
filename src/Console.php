@@ -34,11 +34,7 @@ class Console
     {
         list($directory, $injector) = self::prepareArguments($directory, $injector);
 
-        // Add League's Flysystem to injector
-        $folder = new \League\Flysystem\Adapter\Local($directory);
-        $system = new \League\Flysystem\Filesystem($folder);
-
-        $injector->share($system);
+        self::setFilesystem($directory, $injector);
 
         // Define the Blueprint instance
         $application = new \Symfony\Component\Console\Application(self::$name, self::$version);
@@ -99,5 +95,21 @@ class Console
         $blueprint->setCommandNamespace($result['namespaces']['commands']);
 
         return $blueprint;
+    }
+
+    /**
+     * Sets the League Flysystem.
+     *
+     * @param  string          $directory
+     * @param  \Auryn\Injector &$injector
+     * @return void
+     */
+    private static function setFilesystem($directory, \Auryn\Injector &$injector)
+    {
+        // Add League's Flysystem to injector
+        $folder = new \League\Flysystem\Adapter\Local($directory);
+        $system = new \League\Flysystem\Filesystem($folder);
+
+        $injector->share($system);
     }
 }
