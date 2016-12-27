@@ -2,13 +2,13 @@
 
 All Notable changes to `Blueprint` will be documented in this file
 
-## [0.5.0](https://github.com/rougin/blueprint/compare/v0.4.0...v0.5.0) - [CURRENT_DATE]
+## [0.5.0](https://github.com/rougin/blueprint/compare/v0.4.0...v0.5.0) - 2016-12-28
 
 ### Added
 - Support for Twig extensions
 - Support for specified directory
 
-## [0.4.0](https://github.com/rougin/blueprint/compare/v0.3.0...v0.4.0) - [2016-10-10]
+## [0.4.0](https://github.com/rougin/blueprint/compare/v0.3.0...v0.4.0) - 2016-10-10
 
 ### Added
 - `Commands\GreetCommand`
@@ -70,4 +70,4 @@ All Notable changes to `Blueprint` will be documented in this file
 ## 0.1.0 - 2015-04-01
 
 ### Added
-- `Blueprint` library
+- `Blueprint` libraryibrary
