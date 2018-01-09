@@ -54,7 +54,7 @@ class BlueprintTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFileExists(BLUEPRINT_FILENAME);
 
-        unlink(BLUEPRINT_FILENAME);
+        unlink(getcwd() . '/' . BLUEPRINT_FILENAME);
     }
 
     /**
@@ -93,9 +93,9 @@ class BlueprintTest extends \PHPUnit_Framework_TestCase
         $instance  = $blueprint->injector->make($className);
 
         $command = new CommandTester($instance);
-        $command->execute([ '--yell' => true ]);
+        $command->execute([ 'name' => 'Rougin', '--yell' => true ]);
 
-        $this->assertRegExp('/HELLO STRANGER!/', $command->getDisplay());
+        $this->assertRegExp('/HELLO ROUGIN!/', $command->getDisplay());
 
         unlink(BLUEPRINT_FILENAME);
     }

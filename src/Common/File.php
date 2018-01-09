@@ -6,7 +6,7 @@ namespace Rougin\Blueprint\Common;
  * File
  *
  * A simple object-oriented interface for handling files.
- * NOTE: To be removed in v1.0.0
+ * NOTE: To be removed in v1.0.0.
  *
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
@@ -24,12 +24,15 @@ class File
     protected $path;
 
     /**
+     * Initializes the file instance.
+     *
      * @param string $path
      * @param string $mode
      */
     public function __construct($path, $mode = 'wb')
     {
         $this->path = $path;
+
         $this->file = fopen($path, $mode);
     }
 

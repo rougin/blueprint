@@ -23,14 +23,11 @@ class InitializeCommand extends AbstractCommand
     /**
      * Checks whether the command is enabled or not in the current environment.
      *
-     * Override this to check for x or y and return false if the command can not
-     * run properly under the current conditions.
-     *
-     * @return bool
+     * @return boolean
      */
     public function isEnabled()
     {
-        return ! file_exists($this->filename);
+        return file_exists($this->filename) === false;
     }
 
     /**
@@ -40,9 +37,7 @@ class InitializeCommand extends AbstractCommand
      */
     protected function configure()
     {
-        if (defined('BLUEPRINT_FILENAME')) {
-            $this->filename = BLUEPRINT_FILENAME;
-        }
+        defined('BLUEPRINT_FILENAME') && $this->filename = BLUEPRINT_FILENAME;
 
         $this->setName('init')->setDescription('Creates a ' . $this->filename);
     }
@@ -52,16 +47,15 @@ class InitializeCommand extends AbstractCommand
      *
      * @param  \Symfony\Component\Console\Input\InputInterface  $input
      * @param  \Symfony\Component\Console\Input\OutputInterface $output
-     * @return void|string
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $filename = defined('BLUEPRINT_FILENAME') ? BLUEPRINT_FILENAME : $this->filename;
         $template = file_get_contents(__DIR__ . '/../Templates/blueprint.yml');
 
-        $this->filesystem->write($filename, $template);
+        $this->filesystem->write($this->filename, $template);
 
-        $text = '"' . $filename . '" has been created successfully!';
+        $text = '"' . $this->filename . '" has been created successfully!';
 
         return $output->writeln('<info>' . $text . '</info>');
     }

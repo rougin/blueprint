@@ -2,9 +2,9 @@
 
 namespace Rougin\Blueprint\Commands;
 
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -24,10 +24,13 @@ class GreetCommand extends AbstractCommand
      */
     public function isEnabled()
     {
-        $defined  = defined('BLUEPRINT_FILENAME');
+        $defined = defined('BLUEPRINT_FILENAME');
+
         $filename = 'blueprint.yml';
 
-        return file_exists($defined ? BLUEPRINT_FILENAME : $filename);
+        $defined && $filename = BLUEPRINT_FILENAME;
+
+        return file_exists($filename);
     }
 
     /**
@@ -37,12 +40,15 @@ class GreetCommand extends AbstractCommand
      */
     protected function configure()
     {
-        $this
-            ->setName('greet')
-            ->setDescription('Greet someone')
-            ->addArgument('name', InputArgument::OPTIONAL, 'Who do you want to greet?')
-            ->addOption('yell', null, InputOption::VALUE_NONE, 'If set, the task will yell in uppercase letters')
-        ;
+        $this->setName('greet')->setDescription('Greet someone');
+
+        $description = 'Who do you want to greet?';
+
+        $this->addArgument('name', InputArgument::REQUIRED, $description);
+
+        $description = 'If set, the task will yell in uppercase letters';
+
+        $this->addOption('yell', null, InputOption::VALUE_NONE, $description);
     }
 
     /**
@@ -50,17 +56,14 @@ class GreetCommand extends AbstractCommand
      *
      * @param  \Symfony\Component\Console\Input\InputInterface  $input
      * @param  \Symfony\Component\Console\Input\OutputInterface $output
-     * @return void|string
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('name') ?: 'Stranger';
-        $text = 'Hello ' . $name . '!';
+        $text = sprintf('Hello %s!', $input->getArgument('name'));
 
-        if ($input->getOption('yell')) {
-            $text = strtoupper($text);
-        }
+        $input->getOption('yell') && $text = strtoupper($text);
 
-        return $output->writeln($text);
+        return $output->writeln('<info>' . $text . '</info>');
     }
 }

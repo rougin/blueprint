@@ -1,6 +1,17 @@
 # Changelog
 
-All Notable changes to `Blueprint` will be documented in this file
+All notable changes to `Blueprint` will be documented in this file.
+
+## [0.6.0](https://github.com/rougin/blueprint/compare/v0.5.0...v0.6.0) - Unreleased
+
+### Added
+- `Application` class
+
+### Changed
+- Code quality
+
+### Removed
+- `CONTRIBUTING.md`
 
 ## [0.5.0](https://github.com/rougin/blueprint/compare/v0.4.0...v0.5.0) - 2016-12-28
 
@@ -70,4 +81,4 @@ All Notable changes to `Blueprint` will be documented in this file
 ## 0.1.0 - 2015-04-01
 
 ### Added
-- `Blueprint` libraryibrary
+- `Blueprint` library
