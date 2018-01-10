@@ -16,18 +16,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class InitializeCommand extends AbstractCommand
 {
     /**
-     * @var string
-     */
-    protected $filename = 'blueprint.yml';
-
-    /**
      * Checks whether the command is enabled or not in the current environment.
      *
      * @return boolean
      */
     public function isEnabled()
     {
-        return file_exists($this->filename) === false;
+        return file_exists('blueprint.yml') === false;
     }
 
     /**
@@ -37,7 +32,7 @@ class InitializeCommand extends AbstractCommand
      */
     protected function configure()
     {
-        $message = 'Creates a ' . $this->filename . ' file';
+        $message = 'Creates a blueprint.yml file';
 
         $this->setName('init')->setDescription($message);
     }
@@ -51,11 +46,13 @@ class InitializeCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $template = file_get_contents(__DIR__ . '/../Templates/blueprint.yml');
+        $filepath = __DIR__ . '/../Templates/blueprint.yml';
 
-        $this->filesystem->write($this->filename, $template);
+        $template = file_get_contents($filepath);
 
-        $text = '"' . $this->filename . '" has been created successfully!';
+        $this->filesystem->write('blueprint.yml', $template);
+
+        $text = '"blueprint.yml" has been created successfully!';
 
         return $output->writeln('<info>' . $text . '</info>');
     }

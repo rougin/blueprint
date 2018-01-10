@@ -58,7 +58,7 @@ class Console
      *
      * @return array
      */
-    protected static function defaults()
+    public static function defaults()
     {
         $defaults = array('paths' => array(), 'namespaces' => array());
 

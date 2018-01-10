@@ -67,25 +67,4 @@ class BlueprintTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $result);
     }
-
-    /**
-     * Tests Rougin\Blueprint\Fixture\GreetCommand.
-     *
-     * @return void
-     */
-    // public function testGreetCommand()
-    // {
-    //     $blueprint = Console::boot(__DIR__ . '/blueprint.yml');
-    //     $blueprint = Console::boot(__DIR__ . '/blueprint.yml');
-    //     $className = 'Rougin\Blueprint\Commands\InitializeCommand';
-    //     $instance  = $blueprint->injector->make($className);
-    //     $command = new CommandTester($instance);
-    //     $command->execute([]);
-    //     $className = 'Rougin\Blueprint\Commands\GreetCommand';
-    //     $instance  = $blueprint->injector->make($className);
-    //     $command = new CommandTester($instance);
-    //     $command->execute([ 'name' => 'Rougin', '--yell' => true ]);
-    //     $this->assertRegExp('/HELLO ROUGIN!/', $command->getDisplay());
-    //     unlink(BLUEPRINT_FILENAME);
-    // }
 }

@@ -4,7 +4,8 @@ namespace Rougin\Blueprint;
 
 use Psr\Container\ContainerInterface;
 use Rougin\Slytherin\Container\Container;
-use Symfony\Component\Console\Application as ConsoleApplication;
+use Symfony\Component\Console\Application as Symfony;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Blueprint Application
@@ -32,12 +33,22 @@ class Application implements \ArrayAccess
     /**
      * @var string
      */
+    protected $file = 'blueprint.yml';
+
+    /**
+     * @var string
+     */
     protected $name = 'Blueprint';
 
     /**
      * @var string
      */
     protected $namespace = 'Rougin\Blueprint\Commands';
+
+    /**
+     * @var string
+     */
+    protected $root = '';
 
     /**
      * @var string
@@ -52,17 +63,33 @@ class Application implements \ArrayAccess
     /**
      * Initializes the Blueprint instance.
      *
-     * @param \Psr\Container\ContainerInterface|null $container
+     * @param string      $file
+     * @param string|null $root
      */
-    public function __construct(ContainerInterface $container = null)
+    public function __construct($file, $root = null)
     {
-        $this->container = $container ?: new Container;
+        $this->console = new Symfony($this->name, $this->version);
 
-        $this->commands = __DIR__ . '/Commands';
+        $this->container = new Container;
 
-        $this->templates = __DIR__ . '/Templates';
+        $this->file = $file;
 
-        $this->console = new ConsoleApplication($this->name, $this->version);
+        $this->root = $root === null ? dirname($file) : $root;
+
+        $this->parse($this->file);
+    }
+
+    /**
+     * Sets the PSR-11 container.
+     *
+     * @param  \Psr\Container\ContainerInterface $container
+     * @return self
+     */
+    public function container(ContainerInterface $container)
+    {
+        $this->container = $container;
+
+        return $this;
     }
 
     /**
@@ -73,12 +100,12 @@ class Application implements \ArrayAccess
      */
     public function offsetExists($offset)
     {
-        $allowed = array('commands', 'namespace', 'templates');
+        $allowed = array('commands', 'file', 'namespace', 'root', 'templates');
 
         if (in_array($offset, $allowed) === false) {
             $message = 'Key "' . $offset . '" does not exists!';
 
-            throw new InvalidArgumentException($message);
+            throw new \InvalidArgumentException($message);
         }
 
         return $this->$offset !== null && $this->$offset !== '';
@@ -165,10 +192,37 @@ class Application implements \ArrayAccess
 
             $class = preg_replace($pattern, '', $substring);
 
-            $items[] = $this->namespace . '\\' . $class;
+            $class = $this->namespace . '\\' . $class;
+
+            $reflection = new \ReflectionClass($class);
+
+            $reflection->isAbstract() || $items[] = $class;
         }
 
         return $items;
+    }
+
+    /**
+     * Parses the YAML file.
+     *
+     * @param  string $file
+     * @return void
+     */
+    protected function parse($file)
+    {
+        $search = '%%CURRENT_DIRECTORY%%';
+
+        $yaml = file_get_contents($file);
+
+        $yaml = str_replace($search, $this->root, $yaml);
+
+        $result = Yaml::parse($yaml);
+
+        $this->commands = $result['paths']['commands'];
+
+        $this->namespace = $result['namespaces']['commands'];
+
+        $this->templates = $result['paths']['templates'];
     }
 
     /**

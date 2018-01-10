@@ -3,7 +3,7 @@
 namespace Rougin\Blueprint;
 
 use Auryn\Injector;
-use Symfony\Component\Console\Application as ConsoleApplication;
+use Symfony\Component\Console\Application as Symfony;
 
 /**
  * Blueprint
@@ -36,7 +36,7 @@ class Blueprint
      * @param \Symfony\Component\Console\Application $console
      * @param \Auryn\Injector                        $injector
      */
-    public function __construct(ConsoleApplication $console, Injector $injector)
+    public function __construct(Symfony $console, Injector $injector)
     {
         $this->paths['commands'] = '';
 

@@ -3,4 +3,4 @@ paths:
   commands: %%CURRENT_DIRECTORY%%/Commands
 
 namespaces:
-  commands: Rougin\Blueprint\Commands
+  commands: Rougin\Blueprint\Fixture\Commands
