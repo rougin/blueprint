@@ -63,20 +63,24 @@ class Application implements \ArrayAccess
     /**
      * Initializes the Blueprint instance.
      *
-     * @param string      $file
+     * @param string|null $file
      * @param string|null $root
      */
-    public function __construct($file, $root = null)
+    public function __construct($file = null, $root = null)
     {
         $this->console = new Symfony($this->name, $this->version);
 
         $this->container = new Container;
 
-        $this->file = $file;
+        if ($file !== null) {
+            $this->file = $file;
 
-        $this->root = $root === null ? dirname($file) : $root;
+            $root === null && $root = dirname($file);
 
-        $this->parse($this->file);
+            $this->root = $root;
+
+            $this->parse($file);
+        }
     }
 
     /**

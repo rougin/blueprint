@@ -4,20 +4,25 @@ require 'vendor/autoload.php';
 
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
-use Rougin\Blueprint\Application;
-use Rougin\Slytherin\Container\Container;
 
 $root = str_replace('bin', 'src', __DIR__);
 
-$default = $root . '/Templates/blueprint.yml';
-
 $file = getcwd() . '/blueprint.yml';
 
-file_exists($file) === false && $file = $default;
+file_exists($file) === false && $file = null;
 
-$app = new Application($file, $root);
+$app = new Rougin\Blueprint\Application($file);
 
-$container = new Container;
+if ($file === null) {
+    $app['commands'] = $root . '/Commands';
+
+    $app['root'] = getcwd();
+
+    $app['templates'] = $root . '/Templates';
+}
+
+// NOTE: Third-party packages must be removed in v1.0.0.
+$container = new Rougin\Slytherin\Container\Container;
 
 $filesystem = new Filesystem(new Local($app['root']));
 

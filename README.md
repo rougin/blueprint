@@ -47,11 +47,13 @@ namespaces:
 ...
 
 namespaces:
-    commands: Acme\Console\Commands
+    commands: Acme\Commands
 ```
 
+**src/Commands/TestCommand.php**
+
 ``` php
-namespace Acme\Console\Commands;
+namespace Acme\Commands;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -74,26 +76,24 @@ class TestCommand extends Command
 ### Add specified namespace to `composer.json`
 
 ``` json
-{
-    // ..
     "autoload": {
         "psr-4": {
-            "Acme\\Console\\": "src"
+            "Acme\\": "src"
         }
     }
-    // ..
-}
 ```
 
 ``` bash
-$ composer dump-project
+$ composer dump-autoload
 ```
 
 #### Run the "test" command
 
 ``` bash
 $ vendor/bin/blueprint test
+
 Test
+
 ```
 
 ## Change log
