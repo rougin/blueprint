@@ -19,7 +19,82 @@ $ composer require rougin/blueprint
 
 ## Usage
 
-Coming soon.
+### Creating new `blueprint.yml`
+
+``` bash
+$ vendor/bin/phpunit init
+```
+
+**blueprint.yml**
+
+``` yml
+paths:
+    templates: %%CURRENT_DIRECTORY%%/src/Templates
+    commands: %%CURRENT_DIRECTORY%%/src/Commands
+
+namespaces:
+    commands: Rougin\Blueprint\Commands
+```
+
+* Replace the values specified in the `blueprint.yml` file
+* Add your console commands and templates (if required) to their respective directories
+
+#### Sample console command
+
+**blueprint.yml**
+
+``` yml
+...
+
+namespaces:
+    commands: Acme\Console\Commands
+```
+
+``` php
+namespace Acme\Console\Commands;
+
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class TestCommand extends Command
+{
+    protected function configure()
+    {
+        $this->setName('test')->setDescription('Returns a "Test" string');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->writeln('<info>Test</info>');
+    }
+}
+```
+
+### Add specified namespace to `composer.json`
+
+``` json
+{
+    // ..
+    "autoload": {
+        "psr-4": {
+            "Acme\\Console\\": "src"
+        }
+    }
+    // ..
+}
+```
+
+``` bash
+$ composer dump-project
+```
+
+#### Run the "test" command
+
+``` bash
+$ vendor/bin/blueprint test
+Test
+```
 
 ## Change log
 
@@ -30,10 +105,6 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 ``` bash
 $ composer test
 ```
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security
 

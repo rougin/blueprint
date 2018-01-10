@@ -1,5 +1,3 @@
 #!/usr/bin/env php
-<?php
 
-// Load and runs the application
-require 'blueprint.php';
+<?php require 'blueprint.php';
