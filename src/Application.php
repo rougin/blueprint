@@ -4,7 +4,7 @@ namespace Rougin\Blueprint;
 
 use Psr\Container\ContainerInterface;
 use Rougin\Slytherin\Container\Container;
-use Symfony\Component\Console\Application as Console;
+use Symfony\Component\Console\Application as ConsoleApplication;
 
 /**
  * Blueprint Application
@@ -18,6 +18,11 @@ class Application implements \ArrayAccess
      * @var \Psr\Container\ContainerInterface
      */
     protected $container;
+
+    /**
+     * @var \Symfony\Component\Console\Application
+     */
+    protected $console;
 
     /**
      * @var string
@@ -57,7 +62,7 @@ class Application implements \ArrayAccess
 
         $this->templates = __DIR__ . '/Templates';
 
-        $this->console = new Console($this->name, $this->version);
+        $this->console = new ConsoleApplication($this->name, $this->version);
     }
 
     /**
@@ -87,7 +92,7 @@ class Application implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        $this->offsetExists();
+        $this->offsetExists($offset);
 
         return $this->$offset;
     }
@@ -101,7 +106,7 @@ class Application implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        $this->offsetExists();
+        $this->offsetExists($offset);
 
         $this->$offset = $value;
     }
@@ -114,7 +119,7 @@ class Application implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        $this->offsetExists();
+        $this->offsetExists($offset);
 
         $this->$offset = null;
     }

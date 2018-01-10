@@ -38,9 +38,9 @@ class Console
      */
     public static function boot($filename = null, Injector $injector = null, $directory = null)
     {
-        $injector ?: $injector = new Injector;
+        $directory = $directory === null ? getcwd() : $directory;
 
-        $directory ?: $directory = getcwd();
+        $injector = $injector === null ? new Injector : $injector;
 
         $system = new Filesystem(new Local($directory));
 
