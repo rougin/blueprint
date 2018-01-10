@@ -2,7 +2,7 @@
 
 All notable changes to `Blueprint` will be documented in this file.
 
-## [0.6.0](https://github.com/rougin/blueprint/compare/v0.5.0...v0.6.0) - Unreleased
+## [0.6.0](https://github.com/rougin/blueprint/compare/v0.5.0...v0.6.0) - 2017-01-11
 
 ### Added
 - `Application` class
