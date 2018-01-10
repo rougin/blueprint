@@ -37,9 +37,9 @@ class InitializeCommand extends AbstractCommand
      */
     protected function configure()
     {
-        defined('BLUEPRINT_FILENAME') && $this->filename = BLUEPRINT_FILENAME;
+        $message = 'Creates a ' . $this->filename . ' file';
 
-        $this->setName('init')->setDescription('Creates a ' . $this->filename);
+        $this->setName('init')->setDescription($message);
     }
 
     /**

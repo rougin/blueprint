@@ -1,7 +1,8 @@
 <?php
 
-namespace Rougin\Blueprint\Commands;
+namespace Rougin\Blueprint\Fixture;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,24 +16,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
-class GreetCommand extends AbstractCommand
+class GreetCommand extends Command
 {
-    /**
-     * Checks whether the command is enabled or not in the current environment.
-     *
-     * @return boolean
-     */
-    public function isEnabled()
-    {
-        $defined = defined('BLUEPRINT_FILENAME');
-
-        $filename = 'blueprint.yml';
-
-        $defined && $filename = BLUEPRINT_FILENAME;
-
-        return file_exists($filename);
-    }
-
     /**
      * Sets the configurations of the current command.
      *

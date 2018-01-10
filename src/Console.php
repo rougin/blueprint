@@ -2,6 +2,12 @@
 
 namespace Rougin\Blueprint;
 
+use Auryn\Injector;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
+use Symfony\Component\Console\Application as Symfony;
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Blueprint Console
  *
@@ -20,96 +26,75 @@ class Console
     /**
      * @var string
      */
-    protected static $version = '0.5.0';
+    protected static $version = '0.6.0';
 
     /**
      * Prepares the console application.
      *
-     * @param  string               $filename
+     * @param  string|null          $filename
      * @param  \Auryn\Injector|null $injector
      * @param  string|null          $directory
      * @return \Rougin\Blueprint\Blueprint
      */
-    public static function boot($filename, \Auryn\Injector $injector = null, $directory = null)
+    public static function boot($filename = null, Injector $injector = null, $directory = null)
     {
-        list($directory, $injector) = self::prepareArguments($directory, $injector);
+        $injector ?: $injector = new Injector;
 
-        self::setFilesystem($directory, $injector);
+        $directory ?: $directory = getcwd();
 
-        // Define the Blueprint instance
-        $application = new \Symfony\Component\Console\Application(self::$name, self::$version);
-        $blueprint   = new \Rougin\Blueprint\Blueprint($application, $injector);
+        $system = new Filesystem(new Local($directory));
 
-        // Sets the path to default in Blueprint
-        if (! file_exists($filename)) {
-            $blueprint->setCommandPath(__DIR__ . '/Commands');
-            $blueprint->setCommandNamespace('Rougin\Blueprint\Commands');
+        $injector->share($system);
 
-            return $blueprint;
-        }
+        $console = new Symfony(self::$name, self::$version);
 
-        return self::preparePaths($blueprint, $filename);
+        $blueprint = new Blueprint($console, $injector);
+
+        return self::paths($blueprint, $directory, $filename);
     }
 
     /**
-     * Prepares the injector and the directory to be used.
+     * Returns an array of default values.
      *
-     * @param  string|null          $directory
-     * @param  \Auryn\Injector|null $injector
      * @return array
      */
-    private static function prepareArguments($directory = null, \Auryn\Injector $injector = null)
+    protected static function defaults()
     {
-        $arguments = [ getcwd(), new \Auryn\Injector ];
+        $defaults = array('paths' => array(), 'namespaces' => array());
 
-        if (! is_null($directory)) {
-            $arguments[0] = $directory;
-        }
+        $defaults['paths']['templates'] = __DIR__ . '/Templates';
 
-        if (! is_null($injector)) {
-            $arguments[1] = $injector;
-        }
+        $defaults['paths']['commands'] = __DIR__ . '/Commands';
 
-        return $arguments;
+        $defaults['namespaces']['commands'] = 'Rougin\Blueprint\Commands';
+
+        return $defaults;
     }
 
     /**
      * Prepares the paths that are defined from a YAML file.
      *
      * @param  \Rougin\Blueprint\Blueprint $blueprint
-     * @param  string                      $filename
+     * @param  string                      $directory
+     * @param  string|null                 $filename
      * @return \Rougin\Blueprint\Blueprint
      */
-    private static function preparePaths(\Rougin\Blueprint\Blueprint $blueprint, $filename)
+    protected static function paths(Blueprint $blueprint, $directory, $filename = null)
     {
-        // Parses the data from a YAML format
-        $contents = file_get_contents($filename);
-        $contents = str_replace([ '\\', '/' ], DIRECTORY_SEPARATOR, $contents);
-        $contents = str_replace('%%CURRENT_DIRECTORY%%', getcwd(), $contents);
+        $yaml = file_exists($filename) ? file_get_contents($filename) : '';
 
-        $result = \Symfony\Component\Yaml\Yaml::parse($contents);
+        $yaml = str_replace(array('\\', '/'), DIRECTORY_SEPARATOR, $yaml);
 
-        // Set paths from the parsed result
+        $yaml = str_replace('%%CURRENT_DIRECTORY%%', $directory, $yaml);
+
+        $result = Yaml::parse($yaml) ?: self::defaults();
+
         $blueprint->setTemplatePath($result['paths']['templates']);
+
         $blueprint->setCommandPath($result['paths']['commands']);
+
         $blueprint->setCommandNamespace($result['namespaces']['commands']);
 
         return $blueprint;
-    }
-
-    /**
-     * Sets the League Flysystem.
-     *
-     * @param  string          $directory
-     * @param  \Auryn\Injector &$injector
-     * @return void
-     */
-    private static function setFilesystem($directory, \Auryn\Injector &$injector)
-    {
-        // Add League's Flysystem to injector
-        $folder = new \League\Flysystem\Adapter\Local($directory);
-        $system = new \League\Flysystem\Filesystem($folder);
-
-        $injector->share($system);
     }
 }

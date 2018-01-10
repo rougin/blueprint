@@ -3,5 +3,8 @@
 // Includes the Composer Autoloader
 require 'vendor/autoload.php';
 
-// Prepares the console and runs the application
-Rougin\Blueprint\Console::boot('blueprint.yml')->run();
+use Rougin\Blueprint\Console;
+
+$file = __DIR__ . '/../src/Templates/blueprint.yml';
+
+Console::boot($file)->run();

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Application as Console;
  * @package Blueprint
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
-class Application
+class Application implements \ArrayAccess
 {
     /**
      * @var \Psr\Container\ContainerInterface
@@ -61,62 +61,85 @@ class Application
     }
 
     /**
-     * Returns the Symfony\Component\Console\Application.
+     * Whether or not an offset exists.
      *
+     * @param  mixed $offset
+     * @return boolean
+     */
+    public function offsetExists($offset)
+    {
+        $allowed = array('commands', 'namespace', 'templates');
+
+        if (in_array($offset, $allowed) === false) {
+            $message = 'Key "' . $offset . '" does not exists!';
+
+            throw new InvalidArgumentException($message);
+        }
+
+        return $this->$offset !== null && $this->$offset !== '';
+    }
+
+    /**
+     * Returns the value at specified offset.
+     *
+     * @param  mixed $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        $this->offsetExists();
+
+        return $this->$offset;
+    }
+
+    /**
+     * Assigns a value to the specified offset.
+     *
+     * @param  mixed $offset
+     * @param  mixed $value
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->offsetExists();
+
+        $this->$offset = $value;
+    }
+
+    /**
+     * Unsets an offset.
+     *
+     * @param  mixed $offset
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        $this->offsetExists();
+
+        $this->$offset = null;
+    }
+
+    /**
+     * Runs the console instance.
+     *
+     * @param  boolean $console
      * @return \Symfony\Component\Console\Application
      */
-    public function console()
+    public function run($console = false)
     {
         $commands = $this->commands;
 
         is_string($commands) && $commands = $this->classes();
 
         foreach ((array) $commands as $command) {
-            $instance = $this->container->get($command);
+            $item = $this->container->get($command);
 
-            $this->console->add($instance);
+            $this->console->add($instance = $item);
         }
 
+        $console === false && $this->console->run();
+
         return $this->console;
-    }
-
-    /**
-     * Sets the array of commands or its path.
-     *
-     * @param  array|string $value
-     * @return self
-     */
-    public function commands($value)
-    {
-        $this->commands = $value;
-
-        return $this;
-    }
-
-    /**
-     * Sets the namespace of the commands.
-     *
-     * @param  string $value
-     * @return self
-     */
-    public function namespace($value)
-    {
-        $this->namespace = $value;
-
-        return $this;
-    }
-
-    /**
-     * Sets the path for the templates.
-     *
-     * @param  string $value
-     * @return self
-     */
-    public function templates($value)
-    {
-        $this->templates = $value;
-
-        return $this;
     }
 
     /**
@@ -141,5 +164,19 @@ class Application
         }
 
         return $items;
+    }
+
+    /**
+     * Calls methods from the Console instance.
+     *
+     * @param  string $method
+     * @param  mixed  $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        $instance = array($this->console, $method);
+
+        return call_user_func_array($instance, $parameters);
     }
 }

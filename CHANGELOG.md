@@ -9,8 +9,10 @@ All notable changes to `Blueprint` will be documented in this file.
 
 ### Changed
 - Code quality
+- Moved `GreetCommand` to `tests/Fixture`
 
 ### Removed
+- `BLUEPRINT_FILENAME` constant
 - `CONTRIBUTING.md`
 
 ## [0.5.0](https://github.com/rougin/blueprint/compare/v0.4.0...v0.5.0) - 2016-12-28

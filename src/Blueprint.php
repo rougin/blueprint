@@ -2,6 +2,9 @@
 
 namespace Rougin\Blueprint;
 
+use Auryn\Injector;
+use Symfony\Component\Console\Application as ConsoleApplication;
+
 /**
  * Blueprint
  *
@@ -25,19 +28,24 @@ class Blueprint
     /**
      * @var array
      */
-    protected $paths = [
-        'commands'  => '',
-        'namespace' => '',
-        'templates' => '',
-    ];
+    protected $paths = array();
 
     /**
+     * Initializes the Blueprint instance.
+     *
      * @param \Symfony\Component\Console\Application $console
      * @param \Auryn\Injector                        $injector
      */
-    public function __construct(\Symfony\Component\Console\Application $console, \Auryn\Injector $injector)
+    public function __construct(ConsoleApplication $console, Injector $injector)
     {
+        $this->paths['commands'] = '';
+
+        $this->paths['namespace'] = '';
+
+        $this->paths['templates'] = '';
+
         $this->console  = $console;
+
         $this->injector = $injector;
     }
 
@@ -54,18 +62,19 @@ class Blueprint
     /**
      * Sets the templates path.
      *
-     * @param  string            $path
-     * @param  \Twig_Environment $twig
-     * @param  array             $extensions
+     * @param  string                 $path
+     * @param  \Twig_Environment|null $twig
+     * @param  array                  $extensions
      * @return self
      */
     public function setTemplatePath($path, \Twig_Environment $twig = null, $extensions = [])
     {
         $this->paths['templates'] = $path;
 
-        if (is_null($twig)) {
+        if (is_null($twig) === true) {
             $loader = new \Twig_Loader_Filesystem($path);
-            $twig   = new \Twig_Environment($loader);
+
+            $twig = new \Twig_Environment($loader);
         }
 
         $twig->setExtensions($extensions);
@@ -124,38 +133,39 @@ class Blueprint
     /**
      * Runs the current console.
      *
-     * @param  boolean $returnConsoleApp
+     * @param  boolean $console
      * @return \Symfony\Component\Console\Application|boolean
      */
-    public function run($returnConsoleApp = false)
+    public function run($console = false)
     {
-        $console = $this->getConsoleApp();
+        $instance = $this->console();
 
-        return ($returnConsoleApp) ? $console : $console->run();
+        return $console ? $instance : $instance->run();
     }
 
     /**
      * Sets up Twig and gets all commands from the specified path.
      *
-     * @return void
+     * @return \Symfony\Component\Console\Application
      */
-    protected function getConsoleApp()
+    protected function console()
     {
-        $files   = glob($this->getCommandPath() . '/*.php');
-        $path    = strlen($this->getCommandPath() . DIRECTORY_SEPARATOR);
+        $files = glob($this->getCommandPath() . '/*.php');
+
+        $path = strlen($this->getCommandPath() . DIRECTORY_SEPARATOR);
+
         $pattern = '/\\.[^.\\s]{3,4}$/';
 
-        foreach ($files as $file) {
-            $className = preg_replace($pattern, '', substr($file, $path));
-            $className = $this->getCommandNamespace() . '\\' . $className;
+        foreach ((array) $files as $file) {
+            $class = preg_replace($pattern, '', substr($file, $path));
 
-            $class = new \ReflectionClass($className);
+            $class = $this->getCommandNamespace() . '\\' . $class;
 
-            if ($class->isAbstract()) {
-                continue;
+            $reflection = new \ReflectionClass($class);
+
+            if (! $reflection->isAbstract()) {
+                $this->console->add($this->injector->make($class));
             }
-
-            $this->console->add($this->injector->make($className));
         }
 
         return $this->console;
