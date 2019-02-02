@@ -1,7 +1,7 @@
 # Blueprint
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
-[![Software License][ico-license]](LICENSE.md)
+[![Software License][ico-license]][link-license]
 [![Build Status][ico-travis]][link-travis]
 [![Coverage Status][ico-scrutinizer]][link-scrutinizer]
 [![Quality Score][ico-code-quality]][link-code-quality]
@@ -9,15 +9,15 @@
 
 Bootstraps your file-generating console applications.
 
-## Install
+## Installation
 
-Via Composer
+Install `Blueprint` via [Composer](https://getcomposer.org/):
 
 ``` bash
 $ composer require rougin/blueprint
 ```
 
-## Usage
+## Basic Usage
 
 ### Creating new `blueprint.yml`
 
@@ -96,9 +96,9 @@ Test
 
 ```
 
-## Change log
+## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+Please see [CHANGELOG][link-changelog] for more information what has changed recently.
 
 ## Testing
 
@@ -106,30 +106,26 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 $ composer test
 ```
 
-## Security
-
-If you discover any security related issues, please email rougingutib@gmail.com instead of using the issue tracker.
-
 ## Credits
 
-- [Rougin Royce Gutib][link-author]
-- [All Contributors][link-contributors]
+- [All contributors][link-contributors]
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [LICENSE][link-license] for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/rougin/blueprint.svg?style=flat-square
-[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/rougin/blueprint/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/rougin/blueprint.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/rougin/blueprint.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/rougin/blueprint.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/rougin/blueprint.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/rougin/blueprint/master.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/rougin/blueprint.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/rougin/blueprint
-[link-travis]: https://travis-ci.org/rougin/blueprint
-[link-scrutinizer]: https://scrutinizer-ci.com/g/rougin/blueprint/code-structure
+[link-changelog]: https://github.com/rougin/blueprint/blob/master/CHANGELOG.md
 [link-code-quality]: https://scrutinizer-ci.com/g/rougin/blueprint
+[link-contributors]: https://github.com/rougin/blueprint/contributors
 [link-downloads]: https://packagist.org/packages/rougin/blueprint
-[link-author]: https://github.com/rougin
-[link-contributors]: ../../contributors
+[link-license]: https://github.com/rougin/blueprint/blob/master/LICENSE.md
+[link-packagist]: https://packagist.org/packages/rougin/blueprint
+[link-scrutinizer]: https://scrutinizer-ci.com/g/rougin/blueprint/code-structure
+[link-travis]: https://travis-ci.org/rougin/blueprint
