@@ -11,7 +11,7 @@ use Symfony\Component\Yaml\Yaml;
  * Blueprint Application
  *
  * @package Blueprint
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class Application implements \ArrayAccess
 {
