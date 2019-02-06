@@ -11,7 +11,7 @@ use Symfony\Component\Console\Application as Symfony;
  * A tool for generating files or templates for your PHP projects.
  *
  * @package Blueprint
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class Blueprint
 {
