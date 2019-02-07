@@ -9,7 +9,7 @@ use Symfony\Component\Console\Command\Command;
  * Abstract Command
  *
  * @package Blueprint
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 abstract class AbstractCommand extends Command
 {
