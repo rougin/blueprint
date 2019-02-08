@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Creates a blueprint.yml or a defined file name in the specified directory.
  *
  * @package Blueprint
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class InitializeCommand extends AbstractCommand
 {
