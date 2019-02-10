@@ -14,7 +14,7 @@ use Symfony\Component\Yaml\Yaml;
  * A tool for generating files or templates for your PHP projects.
  *
  * @package Blueprint
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class Console
 {
