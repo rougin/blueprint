@@ -9,7 +9,7 @@ namespace Rougin\Blueprint\Common;
  * NOTE: To be removed in v1.0.0.
  *
  * @package Blueprint
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class File
 {
