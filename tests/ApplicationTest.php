@@ -9,7 +9,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * Blueprint Application Test
  *
  * @package Blueprint
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
