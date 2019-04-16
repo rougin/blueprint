@@ -8,7 +8,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * Blueprint Test
  *
  * @package Blueprint
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class BlueprintTest extends \PHPUnit_Framework_TestCase
 {
