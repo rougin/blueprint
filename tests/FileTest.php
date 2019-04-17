@@ -6,7 +6,7 @@ namespace Rougin\Blueprint;
  * File Test
  *
  * @package Blueprint
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class FileTest extends \PHPUnit_Framework_TestCase
 {
