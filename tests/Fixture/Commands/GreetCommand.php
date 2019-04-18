@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * A sample of a greet command.
  *
  * @package Blueprint
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class GreetCommand extends Command
 {
