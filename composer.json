@@ -2,13 +2,13 @@
     "name": "rougin/blueprint",
     "description": "Bootstraps your file-generating console applications.",
     "keywords": ["blueprint", "generator", "file-generator", "php"],
-    "homepage": "https://rougin.github.io/blueprint/",
+    "homepage": "https://roug.in/blueprint/",
     "license": "MIT",
     "authors":
     [
         {
             "email": "rougingutib@gmail.com",
-            "homepage": "https://rougin.github.io/",
+            "homepage": "https://roug.in/",
             "name": "Rougin Gutib",
             "role": "Software Engineer"
         }
