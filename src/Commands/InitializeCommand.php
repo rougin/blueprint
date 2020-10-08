@@ -32,9 +32,7 @@ class InitializeCommand extends AbstractCommand
      */
     protected function configure()
     {
-        $message = 'Creates a blueprint.yml file';
-
-        $this->setName('init')->setDescription($message);
+        $this->setName('init')->setDescription('Creates a blueprint.yml file');
     }
 
     /**
@@ -48,12 +46,14 @@ class InitializeCommand extends AbstractCommand
     {
         $filepath = __DIR__ . '/../Templates/blueprint.yml';
 
-        $template = file_get_contents($filepath);
+        $template = file_get_contents((string) $filepath);
 
         $this->filesystem->write('blueprint.yml', $template);
 
         $text = '"blueprint.yml" has been created successfully!';
 
-        return $output->writeln('<info>' . $text . '</info>');
+        $output->writeln((string) '<info>' . $text . '</info>');
+
+        return 0;
     }
 }
