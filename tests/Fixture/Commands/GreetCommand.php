@@ -49,6 +49,8 @@ class GreetCommand extends Command
 
         $input->getOption('yell') && $text = strtoupper($text);
 
-        return $output->writeln('<info>' . $text . '</info>');
+        $output->writeln((string) '<info>' . $text . '</info>');
+
+        return 0;
     }
 }
