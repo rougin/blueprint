@@ -2,16 +2,17 @@
 
 namespace Rougin\Blueprint;
 
-use Rougin\Slytherin\Container\Container;
+use Rougin\Slytherin\Container\ReflectionContainer;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Blueprint Application Test
  *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
-class ApplicationTest extends \PHPUnit_Framework_TestCase
+class ApplicationTest extends Testcase
 {
     /**
      * @var \Rougin\Blueprint\Application
@@ -23,13 +24,13 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function doSetUp()
     {
         $file = __DIR__ . '/Fixture/SampleBlueprint.yml';
 
         $application = new Application($file);
 
-        $application->container(new Container);
+        $application->container(new ReflectionContainer);
 
         $this->application = $application;
     }
@@ -41,21 +42,29 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     public function testRunMethodWithGreetCommand()
     {
+        // Search the specified command ---------
         $console = $this->application->run(true);
 
         $command = $console->find('greet');
 
         $tester = new CommandTester($command);
+        // --------------------------------------
 
         $input = array('name' => 'Rougin', '--yell' => true);
 
         $tester->execute($input);
 
-        $expected = '/HELLO ROUGIN!/';
+        $expected = 'HELLO ROUGIN!';
 
-        $result = $tester->getDisplay();
+        // Parses the result from the display -----
+        $actual = $tester->getDisplay();
 
-        $this->assertRegExp($expected, $result);
+        $actual = str_replace("\r\n", '', $actual);
+
+        $actual = str_replace("\n", '', $actual);
+        // ----------------------------------------
+
+        $this->assertEquals($expected, $actual);
     }
 
     /**

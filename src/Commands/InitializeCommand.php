@@ -11,7 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Creates a blueprint.yml or a defined file name in the specified directory.
  *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
 class InitializeCommand extends AbstractCommand
 {
@@ -38,8 +39,9 @@ class InitializeCommand extends AbstractCommand
     /**
      * Executes the current command.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface  $input
-     * @param  \Symfony\Component\Console\Input\OutputInterface $output
+     * @param \Symfony\Component\Console\Input\InputInterface  $input
+     * @param \Symfony\Component\Console\Input\OutputInterface $output
+     *
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)

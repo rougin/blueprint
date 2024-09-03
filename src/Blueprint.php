@@ -6,12 +6,9 @@ use Auryn\Injector;
 use Symfony\Component\Console\Application as Symfony;
 
 /**
- * Blueprint
- *
- * A tool for generating files or templates for your PHP projects.
- *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
 class Blueprint
 {
@@ -31,8 +28,6 @@ class Blueprint
     protected $paths = array();
 
     /**
-     * Initializes the Blueprint instance.
-     *
      * @param \Symfony\Component\Console\Application $console
      * @param \Auryn\Injector                        $injector
      */
@@ -62,19 +57,19 @@ class Blueprint
     /**
      * Sets the templates path.
      *
-     * @param  string                 $path
-     * @param  \Twig_Environment|null $twig
-     * @param  array                  $extensions
+     * @param string                 $path
+     * @param \Twig_Environment|null $twig
+     * @param array                  $extensions
+     *
      * @return self
      */
     public function setTemplatePath($path, \Twig_Environment $twig = null, $extensions = [])
     {
         $this->paths['templates'] = $path;
 
-        if (is_null($twig) === true) {
-            $loader = new \Twig_Loader_Filesystem($path);
-
-            $twig = new \Twig_Environment($loader);
+        if ($twig === null)
+        {
+            $twig = new \Twig_Environment(new \Twig_Loader_Filesystem($path));
         }
 
         $twig->setExtensions($extensions);
@@ -97,7 +92,8 @@ class Blueprint
     /**
      * Sets the commands path.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return self
      */
     public function setCommandPath($path)
@@ -120,7 +116,8 @@ class Blueprint
     /**
      * Sets the namespace of the commands path.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return self
      */
     public function setCommandNamespace($path)
@@ -133,14 +130,20 @@ class Blueprint
     /**
      * Runs the current console.
      *
-     * @param  boolean $console
+     * @param boolean $console
+     *
      * @return \Symfony\Component\Console\Application|boolean
      */
     public function run($console = false)
     {
-        $instance = $this->console();
+        $instance = $this->instance();
 
-        return $console ? $instance : $instance->run();
+        if ($console)
+        {
+            return $instance;
+        }
+
+        return $instance->run() === 0;
     }
 
     /**
@@ -148,7 +151,7 @@ class Blueprint
      *
      * @return \Symfony\Component\Console\Application
      */
-    protected function console()
+    protected function instance()
     {
         $files = glob($this->getCommandPath() . '/*.php');
 
@@ -156,14 +159,16 @@ class Blueprint
 
         $pattern = '/\\.[^.\\s]{3,4}$/';
 
-        foreach ((array) $files as $file) {
+        foreach ((array) $files as $file)
+        {
             $class = preg_replace($pattern, '', substr($file, $path));
 
             $class = $this->getCommandNamespace() . '\\' . $class;
 
             $reflection = new \ReflectionClass($class);
 
-            if (! $reflection->isAbstract()) {
+            if (! $reflection->isAbstract())
+            {
                 $this->console->add($this->injector->make($class));
             }
         }

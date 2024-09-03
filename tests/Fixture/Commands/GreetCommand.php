@@ -14,7 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  * A sample of a greet command.
  *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
 class GreetCommand extends Command
 {
@@ -39,8 +40,9 @@ class GreetCommand extends Command
     /**
      * Executes the current command.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface  $input
-     * @param  \Symfony\Component\Console\Input\OutputInterface $output
+     * @param \Symfony\Component\Console\Input\InputInterface  $input
+     * @param \Symfony\Component\Console\Input\OutputInterface $output
+     *
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -8,13 +8,23 @@ use Symfony\Component\Console\Application as Symfony;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Blueprint Application
- *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
 class Application implements \ArrayAccess
 {
+    /**
+     * @var string[]
+     */
+    protected $allowed = array(
+        'commands',
+        'file',
+        'namespace',
+        'root',
+        'templates',
+    );
+
     /**
      * @var \Psr\Container\ContainerInterface
      */
@@ -58,11 +68,9 @@ class Application implements \ArrayAccess
     /**
      * @var string
      */
-    protected $version = '0.6.0';
+    protected $version = '0.7.0';
 
     /**
-     * Initializes the Blueprint instance.
-     *
      * @param string|null $file
      * @param string|null $root
      */
@@ -72,21 +80,28 @@ class Application implements \ArrayAccess
 
         $this->container = new Container;
 
-        if ($file !== null) {
-            $this->file = $file;
-
-            $root === null && $root = dirname($file);
-
-            $this->root = $root;
-
-            $this->parse($file);
+        if ($file === null)
+        {
+            return;
         }
+
+        $this->file = $file;
+
+        if ($root === null)
+        {
+            $root = dirname($file);
+        }
+
+        $this->root = $root;
+
+        $this->parse($file);
     }
 
     /**
      * Sets the PSR-11 container.
      *
-     * @param  \Psr\Container\ContainerInterface $container
+     * @param \Psr\Container\ContainerInterface $container
+     *
      * @return self
      */
     public function container(ContainerInterface $container)
@@ -99,27 +114,30 @@ class Application implements \ArrayAccess
     /**
      * Whether or not an offset exists.
      *
-     * @param  mixed $offset
+     * @param mixed $offset
+     *
      * @return boolean
+     * @throws \InvalidArgumentException
      */
     public function offsetExists($offset)
     {
-        $allowed = array('commands', 'file', 'namespace', 'root', 'templates');
-
-        if (in_array($offset, $allowed) === false) {
-            $message = 'Key "' . $offset . '" does not exists!';
-
-            throw new \InvalidArgumentException($message);
+        if (in_array($offset, $this->allowed))
+        {
+            return $this->$offset !== '';
         }
 
-        return $this->$offset !== null && $this->$offset !== '';
+        $message = 'Key "' . $offset . '" does not exists!';
+
+        throw new \InvalidArgumentException($message);
     }
 
     /**
      * Returns the value at specified offset.
      *
-     * @param  mixed $offset
+     * @param mixed $offset
+     *
      * @return mixed
+     * @throws \InvalidArgumentException
      */
     public function offsetGet($offset)
     {
@@ -131,9 +149,11 @@ class Application implements \ArrayAccess
     /**
      * Assigns a value to the specified offset.
      *
-     * @param  mixed $offset
-     * @param  mixed $value
+     * @param mixed $offset
+     * @param mixed $value
+     *
      * @return void
+     * @throws \InvalidArgumentException
      */
     public function offsetSet($offset, $value)
     {
@@ -145,8 +165,10 @@ class Application implements \ArrayAccess
     /**
      * Unsets an offset.
      *
-     * @param  mixed $offset
+     * @param mixed $offset
+     *
      * @return void
+     * @throws \InvalidArgumentException
      */
     public function offsetUnset($offset)
     {
@@ -158,22 +180,30 @@ class Application implements \ArrayAccess
     /**
      * Runs the console instance.
      *
-     * @param  boolean $console
+     * @param boolean $console
+     *
      * @return \Symfony\Component\Console\Application
      */
     public function run($console = false)
     {
         $commands = $this->commands;
 
-        is_string($commands) && $commands = $this->classes();
-
-        foreach ((array) $commands as $command) {
-            $item = $this->container->get($command);
-
-            $this->console->add($instance = $item);
+        if (is_string($commands))
+        {
+            $commands = $this->classes();
         }
 
-        $console === false && $this->console->run();
+        foreach ($commands as $command)
+        {
+            $item = $this->container->get($command);
+
+            $this->console->add($item);
+        }
+
+        if (! $console)
+        {
+            $this->console->run();
+        }
 
         return $this->console;
     }
@@ -191,7 +221,8 @@ class Application implements \ArrayAccess
 
         $path = strlen($this->commands . DIRECTORY_SEPARATOR);
 
-        foreach ((array) $files as $file) {
+        foreach ($files as $file)
+        {
             $substring = substr($file, $path);
 
             $class = preg_replace($pattern, '', $substring);
@@ -200,7 +231,12 @@ class Application implements \ArrayAccess
 
             $reflection = new \ReflectionClass($class);
 
-            $reflection->isAbstract() || $items[] = $class;
+            if ($reflection->isAbstract())
+            {
+                continue;
+            }
+
+            $items[] = $class;
         }
 
         return $items;
@@ -209,7 +245,8 @@ class Application implements \ArrayAccess
     /**
      * Parses the YAML file.
      *
-     * @param  string $file
+     * @param string $file
+     *
      * @return void
      */
     protected function parse($file)
@@ -232,14 +269,16 @@ class Application implements \ArrayAccess
     /**
      * Calls methods from the Console instance.
      *
-     * @param  string $method
-     * @param  mixed  $parameters
+     * @param string $method
+     * @param mixed  $params
+     *
      * @return mixed
      */
-    public function __call($method, $parameters)
+    public function __call($method, $params)
     {
-        $instance = array($this->console, $method);
+        /** @var callable */
+        $class = array($this->console, $method);
 
-        return call_user_func_array($instance, $parameters);
+        return call_user_func_array($class, $params);
     }
 }

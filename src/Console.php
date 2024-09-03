@@ -9,12 +9,9 @@ use Symfony\Component\Console\Application as Symfony;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Blueprint Console
- *
- * A tool for generating files or templates for your PHP projects.
- *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
 class Console
 {
@@ -31,16 +28,17 @@ class Console
     /**
      * Prepares the console application.
      *
-     * @param  string|null          $filename
-     * @param  \Auryn\Injector|null $injector
-     * @param  string|null          $directory
+     * @param string|null          $filename
+     * @param \Auryn\Injector|null $injector
+     * @param string|null          $directory
+     *
      * @return \Rougin\Blueprint\Blueprint
      */
     public static function boot($filename = null, Injector $injector = null, $directory = null)
     {
-        $directory = $directory === null ? getcwd() : $directory;
+        $directory = $directory ? $directory : (string) getcwd();
 
-        $injector = $injector === null ? new Injector : $injector;
+        $injector = $injector ? $injector : new Injector;
 
         $system = new Filesystem(new Local($directory));
 
@@ -74,9 +72,10 @@ class Console
     /**
      * Prepares the paths that are defined from a YAML file.
      *
-     * @param  \Rougin\Blueprint\Blueprint $blueprint
-     * @param  string                      $directory
-     * @param  string|null                 $filename
+     * @param \Rougin\Blueprint\Blueprint $blueprint
+     * @param string                      $directory
+     * @param string|null                 $filename
+     *
      * @return \Rougin\Blueprint\Blueprint
      */
     protected static function paths(Blueprint $blueprint, $directory, $filename = null)
