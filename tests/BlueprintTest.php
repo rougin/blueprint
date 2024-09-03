@@ -2,7 +2,6 @@
 
 namespace Rougin\Blueprint;
 
-use LegacyPHPUnit\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -12,7 +11,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  *
  * @author Rougin Gutib <rougingutib@gmail.com>
  */
-class BlueprintTest extends TestCase
+class BlueprintTest extends Testcase
 {
     /**
      * Tests \Rougin\Blueprint\Blueprint::run.
