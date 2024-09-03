@@ -48,6 +48,8 @@ class Console
 
         $blueprint = new Blueprint($console, $injector);
 
+        $filename = $filename ? $filename : 'blueprint.yml';
+
         return self::paths($blueprint, $directory, $filename);
     }
 
@@ -58,13 +60,17 @@ class Console
      */
     public static function defaults()
     {
-        $defaults = array('paths' => array(), 'namespaces' => array());
+        $defaults = array('paths' => array());
+        $defaults['namespaces'] = array();
 
-        $defaults['paths']['templates'] = __DIR__ . '/Templates';
+        $templates = (string) __DIR__ . '/Templates';
+        $defaults['paths']['templates'] = $templates;
 
-        $defaults['paths']['commands'] = __DIR__ . '/Commands';
+        $commands = (string) __DIR__ . '/Commands';
+        $defaults['paths']['commands'] = $commands;
 
-        $defaults['namespaces']['commands'] = 'Rougin\Blueprint\Commands';
+        $commands = (string) 'Rougin\Blueprint\Commands';
+        $defaults['namespaces']['commands'] = $commands;
 
         return $defaults;
     }
@@ -74,21 +80,18 @@ class Console
      *
      * @param \Rougin\Blueprint\Blueprint $blueprint
      * @param string                      $directory
-     * @param string|null                 $filename
+     * @param string                      $filename
      *
      * @return \Rougin\Blueprint\Blueprint
      */
-    protected static function paths(Blueprint $blueprint, $directory, $filename = null)
+    protected static function paths(Blueprint $blueprint, $directory, $filename)
     {
+        $exists = file_exists($filename);
+
+        /** @var string */
+        $yaml = $exists ? file_get_contents($filename) : '';
+
         $slash = DIRECTORY_SEPARATOR;
-
-        $yaml = '';
-
-        if ($filename && file_exists($filename))
-        {
-            /** @var string */
-            $yaml = file_get_contents($filename);
-        }
 
         $yaml = str_replace(array('\\', '/'), $slash, $yaml);
 
@@ -96,19 +99,17 @@ class Console
 
         $yaml = str_replace($search, $directory, $yaml);
 
-        $result = self::defaults();
+        /** @var array<string, array<string, string>> */
+        $result = Yaml::parse($yaml) ?: self::defaults();
 
-        if (Yaml::parse($yaml))
-        {
-            /** @var array<string, array<string, string>> */
-            $result = Yaml::parse($yaml);
-        }
+        $templates = $result['paths']['templates'];
+        $blueprint->setTemplatePath($templates);
 
-        $blueprint->setTemplatePath($result['paths']['templates']);
+        $commands = $result['paths']['commands'];
+        $blueprint->setCommandPath($commands);
 
-        $blueprint->setCommandPath($result['paths']['commands']);
-
-        $blueprint->setCommandNamespace($result['namespaces']['commands']);
+        $commands = $result['namespaces']['commands'];
+        $blueprint->setCommandNamespace($commands);
 
         return $blueprint;
     }

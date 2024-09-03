@@ -19,13 +19,14 @@ class Application implements \ArrayAccess
     /**
      * @var string[]
      */
-    protected $allowed = array(
+    protected $allowed =
+    [
         'commands',
         'file',
         'namespace',
         'root',
         'templates',
-    );
+    ];
 
     /**
      * @var \Psr\Container\ContainerInterface
@@ -82,21 +83,19 @@ class Application implements \ArrayAccess
 
         $this->container = new Container;
 
-        if ($file === null)
+        if ($file)
         {
-            return;
+            $this->file = $file;
         }
-
-        $this->file = $file;
 
         if ($root === null)
         {
-            $root = dirname($file);
+            $root = dirname($this->file);
         }
 
         $this->root = $root;
 
-        $this->parse($file);
+        $this->parse($this->file);
     }
 
     /**
@@ -182,11 +181,9 @@ class Application implements \ArrayAccess
     /**
      * Runs the console instance.
      *
-     * @param boolean $console
-     *
      * @return \Symfony\Component\Console\Application
      */
-    public function run($console = false)
+    public function run()
     {
         $commands = $this->commands;
 
@@ -201,11 +198,6 @@ class Application implements \ArrayAccess
             $item = $this->container->get($command);
 
             $this->console->add($item);
-        }
-
-        if (! $console)
-        {
-            $this->console->run();
         }
 
         return $this->console;

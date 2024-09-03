@@ -132,28 +132,9 @@ class Blueprint
     /**
      * Runs the current console.
      *
-     * @param boolean $console
-     *
-     * @return \Symfony\Component\Console\Application|boolean
-     */
-    public function run($console = false)
-    {
-        $instance = $this->instance();
-
-        if ($console)
-        {
-            return $instance;
-        }
-
-        return $instance->run() === 0;
-    }
-
-    /**
-     * Sets up Twig and gets all commands from the specified path.
-     *
      * @return \Symfony\Component\Console\Application
      */
-    protected function instance()
+    public function run()
     {
         /** @var string[] */
         $files = glob($this->getCommandPath() . '/*.php');

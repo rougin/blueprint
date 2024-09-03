@@ -36,19 +36,17 @@ class ApplicationTest extends Testcase
     }
 
     /**
-     * Tests Application::run with GreetCommand.
-     *
      * @return void
      */
-    public function testRunMethodWithGreetCommand()
+    public function test_run_with_sample_command()
     {
-        // Search the specified command ---------
-        $console = $this->application->run(true);
+        // Search the specified command ------
+        $console = $this->application->run();
 
         $command = $console->find('greet');
 
         $tester = new CommandTester($command);
-        // --------------------------------------
+        // -----------------------------------
 
         $input = array('name' => 'Rougin', '--yell' => true);
 
@@ -68,11 +66,9 @@ class ApplicationTest extends Testcase
     }
 
     /**
-     * Tests ArrayAccess::offsetGetMethod.
-     *
      * @return void
      */
-    public function testOffsetGetMethod()
+    public function test_getting_command_path()
     {
         $expected = __DIR__ . '/Fixture/Commands';
 
@@ -84,11 +80,9 @@ class ApplicationTest extends Testcase
     }
 
     /**
-     * Tests ArrayAccess::offsetGetMethod with \InvalidArgumentException.
-     *
      * @return void
      */
-    public function testOffsetGetMethodWithInvalidArgumentException()
+    public function test_getting_path_with_exception()
     {
         $this->setExpectedException('InvalidArgumentException');
 
@@ -96,11 +90,9 @@ class ApplicationTest extends Testcase
     }
 
     /**
-     * Tests ArrayAccess::offsetUnsetMethod.
-     *
      * @return void
      */
-    public function testOffsetUnsetMethod()
+    public function test_unsetting_a_path()
     {
         unset($this->application['templates']);
 
@@ -110,11 +102,9 @@ class ApplicationTest extends Testcase
     }
 
     /**
-     * Tests Application::__call.
-     *
      * @return void
      */
-    public function testCallMagicMethod()
+    public function test_calling_from_console()
     {
         $expected = 'Blueprint';
 
