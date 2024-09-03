@@ -18,15 +18,17 @@ $ composer require rougin/blueprint
 
 ## Basic Usage
 
-### Creating new `blueprint.yml`
+### Creating a new `blueprint.yml`
+
+Create a `blueprint.yml` file by running the `init` command:
 
 ``` bash
-$ vendor/bin/phpunit init
+$ vendor/bin/blueprint init
 ```
 
-**blueprint.yml**
-
 ``` yml
+# blueprint.yml
+
 paths:
   templates: %%CURRENT_DIRECTORY%%/src/Templates
   commands: %%CURRENT_DIRECTORY%%/src/Commands
@@ -35,23 +37,28 @@ namespaces:
   commands: Rougin\Blueprint\Commands
 ```
 
-* Replace the values specified in the `blueprint.yml` file
-* Add your console commands and templates (if required) to their respective directories
+> [!NOTE]
+> * Replace the values specified in the `blueprint.yml` file.
+> * Add console commands and templates (if required) to their respective directories.
 
 #### Sample console command
 
-**blueprint.yml**
+Prior to creating a command, the `commands` property in `blueprint.yml` must be updated:
 
 ``` yml
+# blueprint.yml
+
 # ...
 
 namespaces:
   commands: Acme\Commands
 ```
 
-**src/Commands/TestCommand.php**
+Then create the command (e.g., `TestCommand`) to the specified directory:
 
 ``` php
+// src/Commands/TestCommand.php
+
 namespace Acme\Commands;
 
 use Symfony\Component\Console\Command\Command;
@@ -74,25 +81,36 @@ class TestCommand extends Command
 
 ### Add specified namespace to `composer.json`
 
+After creating the command (e.g., `TestCommand`), kindly check if its namespace is defined in `Composer`:
+
 ``` json
-    "autoload": {
-        "psr-4": {
-            "Acme\\": "src"
-        }
-    }
+// composer.json
+
+// ...
+
+"autoload":
+{
+  "psr-4":
+  {
+    "Acme\\": "src"
+  }
+}
+
+// ...
 ```
 
 ``` bash
 $ composer dump-autoload
 ```
 
-#### Run the "test" command
+#### Run the created command
+
+The created commands will be recognized automatically by Blueprint. With this, it could be executed in the same `blueprint` command:
 
 ``` bash
 $ vendor/bin/blueprint test
 
 Test
-
 ```
 
 ## Changelog
