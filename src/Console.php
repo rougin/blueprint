@@ -9,12 +9,9 @@ use Symfony\Component\Console\Application as Symfony;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Blueprint Console
- *
- * A tool for generating files or templates for your PHP projects.
- *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
 class Console
 {
@@ -31,16 +28,17 @@ class Console
     /**
      * Prepares the console application.
      *
-     * @param  string|null          $filename
-     * @param  \Auryn\Injector|null $injector
-     * @param  string|null          $directory
+     * @param string|null          $filename
+     * @param \Auryn\Injector|null $injector
+     * @param string|null          $directory
+     *
      * @return \Rougin\Blueprint\Blueprint
      */
     public static function boot($filename = null, Injector $injector = null, $directory = null)
     {
-        $directory = $directory === null ? getcwd() : $directory;
+        $directory = $directory ? $directory : (string) getcwd();
 
-        $injector = $injector === null ? new Injector : $injector;
+        $injector = $injector ? $injector : new Injector;
 
         $system = new Filesystem(new Local($directory));
 
@@ -50,23 +48,29 @@ class Console
 
         $blueprint = new Blueprint($console, $injector);
 
+        $filename = $filename ? $filename : 'blueprint.yml';
+
         return self::paths($blueprint, $directory, $filename);
     }
 
     /**
      * Returns an array of default values.
      *
-     * @return array
+     * @return array<string, array<string, string>>
      */
     public static function defaults()
     {
-        $defaults = array('paths' => array(), 'namespaces' => array());
+        $defaults = array('paths' => array());
+        $defaults['namespaces'] = array();
 
-        $defaults['paths']['templates'] = __DIR__ . '/Templates';
+        $templates = (string) __DIR__ . '/Templates';
+        $defaults['paths']['templates'] = $templates;
 
-        $defaults['paths']['commands'] = __DIR__ . '/Commands';
+        $commands = (string) __DIR__ . '/Commands';
+        $defaults['paths']['commands'] = $commands;
 
-        $defaults['namespaces']['commands'] = 'Rougin\Blueprint\Commands';
+        $commands = (string) 'Rougin\Blueprint\Commands';
+        $defaults['namespaces']['commands'] = $commands;
 
         return $defaults;
     }
@@ -74,26 +78,38 @@ class Console
     /**
      * Prepares the paths that are defined from a YAML file.
      *
-     * @param  \Rougin\Blueprint\Blueprint $blueprint
-     * @param  string                      $directory
-     * @param  string|null                 $filename
+     * @param \Rougin\Blueprint\Blueprint $blueprint
+     * @param string                      $directory
+     * @param string                      $filename
+     *
      * @return \Rougin\Blueprint\Blueprint
      */
-    protected static function paths(Blueprint $blueprint, $directory, $filename = null)
+    protected static function paths(Blueprint $blueprint, $directory, $filename)
     {
-        $yaml = file_exists($filename) ? file_get_contents($filename) : '';
+        $exists = file_exists($filename);
 
-        $yaml = str_replace(array('\\', '/'), DIRECTORY_SEPARATOR, $yaml);
+        /** @var string */
+        $yaml = $exists ? file_get_contents($filename) : '';
 
-        $yaml = str_replace('%%CURRENT_DIRECTORY%%', $directory, $yaml);
+        $slash = DIRECTORY_SEPARATOR;
 
+        $yaml = str_replace(array('\\', '/'), $slash, $yaml);
+
+        $search = '%%CURRENT_DIRECTORY%%';
+
+        $yaml = str_replace($search, $directory, $yaml);
+
+        /** @var array<string, array<string, string>> */
         $result = Yaml::parse($yaml) ?: self::defaults();
 
-        $blueprint->setTemplatePath($result['paths']['templates']);
+        $templates = $result['paths']['templates'];
+        $blueprint->setTemplatePath($templates);
 
-        $blueprint->setCommandPath($result['paths']['commands']);
+        $commands = $result['paths']['commands'];
+        $blueprint->setCommandPath($commands);
 
-        $blueprint->setCommandNamespace($result['namespaces']['commands']);
+        $commands = $result['namespaces']['commands'];
+        $blueprint->setCommandNamespace($commands);
 
         return $blueprint;
     }

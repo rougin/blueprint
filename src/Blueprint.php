@@ -6,12 +6,9 @@ use Auryn\Injector;
 use Symfony\Component\Console\Application as Symfony;
 
 /**
- * Blueprint
- *
- * A tool for generating files or templates for your PHP projects.
- *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
 class Blueprint
 {
@@ -26,13 +23,11 @@ class Blueprint
     public $injector;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected $paths = array();
 
     /**
-     * Initializes the Blueprint instance.
-     *
      * @param \Symfony\Component\Console\Application $console
      * @param \Auryn\Injector                        $injector
      */
@@ -50,38 +45,13 @@ class Blueprint
     }
 
     /**
-     * Gets the templates path.
+     * Gets the namespace of the commands path.
      *
      * @return string
      */
-    public function getTemplatePath()
+    public function getCommandNamespace()
     {
-        return $this->paths['templates'];
-    }
-
-    /**
-     * Sets the templates path.
-     *
-     * @param  string                 $path
-     * @param  \Twig_Environment|null $twig
-     * @param  array                  $extensions
-     * @return self
-     */
-    public function setTemplatePath($path, \Twig_Environment $twig = null, $extensions = [])
-    {
-        $this->paths['templates'] = $path;
-
-        if (is_null($twig) === true) {
-            $loader = new \Twig_Loader_Filesystem($path);
-
-            $twig = new \Twig_Environment($loader);
-        }
-
-        $twig->setExtensions($extensions);
-
-        $this->injector->share($twig);
-
-        return $this;
+        return $this->paths['namespace'];
     }
 
     /**
@@ -95,32 +65,65 @@ class Blueprint
     }
 
     /**
-     * Sets the commands path.
-     *
-     * @param  string $path
-     * @return self
-     */
-    public function setCommandPath($path)
-    {
-        $this->paths['commands'] = $path;
-
-        return $this;
-    }
-
-    /**
-     * Gets the namespace of the commands path.
+     * Gets the templates path.
      *
      * @return string
      */
-    public function getCommandNamespace()
+    public function getTemplatePath()
     {
-        return $this->paths['namespace'];
+        return $this->paths['templates'];
+    }
+
+    /**
+     * Runs the current console.
+     *
+     * @return \Symfony\Component\Console\Application
+     */
+    public function make()
+    {
+        /** @var string[] */
+        $files = glob($this->getCommandPath() . '/*.php');
+
+        $path = strlen($this->getCommandPath() . DIRECTORY_SEPARATOR);
+
+        $pattern = '/\\.[^.\\s]{3,4}$/';
+
+        foreach ($files as $file)
+        {
+            $class = preg_replace($pattern, '', substr($file, $path));
+
+            /** @var class-string */
+            $class = $this->getCommandNamespace() . '\\' . $class;
+
+            $reflection = new \ReflectionClass($class);
+
+            if (! $reflection->isAbstract())
+            {
+                /** @var \Symfony\Component\Console\Command\Command */
+                $command = $this->injector->make($class);
+
+                $this->console->add($command);
+            }
+        }
+
+        return $this->console;
+    }
+
+    /**
+     * Runs the console instance.
+     *
+     * @return integer
+     */
+    public function run()
+    {
+        return $this->make()->run();
     }
 
     /**
      * Sets the namespace of the commands path.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return self
      */
     public function setCommandNamespace($path)
@@ -131,43 +134,43 @@ class Blueprint
     }
 
     /**
-     * Runs the current console.
+     * Sets the commands path.
      *
-     * @param  boolean $console
-     * @return \Symfony\Component\Console\Application|boolean
+     * @param string $path
+     *
+     * @return self
      */
-    public function run($console = false)
+    public function setCommandPath($path)
     {
-        $instance = $this->console();
+        $this->paths['commands'] = $path;
 
-        return $console ? $instance : $instance->run();
+        return $this;
     }
 
     /**
-     * Sets up Twig and gets all commands from the specified path.
+     * Sets the templates path.
      *
-     * @return \Symfony\Component\Console\Application
+     * @param string                               $path
+     * @param \Twig_Environment|null               $twig
+     * @param \Twig\Extension\ExtensionInterface[] $extensions
+     *
+     * @return self
      */
-    protected function console()
+    public function setTemplatePath($path, \Twig_Environment $twig = null, $extensions = [])
     {
-        $files = glob($this->getCommandPath() . '/*.php');
+        $this->paths['templates'] = $path;
 
-        $path = strlen($this->getCommandPath() . DIRECTORY_SEPARATOR);
+        if ($twig === null)
+        {
+            $twig = new \Twig_Loader_Filesystem($path);
 
-        $pattern = '/\\.[^.\\s]{3,4}$/';
-
-        foreach ((array) $files as $file) {
-            $class = preg_replace($pattern, '', substr($file, $path));
-
-            $class = $this->getCommandNamespace() . '\\' . $class;
-
-            $reflection = new \ReflectionClass($class);
-
-            if (! $reflection->isAbstract()) {
-                $this->console->add($this->injector->make($class));
-            }
+            $twig = new \Twig_Environment($twig);
         }
 
-        return $this->console;
+        $twig->setExtensions($extensions);
+
+        $this->injector->share($twig);
+
+        return $this;
     }
 }

@@ -2,6 +2,13 @@
 
 All notable changes to `Blueprint` will be documented in this file.
 
+## [0.7.0](https://github.com/rougin/blueprint/compare/v0.6.0...v0.7.0) - Unreleased
+
+### Changed
+- Code documentation by `php-cs-fixer`, code quality by `phpstan`
+- Workflow from `Travis CI` to `Github Actions`
+- Code coverage from `Scrutinizer CI` to `Codecov`
+
 ## [0.6.0](https://github.com/rougin/blueprint/compare/v0.5.0...v0.6.0) - 2017-01-11
 
 ### Added

@@ -1,37 +1,57 @@
 <?php
 
-require 'vendor/autoload.php';
-
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
+use Rougin\Blueprint\Application;
+use Rougin\Slytherin\Container\Container;
+
+require 'vendor/autoload.php';
 
 $root = str_replace('bin', 'src', __DIR__);
 
-$file = getcwd() . '/blueprint.yml';
+$cwd = (string) getcwd();
 
-file_exists($file) === false && $file = null;
+$file = $cwd . '/blueprint.yml';
 
-$app = new Rougin\Blueprint\Application($file);
+if (! file_exists($file))
+{
+    $file = null;
+}
 
-if ($file === null) {
+$app = new Application($file);
+
+if (! $file)
+{
     $app['commands'] = $root . '/Commands';
 
-    $app['root'] = getcwd();
+    $app['root'] = $cwd;
 
     $app['templates'] = $root . '/Templates';
 }
 
-// NOTE: Third-party packages must be removed in v1.0.0.
-$container = new Rougin\Slytherin\Container\Container;
+// NOTE: Third-party packages must be removed in v1.0.0. ---
+$container = new Container;
+// ---------------------------------------------------------
 
-$filesystem = new Filesystem(new Local($app['root']));
+// Create an instance for Filesystem ---
+$adapter = new Local($app['root']);
 
-$container->set(get_class($filesystem), $filesystem);
+$filesystem = new Filesystem($adapter);
 
-$loader = new Twig_Loader_Filesystem($app['templates']);
+$class = get_class($filesystem);
+
+$container->set($class, $filesystem);
+// -------------------------------------
+
+// Create an instance for Twig --------------
+/** @var string[] */
+$paths = $app['templates'];
+
+$loader = new Twig_Loader_Filesystem($paths);
 
 $twig = new Twig_Environment($loader);
 
 $container->set(get_class($twig), $twig);
+// ------------------------------------------
 
 $app->container($container)->run();

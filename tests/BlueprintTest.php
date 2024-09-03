@@ -5,39 +5,36 @@ namespace Rougin\Blueprint;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Blueprint Test
- *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
-class BlueprintTest extends \PHPUnit_Framework_TestCase
+class BlueprintTest extends Testcase
 {
     /**
-     * Tests \Rougin\Blueprint\Blueprint::run.
-     *
      * @return void
      */
-    public function testRun()
+    public function test_console_application()
     {
-        $console = Console::boot(null, null, getcwd());
+        $path = (string) getcwd();
+
+        $console = Console::boot(null, null, $path);
 
         $expected = 'Symfony\Component\Console\Application';
 
-        $result = $console->run(true);
+        $result = $console->make();
 
         $this->assertInstanceOf($expected, $result);
     }
 
     /**
-     * Tests Rougin\Blueprint\Commands\InitializeCommand.
-     *
      * @return void
      */
-    public function testInitializeCommand()
+    public function test_initialize_command()
     {
-        $blueprint = Console::boot(null, null, __DIR__);
+        $app = Console::boot(null, null, __DIR__);
 
-        $init = $blueprint->run(true)->find('init');
+        $init = $app->make()->find('init');
 
         $command = new CommandTester($init);
 
@@ -49,11 +46,9 @@ class BlueprintTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests \Rougin\Blueprint\Blueprint::setTemplatePath.
-     *
      * @return void
      */
-    public function testSetTemplatePath()
+    public function test_setting_template_path()
     {
         $root = str_replace('tests', 'src', __DIR__);
 

@@ -2,16 +2,17 @@
 
 namespace Rougin\Blueprint;
 
-use Rougin\Slytherin\Container\Container;
+use Rougin\Slytherin\Container\ReflectionContainer;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Blueprint Application Test
  *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
-class ApplicationTest extends \PHPUnit_Framework_TestCase
+class ApplicationTest extends Testcase
 {
     /**
      * @var \Rougin\Blueprint\Application
@@ -23,47 +24,51 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function doSetUp()
     {
         $file = __DIR__ . '/Fixture/SampleBlueprint.yml';
 
         $application = new Application($file);
 
-        $application->container(new Container);
+        $application->container(new ReflectionContainer);
 
         $this->application = $application;
     }
 
     /**
-     * Tests Application::run with GreetCommand.
-     *
      * @return void
      */
-    public function testRunMethodWithGreetCommand()
+    public function test_run_with_sample_command()
     {
-        $console = $this->application->run(true);
+        // Search the specified command ------
+        $console = $this->application->make();
 
         $command = $console->find('greet');
 
         $tester = new CommandTester($command);
+        // -----------------------------------
 
         $input = array('name' => 'Rougin', '--yell' => true);
 
         $tester->execute($input);
 
-        $expected = '/HELLO ROUGIN!/';
+        $expected = 'HELLO ROUGIN!';
 
-        $result = $tester->getDisplay();
+        // Parses the result from the display -----
+        $actual = $tester->getDisplay();
 
-        $this->assertRegExp($expected, $result);
+        $actual = str_replace("\r\n", '', $actual);
+
+        $actual = str_replace("\n", '', $actual);
+        // ----------------------------------------
+
+        $this->assertEquals($expected, $actual);
     }
 
     /**
-     * Tests ArrayAccess::offsetGetMethod.
-     *
      * @return void
      */
-    public function testOffsetGetMethod()
+    public function test_getting_command_path()
     {
         $expected = __DIR__ . '/Fixture/Commands';
 
@@ -75,11 +80,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests ArrayAccess::offsetGetMethod with \InvalidArgumentException.
-     *
      * @return void
      */
-    public function testOffsetGetMethodWithInvalidArgumentException()
+    public function test_getting_path_with_exception()
     {
         $this->setExpectedException('InvalidArgumentException');
 
@@ -87,11 +90,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests ArrayAccess::offsetUnsetMethod.
-     *
      * @return void
      */
-    public function testOffsetUnsetMethod()
+    public function test_unsetting_a_path()
     {
         unset($this->application['templates']);
 
@@ -101,11 +102,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Application::__call.
-     *
      * @return void
      */
-    public function testCallMagicMethod()
+    public function test_calling_from_console()
     {
         $expected = 'Blueprint';
 

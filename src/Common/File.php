@@ -3,13 +3,11 @@
 namespace Rougin\Blueprint\Common;
 
 /**
- * File
- *
- * A simple object-oriented interface for handling files.
- * NOTE: To be removed in v1.0.0.
+ * @deprecated since ~0.4, use "League\Flysystem" instead.
  *
  * @package Blueprint
- * @author  Rougin Gutib <rougingutib@gmail.com>
+ *
+ * @author Rougin Gutib <rougingutib@gmail.com>
  */
 class File
 {
@@ -24,8 +22,6 @@ class File
     protected $path;
 
     /**
-     * Initializes the file instance.
-     *
      * @param string $path
      * @param string $mode
      */
@@ -33,7 +29,10 @@ class File
     {
         $this->path = $path;
 
-        $this->file = fopen($path, $mode);
+        /** @var resource */
+        $file = fopen($path, $mode);
+
+        $this->file = $file;
     }
 
     /**
@@ -53,24 +52,27 @@ class File
      */
     public function getContents()
     {
+        /** @var string */
         return file_get_contents($this->path);
     }
 
     /**
      * Writes a string to a file.
      *
-     * @param  string $content
-     * @return integer|boolean
+     * @param string $content
+     *
+     * @return void
      */
     public function putContents($content)
     {
-        return file_put_contents($this->path, $content);
+        file_put_contents($this->path, $content);
     }
 
     /**
      * Changes the file mode of the file.
      *
-     * @param  integer $mode
+     * @param integer $mode
+     *
      * @return boolean
      */
     public function chmod($mode)
