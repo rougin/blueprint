@@ -39,9 +39,9 @@ namespaces:
 
 > [!NOTE]
 > * Replace the values specified in the `blueprint.yml` file.
-> * Add console commands and templates (if required) to their respective directories.
+> * Add commands and templates (if applicable) to their respective directories.
 
-#### Sample console command
+### Creating a command
 
 Prior to creating a command, the `commands` property in `blueprint.yml` must be updated:
 
@@ -79,7 +79,7 @@ class TestCommand extends Command
 }
 ```
 
-### Add specified namespace to `composer.json`
+### Updating the `composer.json`
 
 After creating the command (e.g., `TestCommand`), kindly check if its namespace is defined in `Composer`:
 
@@ -103,7 +103,7 @@ After creating the command (e.g., `TestCommand`), kindly check if its namespace 
 $ composer dump-autoload
 ```
 
-#### Run the created command
+### Running the command
 
 The created commands will be recognized automatically by Blueprint. With this, it could be executed in the same `blueprint` command:
 
