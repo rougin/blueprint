@@ -74,6 +74,22 @@ class Application implements \ArrayAccess
     protected $version = '0.7.0';
 
     /**
+     * Calls methods from the Console instance.
+     *
+     * @param string  $method
+     * @param mixed[] $params
+     *
+     * @return mixed
+     */
+    public function __call($method, $params)
+    {
+        /** @var callable */
+        $class = array($this->console, $method);
+
+        return call_user_func_array($class, $params);
+    }
+
+    /**
      * @param string|null $file
      * @param string|null $root
      */
@@ -110,6 +126,31 @@ class Application implements \ArrayAccess
         $this->container = $container;
 
         return $this;
+    }
+
+    /**
+     * Returns the console instance.
+     *
+     * @return \Symfony\Component\Console\Application
+     */
+    public function make()
+    {
+        $commands = $this->commands;
+
+        if (is_string($commands))
+        {
+            $commands = $this->classes();
+        }
+
+        foreach ($commands as $command)
+        {
+            /** @var \Symfony\Component\Console\Command\Command */
+            $item = $this->container->get($command);
+
+            $this->console->add($item);
+        }
+
+        return $this->console;
     }
 
     /**
@@ -181,26 +222,11 @@ class Application implements \ArrayAccess
     /**
      * Runs the console instance.
      *
-     * @return \Symfony\Component\Console\Application
+     * @return integer
      */
     public function run()
     {
-        $commands = $this->commands;
-
-        if (is_string($commands))
-        {
-            $commands = $this->classes();
-        }
-
-        foreach ($commands as $command)
-        {
-            /** @var \Symfony\Component\Console\Command\Command */
-            $item = $this->container->get($command);
-
-            $this->console->add($item);
-        }
-
-        return $this->console;
+        return $this->make()->run();
     }
 
     /**
@@ -265,21 +291,5 @@ class Application implements \ArrayAccess
         $this->namespace = $result['namespaces']['commands'];
 
         $this->templates = $result['paths']['templates'];
-    }
-
-    /**
-     * Calls methods from the Console instance.
-     *
-     * @param string  $method
-     * @param mixed[] $params
-     *
-     * @return mixed
-     */
-    public function __call($method, $params)
-    {
-        /** @var callable */
-        $class = array($this->console, $method);
-
-        return call_user_func_array($class, $params);
     }
 }

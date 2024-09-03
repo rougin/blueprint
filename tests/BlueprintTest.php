@@ -22,7 +22,7 @@ class BlueprintTest extends Testcase
 
         $expected = 'Symfony\Component\Console\Application';
 
-        $result = $console->run();
+        $result = $console->make();
 
         $this->assertInstanceOf($expected, $result);
     }
@@ -34,7 +34,7 @@ class BlueprintTest extends Testcase
     {
         $app = Console::boot(null, null, __DIR__);
 
-        $init = $app->run()->find('init');
+        $init = $app->make()->find('init');
 
         $command = new CommandTester($init);
 

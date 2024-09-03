@@ -45,40 +45,13 @@ class Blueprint
     }
 
     /**
-     * Gets the templates path.
+     * Gets the namespace of the commands path.
      *
      * @return string
      */
-    public function getTemplatePath()
+    public function getCommandNamespace()
     {
-        return $this->paths['templates'];
-    }
-
-    /**
-     * Sets the templates path.
-     *
-     * @param string                               $path
-     * @param \Twig_Environment|null               $twig
-     * @param \Twig\Extension\ExtensionInterface[] $extensions
-     *
-     * @return self
-     */
-    public function setTemplatePath($path, \Twig_Environment $twig = null, $extensions = [])
-    {
-        $this->paths['templates'] = $path;
-
-        if ($twig === null)
-        {
-            $twig = new \Twig_Loader_Filesystem($path);
-
-            $twig = new \Twig_Environment($twig);
-        }
-
-        $twig->setExtensions($extensions);
-
-        $this->injector->share($twig);
-
-        return $this;
+        return $this->paths['namespace'];
     }
 
     /**
@@ -92,41 +65,13 @@ class Blueprint
     }
 
     /**
-     * Sets the commands path.
-     *
-     * @param string $path
-     *
-     * @return self
-     */
-    public function setCommandPath($path)
-    {
-        $this->paths['commands'] = $path;
-
-        return $this;
-    }
-
-    /**
-     * Gets the namespace of the commands path.
+     * Gets the templates path.
      *
      * @return string
      */
-    public function getCommandNamespace()
+    public function getTemplatePath()
     {
-        return $this->paths['namespace'];
-    }
-
-    /**
-     * Sets the namespace of the commands path.
-     *
-     * @param string $path
-     *
-     * @return self
-     */
-    public function setCommandNamespace($path)
-    {
-        $this->paths['namespace'] = $path;
-
-        return $this;
+        return $this->paths['templates'];
     }
 
     /**
@@ -134,7 +79,7 @@ class Blueprint
      *
      * @return \Symfony\Component\Console\Application
      */
-    public function run()
+    public function make()
     {
         /** @var string[] */
         $files = glob($this->getCommandPath() . '/*.php');
@@ -162,5 +107,70 @@ class Blueprint
         }
 
         return $this->console;
+    }
+
+    /**
+     * Runs the console instance.
+     *
+     * @return integer
+     */
+    public function run()
+    {
+        return $this->make()->run();
+    }
+
+    /**
+     * Sets the namespace of the commands path.
+     *
+     * @param string $path
+     *
+     * @return self
+     */
+    public function setCommandNamespace($path)
+    {
+        $this->paths['namespace'] = $path;
+
+        return $this;
+    }
+
+    /**
+     * Sets the commands path.
+     *
+     * @param string $path
+     *
+     * @return self
+     */
+    public function setCommandPath($path)
+    {
+        $this->paths['commands'] = $path;
+
+        return $this;
+    }
+
+    /**
+     * Sets the templates path.
+     *
+     * @param string                               $path
+     * @param \Twig_Environment|null               $twig
+     * @param \Twig\Extension\ExtensionInterface[] $extensions
+     *
+     * @return self
+     */
+    public function setTemplatePath($path, \Twig_Environment $twig = null, $extensions = [])
+    {
+        $this->paths['templates'] = $path;
+
+        if ($twig === null)
+        {
+            $twig = new \Twig_Loader_Filesystem($path);
+
+            $twig = new \Twig_Environment($twig);
+        }
+
+        $twig->setExtensions($extensions);
+
+        $this->injector->share($twig);
+
+        return $this;
     }
 }

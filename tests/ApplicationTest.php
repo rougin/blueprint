@@ -41,7 +41,7 @@ class ApplicationTest extends Testcase
     public function test_run_with_sample_command()
     {
         // Search the specified command ------
-        $console = $this->application->run();
+        $console = $this->application->make();
 
         $command = $console->find('greet');
 
