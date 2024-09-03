@@ -54,7 +54,7 @@ class Console
     /**
      * Returns an array of default values.
      *
-     * @return array
+     * @return array<string, array<string, string>>
      */
     public static function defaults()
     {
@@ -80,13 +80,29 @@ class Console
      */
     protected static function paths(Blueprint $blueprint, $directory, $filename = null)
     {
-        $yaml = file_exists($filename) ? file_get_contents($filename) : '';
+        $slash = DIRECTORY_SEPARATOR;
 
-        $yaml = str_replace(array('\\', '/'), DIRECTORY_SEPARATOR, $yaml);
+        $yaml = '';
 
-        $yaml = str_replace('%%CURRENT_DIRECTORY%%', $directory, $yaml);
+        if ($filename && file_exists($filename))
+        {
+            /** @var string */
+            $yaml = file_get_contents($filename);
+        }
 
-        $result = Yaml::parse($yaml) ?: self::defaults();
+        $yaml = str_replace(array('\\', '/'), $slash, $yaml);
+
+        $search = '%%CURRENT_DIRECTORY%%';
+
+        $yaml = str_replace($search, $directory, $yaml);
+
+        $result = self::defaults();
+
+        if (Yaml::parse($yaml))
+        {
+            /** @var array<string, array<string, string>> */
+            $result = Yaml::parse($yaml);
+        }
 
         $blueprint->setTemplatePath($result['paths']['templates']);
 

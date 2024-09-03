@@ -9,10 +9,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Greet Command
- *
- * A sample of a greet command.
- *
  * @package Blueprint
  *
  * @author Rougin Gutib <rougingutib@gmail.com>
@@ -40,16 +36,22 @@ class GreetCommand extends Command
     /**
      * Executes the current command.
      *
-     * @param \Symfony\Component\Console\Input\InputInterface  $input
-     * @param \Symfony\Component\Console\Input\OutputInterface $output
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      *
-     * @return void
+     * @return integer
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $text = sprintf('Hello %s!', $input->getArgument('name'));
+        /** @var string */
+        $name = $input->getArgument('name');
 
-        $input->getOption('yell') && $text = strtoupper($text);
+        $text = sprintf('Hello %s!', $name);
+
+        if ($input->getOption('yell'))
+        {
+            $text = strtoupper($text);
+        }
 
         $output->writeln((string) '<info>' . $text . '</info>');
 

@@ -23,7 +23,7 @@ class Blueprint
     public $injector;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected $paths = array();
 
@@ -57,9 +57,9 @@ class Blueprint
     /**
      * Sets the templates path.
      *
-     * @param string                 $path
-     * @param \Twig_Environment|null $twig
-     * @param array                  $extensions
+     * @param string                               $path
+     * @param \Twig_Environment|null               $twig
+     * @param \Twig\Extension\ExtensionInterface[] $extensions
      *
      * @return self
      */
@@ -69,7 +69,9 @@ class Blueprint
 
         if ($twig === null)
         {
-            $twig = new \Twig_Environment(new \Twig_Loader_Filesystem($path));
+            $twig = new \Twig_Loader_Filesystem($path);
+
+            $twig = new \Twig_Environment($twig);
         }
 
         $twig->setExtensions($extensions);
@@ -153,23 +155,28 @@ class Blueprint
      */
     protected function instance()
     {
+        /** @var string[] */
         $files = glob($this->getCommandPath() . '/*.php');
 
         $path = strlen($this->getCommandPath() . DIRECTORY_SEPARATOR);
 
         $pattern = '/\\.[^.\\s]{3,4}$/';
 
-        foreach ((array) $files as $file)
+        foreach ($files as $file)
         {
             $class = preg_replace($pattern, '', substr($file, $path));
 
+            /** @var class-string */
             $class = $this->getCommandNamespace() . '\\' . $class;
 
             $reflection = new \ReflectionClass($class);
 
             if (! $reflection->isAbstract())
             {
-                $this->console->add($this->injector->make($class));
+                /** @var \Symfony\Component\Console\Command\Command */
+                $command = $this->injector->make($class);
+
+                $this->console->add($command);
             }
         }
 

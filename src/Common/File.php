@@ -29,7 +29,10 @@ class File
     {
         $this->path = $path;
 
-        $this->file = fopen($path, $mode);
+        /** @var resource */
+        $file = fopen($path, $mode);
+
+        $this->file = $file;
     }
 
     /**
@@ -49,6 +52,7 @@ class File
      */
     public function getContents()
     {
+        /** @var string */
         return file_get_contents($this->path);
     }
 

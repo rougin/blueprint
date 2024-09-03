@@ -8,6 +8,8 @@ use Symfony\Component\Console\Application as Symfony;
 use Symfony\Component\Yaml\Yaml;
 
 /**
+ * @method string getName()
+ *
  * @package Blueprint
  *
  * @author Rougin Gutib <rougingutib@gmail.com>
@@ -195,6 +197,7 @@ class Application implements \ArrayAccess
 
         foreach ($commands as $command)
         {
+            /** @var \Symfony\Component\Console\Command\Command */
             $item = $this->container->get($command);
 
             $this->console->add($item);
@@ -215,28 +218,32 @@ class Application implements \ArrayAccess
      */
     protected function classes()
     {
-        list($items, $pattern) = array(array(), '/\\.[^.\\s]{3,4}$/');
+        $pattern = '/\\.[^.\\s]{3,4}$/';
 
+        /** @var string[] */
         $files = glob($this->commands . '/*.php');
 
-        $path = strlen($this->commands . DIRECTORY_SEPARATOR);
+        $slash = DIRECTORY_SEPARATOR;
+
+        $path = strlen($this->commands . $slash);
+
+        $items = array();
 
         foreach ($files as $file)
         {
-            $substring = substr($file, $path);
+            $file = substr($file, $path);
 
-            $class = preg_replace($pattern, '', $substring);
+            $class = preg_replace($pattern, '', $file);
 
+            /** @var class-string */
             $class = $this->namespace . '\\' . $class;
 
             $reflection = new \ReflectionClass($class);
 
-            if ($reflection->isAbstract())
+            if (! $reflection->isAbstract())
             {
-                continue;
+                $items[] = $class;
             }
-
-            $items[] = $class;
         }
 
         return $items;
@@ -253,10 +260,12 @@ class Application implements \ArrayAccess
     {
         $search = '%%CURRENT_DIRECTORY%%';
 
+        /** @var string */
         $yaml = file_get_contents($file);
 
         $yaml = str_replace($search, $this->root, $yaml);
 
+        /** @var array<string, array<string, string>> */
         $result = Yaml::parse($yaml);
 
         $this->commands = $result['paths']['commands'];
@@ -269,8 +278,8 @@ class Application implements \ArrayAccess
     /**
      * Calls methods from the Console instance.
      *
-     * @param string $method
-     * @param mixed  $params
+     * @param string  $method
+     * @param mixed[] $params
      *
      * @return mixed
      */
