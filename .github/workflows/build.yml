@@ -36,9 +36,6 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-plugins
 
-    - name: Set up new environment
-      run: cp .env.example .env
-
     - name: Run test suite
       run: vendor/bin/phpunit --coverage-clover=coverage.clover
 
