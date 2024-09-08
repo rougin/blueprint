@@ -230,16 +230,19 @@ class Blueprint
         /** @var string[] */
         $files = glob($this->getCommandPath() . '/*.php');
 
-        // Initialize the Slytherin integrations -----------
+        // Initialize the Slytherin integrations ---------------
         $container = $this->getContainer();
 
-        $config = new Configuration;
-
-        foreach ($this->packages as $item)
+        if ($container)
         {
-            $container = $item->define($container, $config);
+            $config = new Configuration;
+
+            foreach ($this->packages as $item)
+            {
+                $container = $item->define($container, $config);
+            }
         }
-        // -------------------------------------------------
+        // -----------------------------------------------------
 
         $container = new ReflectionContainer($container);
 

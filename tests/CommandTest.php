@@ -74,7 +74,7 @@ class CommandTest extends Testcase
     /**
      * @return void
      */
-    public function test_no_yell_option()
+    public function test_negatable_option()
     {
         $command = $this->findCommand('greet');
 
@@ -122,6 +122,50 @@ class CommandTest extends Testcase
         $command->execute($input);
 
         $expected = 'Hello rougin! You\'re age is 23.';
+
+        $actual = $this->getActualDisplay($command);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_option_with_required_value()
+    {
+        $command = $this->findCommand('hello');
+
+        $input = array('name' => 'rougin', '--yell' => 'loud');
+
+        $command->execute($input);
+
+        $expected = 'HELLO ROUGIN! YOU\'RE AGE IS 23.';
+
+        $actual = $this->getActualDisplay($command);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_option_with_array_value()
+    {
+        $command = $this->findCommand('text');
+
+        $input = array('--names' => array('rougin', 'blueprints'));
+        $input['--texts'] = array('hello', 'world');
+
+        $command->execute((array) $input);
+
+        $names = 'Names: rougin, blueprints';
+        $texts = 'Texts: hello, world';
+        $pass = '[PASS] This is a info text';
+        $fail = '[FAIL] This is a error text';
+        $info = '[INFO] This is a question text';
+        $warn = '[WARN] This is a comment text';
+
+        $expected = $names . $texts . $pass . $fail . $info . $warn;
 
         $actual = $this->getActualDisplay($command);
 

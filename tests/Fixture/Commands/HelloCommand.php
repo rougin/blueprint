@@ -33,6 +33,8 @@ class HelloCommand extends Command
         $this->addOptionalArgument('surname', 'Surname of the user');
 
         $this->addValueOption('age', 'Age of the user', 23);
+
+        $this->addRequiredOption('--yell', 'If set, the task will yell in uppercase or lowercase letters');
     }
 
     /**
@@ -52,6 +54,13 @@ class HelloCommand extends Command
         }
 
         $text = 'Hello ' . $name . '! You\'re age is ' . $age . '.';
+
+        $yell = $this->getOption('yell');
+
+        if ($yell === 'loud')
+        {
+            $text = strtoupper($text);
+        }
 
         $this->showText($text);
 

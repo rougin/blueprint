@@ -36,12 +36,40 @@ class TextCommand extends Command
     }
 
     /**
+     * Configures the current command.
+     *
+     * @return void
+     */
+    public function init()
+    {
+        $this->addValueArrayOption('names', 'Names to be displayed');
+
+        $this->addRequiredArrayOption('texts', 'Texts to be displayed');
+    }
+
+    /**
      * Executes the command.
      *
      * @return integer
      */
     public function run()
     {
+        /** @var string[]|null */
+        $names = $this->getOption('names');
+
+        if ($names)
+        {
+            $this->showText('Names: ' . implode(', ', $names));
+        }
+
+        /** @var string[]|null */
+        $texts = $this->getOption('texts');
+
+        if ($texts)
+        {
+            $this->showText('Texts: ' . implode(', ', $texts));
+        }
+
         $this->showPass('This is a info ' . $this->sample->getName());
 
         $this->showFail('This is a error ' . $this->sample->getName());
