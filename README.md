@@ -29,6 +29,9 @@ $ vendor/bin/blueprint init
 ``` yml
 # blueprint.yml
 
+name: Blueprint
+version: 0.7.0
+
 paths:
   templates: %%CURRENT_DIRECTORY%%/src/Templates
   commands: %%CURRENT_DIRECTORY%%/src/Commands
@@ -111,6 +114,217 @@ The created commands will be recognized automatically by Blueprint. With this, i
 $ vendor/bin/blueprint test
 
 Test
+```
+
+## Extending Blueprint
+
+The `v0.7.0` version introduces a way to extend the `Blueprint` package to use it as the console application for specified projects.
+
+### Initializing the instance
+
+To initialize a console application, the `Blueprint` class must be created first:
+
+``` php
+// bin/app.php
+
+use Rougin\Blueprint\Blueprint;
+
+// Return the root directory of the project ---------
+$bin = (string) realpath(__DIR__ . '/../../');
+
+$exists = file_exists($bin . '/vendor/autoload.php');
+
+/** @var string */
+$root = realpath($exists ? $bin : __DIR__ . '/../');
+// --------------------------------------------------
+
+require $root . '/vendor/autoload.php';
+
+$app = new Blueprint;
+```
+
+After creating the `Blueprint` class, the following details can now be updated:
+
+``` php
+// bin/app.php
+
+// ...
+
+// Sets the name of the console application. ---
+$app->setName('Acme');
+// ---------------------------------------------
+
+// Sets the version of the console application. ---
+$app->setVersion('0.1.0');
+// ------------------------------------------------
+
+// Sets the directory for the defined commands. ---
+$app->setCommandPath($root . '/src/Commands');
+// ------------------------------------------------
+
+// Sets the directory for the templates. Might be useful ------
+// if creaeting commands with template engines (e.g., Twig) ---
+$app->setTemplatePath($root . '/src/Templates');
+// ------------------------------------------------------------
+
+// Sets the namespace for the "commands" path. ---
+$namespace = 'Acme\Simplest\Commands';
+$app->setCommandNamespace($namespace);
+// -----------------------------------------------
+```
+
+> [!NOTE]
+> Using this approach means the `blueprint.yml` can now be omitted. This approach is also applicable to create customized console applications without the `Blueprint` branding.
+
+Then run the console application in the terminal:
+
+``` bash
+$ php bin\app.php
+
+Acme 0.1.0
+
+Usage:
+  command [options] [arguments]
+
+Options:
+  -h, --help            Display help for the given command. When no command is given display help for the list command
+  -q, --quiet           Do not output any message
+  -V, --version         Display this application version
+      --ansi|--no-ansi  Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction  Do not ask any interactive question
+  -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+Available commands:
+  completion  Dump the shell completion script
+  help        Display help for a command
+  list        List commands
+```
+
+### Customized `Command` class
+
+`Blueprint` also provides an alternative `Command` class for creating commands with descriptive methods and less code:
+
+``` php
+// src/Commands/TestCommand.php
+
+namespace Acme\Commands;
+
+use Rougin\Blueprint\Command;
+
+class TestCommand extends Command
+{
+    protected $name = 'test';
+
+    protected $description = 'Returns a "Test" string';
+
+    public function execute()
+    {
+        $this->showPass('Test');
+    }
+}
+```
+
+> [!NOTE]
+> All of the functionalities for the `Command` class is derived from the [`Symfony's Console` component](https://symfony.com/doc/current/console.html#creating-a-command).
+
+### Injecting dependencies
+
+To perform [automagic resolutions](https://github.com/rougin/slytherin/wiki/Container) in each defined commands, the `addPackage` can be used with the additional functionality from the `Container` class from [`Slytherin`](https://roug.in/slytherin/):
+
+``` php
+// src/Sample.php
+
+namespace Acme;
+
+class Sample
+{
+    protected $name;
+
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+}
+```
+
+``` php
+// src/Packages/SamplePackage.php
+
+namespace Acme\Packages;
+
+use Acme\Sample;
+use Rougin\Slytherin\Container\ContainerInterface;
+use Rougin\Slytherin\Integration\Configuration;
+use Rougin\Slytherin\Integration\IntegrationInterface;
+
+class SamplePackage implements IntegrationInterface
+{
+    public function define(ContainerInterface $container, Configuration $config)
+    {
+        return $container->set(Sample::class, new Sample('Blueprint'));
+    }
+}
+```
+
+``` php
+// bin/app.php
+
+use Acme\Packages\SamplePackage;
+use Rougin\Slytherin\Container\Container;
+
+// ...
+
+// Add the specified integration (or package) to the container ---
+$container = new Container;
+
+$container->addPackage(new SamplePackage);
+// ---------------------------------------------------------------
+
+// Set the container to the console application ---
+$app->setContainer($container);
+// ------------------------------------------------
+
+```
+
+With the above-mentioned integration, for any command that uses the `Sample` class will get the `text` value as the `$name` property:
+
+``` php
+namespace Acme\Commands;
+
+use Acme\Sample;
+use Rougin\Blueprint\Command;
+
+class TextCommand extends Command
+{
+    protected $name = 'text';
+
+    protected $description = 'Shows a sample text';
+
+    protected $sample;
+
+    public function __construct(Sample $sample)
+    {
+        $this->sample = $sample;
+    }
+
+    public function run()
+    {
+        $this->showText('Hello, ' . $this->sample->getName() . '!');
+
+        return self::RETURN_SUCCESS;
+    }
+}
+```
+
+``` bash
+$ php bin/app.php text
+
+Hello, Blueprint!
 ```
 
 ## Changelog

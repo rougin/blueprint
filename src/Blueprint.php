@@ -2,8 +2,10 @@
 
 namespace Rougin\Blueprint;
 
-use Auryn\Injector;
-use Symfony\Component\Console\Application as Symfony;
+use Rougin\Slytherin\Container\Container;
+use Rougin\Slytherin\Container\ContainerInterface;
+use Rougin\Slytherin\Container\ReflectionContainer;
+use Symfony\Component\Console\Application;
 
 /**
  * @package Blueprint
@@ -12,37 +14,32 @@ use Symfony\Component\Console\Application as Symfony;
  */
 class Blueprint
 {
-    /**
-     * @var \Symfony\Component\Console\Application
-     */
-    public $console;
+    const VERSION = '0.7.0';
 
     /**
-     * @var \Auryn\Injector
+     * @var \Rougin\Slytherin\Container\ContainerInterface|null
      */
-    public $injector;
+    protected $container = null;
+
+    /**
+     * @var string
+     */
+    protected $name = '';
 
     /**
      * @var array<string, string>
      */
-    protected $paths = array();
+    protected $paths =
+    [
+        'templates' => '',
+        'commands' => '',
+        'namespace' => '',
+    ];
 
     /**
-     * @param \Symfony\Component\Console\Application $console
-     * @param \Auryn\Injector                        $injector
+     * @var string
      */
-    public function __construct(Symfony $console, Injector $injector)
-    {
-        $this->paths['commands'] = '';
-
-        $this->paths['namespace'] = '';
-
-        $this->paths['templates'] = '';
-
-        $this->console  = $console;
-
-        $this->injector = $injector;
-    }
+    protected $version = '';
 
     /**
      * Gets the namespace of the commands path.
@@ -65,6 +62,16 @@ class Blueprint
     }
 
     /**
+     * Returns the specified PSR container.
+     *
+     * @return \Rougin\Slytherin\Container\ContainerInterface|null
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
      * Gets the templates path.
      *
      * @return string
@@ -75,41 +82,28 @@ class Blueprint
     }
 
     /**
-     * Runs the current console.
+     * Returns the current console.
      *
      * @return \Symfony\Component\Console\Application
      */
     public function make()
     {
-        /** @var string[] */
-        $files = glob($this->getCommandPath() . '/*.php');
+        $app = new Application;
 
-        $path = strlen($this->getCommandPath() . DIRECTORY_SEPARATOR);
+        $app->setVersion($this->version);
 
-        $pattern = '/\\.[^.\\s]{3,4}$/';
+        $app->setName($this->name);
 
-        foreach ($files as $file)
-        {
-            $class = preg_replace($pattern, '', substr($file, $path));
+        $commands = $this->getCommands();
 
-            /** @var class-string */
-            $class = $this->getCommandNamespace() . '\\' . $class;
+        $app->addCommands($commands);
 
-            $reflection = new \ReflectionClass($class);
-
-            if (! $reflection->isAbstract())
-            {
-                /** @var \Symfony\Component\Console\Command\Command */
-                $command = $this->injector->make($class);
-
-                $this->console->add($command);
-            }
-        }
-
-        return $this->console;
+        return $app;
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * Runs the console instance.
      *
      * @return integer
@@ -120,21 +114,21 @@ class Blueprint
     }
 
     /**
-     * Sets the namespace of the commands path.
+     * Sets the namespace for the "commands" path.
      *
-     * @param string $path
+     * @param string $namespace
      *
      * @return self
      */
-    public function setCommandNamespace($path)
+    public function setCommandNamespace($namespace)
     {
-        $this->paths['namespace'] = $path;
+        $this->paths['namespace'] = $namespace;
 
         return $this;
     }
 
     /**
-     * Sets the commands path.
+     * Sets the directory for the defined commands
      *
      * @param string $path
      *
@@ -148,29 +142,104 @@ class Blueprint
     }
 
     /**
-     * Sets the templates path.
+     * Sets the container for handling the commands.
      *
-     * @param string                               $path
-     * @param \Twig_Environment|null               $twig
-     * @param \Twig\Extension\ExtensionInterface[] $extensions
+     * @param \Rougin\Slytherin\Container\ContainerInterface $container
      *
      * @return self
      */
-    public function setTemplatePath($path, \Twig_Environment $twig = null, $extensions = [])
+    public function setContainer(ContainerInterface $container)
+    {
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * Sets the name of the console application.
+     *
+     * @param string $name
+     *
+     * @return self
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Sets the templates path.
+     *
+     * @param string $path
+     *
+     * @return self
+     */
+    public function setTemplatePath($path)
     {
         $this->paths['templates'] = $path;
 
-        if ($twig === null)
-        {
-            $twig = new \Twig_Loader_Filesystem($path);
+        return $this;
+    }
 
-            $twig = new \Twig_Environment($twig);
-        }
-
-        $twig->setExtensions($extensions);
-
-        $this->injector->share($twig);
+    /**
+     * Sets the version of the console application.
+     *
+     * @param string $version
+     *
+     * @return self
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
 
         return $this;
+    }
+
+    /**
+     * Returns the list of available commands from the specified directory.
+     *
+     * @return \Symfony\Component\Console\Command\Command[]
+     */
+    protected function getCommands()
+    {
+        /** @var string[] */
+        $files = glob($this->getCommandPath() . '/*.php');
+
+        $container = $this->getContainer();
+
+        $container = new ReflectionContainer($container);
+
+        $items = array();
+
+        foreach ($files as $item)
+        {
+            $class = $this->getClassName($item);
+
+            $command = $container->get($class);
+
+            if ($command instanceof Command)
+            {
+                $command = new Wrapper($command);
+            }
+
+            /** @var \Symfony\Component\Console\Command\Command $command */
+            $items[] = $command;
+        }
+
+        return $items;
+    }
+
+    /**
+     * Returns the class name based from the file name.
+     *
+     * @param string $file
+     *
+     * @return string
+     */
+    protected function getClassName($file)
+    {
+        return $this->getCommandNamespace() . '\\' . substr(basename($file), 0, -4);
     }
 }

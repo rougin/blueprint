@@ -1,3 +1,6 @@
+name: Blueprint
+version: 0.7.0
+
 paths:
   templates: %%CURRENT_DIRECTORY%%/Templates
   commands: %%CURRENT_DIRECTORY%%/Commands

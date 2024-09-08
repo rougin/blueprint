@@ -2,16 +2,62 @@
 
 namespace Rougin\Blueprint\Commands;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Rougin\Blueprint\Command;
 
 /**
  * @package Blueprint
  *
  * @author Rougin Gutib <rougingutib@gmail.com>
  */
-class InitializeCommand extends AbstractCommand
+class InitializeCommand extends Command
 {
+    /**
+     * @var string[]
+     */
+    protected $aliases =
+    [
+        'initialize'
+    ];
+
+    /**
+     * @var string
+     */
+    protected $name = 'init';
+
+    /**
+     * @var string
+     */
+    protected $description = 'Creates a "blueprint.yml" file';
+
+    /**
+     * @var string
+     */
+    protected $help = 'Allows to create a "blueprint.yml" file in the current working directory.';
+
+    /**
+     * Executes the command.
+     *
+     * @return integer
+     */
+    public function run()
+    {
+        /** @var string */
+        $path = realpath(__DIR__ . '/../Templates');
+
+        $name = 'blueprint.yml';
+
+        /** @var string */
+        $file = file_get_contents($path . '/' . $name);
+
+        $root = $this->getRootPath();
+
+        file_put_contents($root . '/' . $name, $file);
+
+        $this->showPass('"blueprint.yml" added successfully!');
+
+        return Command::RETURN_SUCCESS;
+    }
+
     /**
      * Checks whether the command is enabled or not in the current environment.
      *
@@ -19,40 +65,21 @@ class InitializeCommand extends AbstractCommand
      */
     public function isEnabled()
     {
-        return file_exists('blueprint.yml') === false;
+        return ! file_exists($this->getRootPath() . '/blueprint.yml');
     }
 
     /**
-     * Sets the configurations of the current command.
+     * Returns the root directory from the package.
      *
-     * @return void
+     * @return string
      */
-    protected function configure()
+    protected function getRootPath()
     {
-        $this->setName('init')->setDescription('Creates a blueprint.yml file');
-    }
-
-    /**
-     * Executes the current command.
-     *
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     *
-     * @return integer
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $filepath = __DIR__ . '/../Templates/blueprint.yml';
-
         /** @var string */
-        $template = file_get_contents((string) $filepath);
+        $vendor = realpath(__DIR__ . '/../../../../../');
 
-        $this->filesystem->write('blueprint.yml', $template);
+        $exists = file_exists($vendor . '/../autoload.php');
 
-        $text = '"blueprint.yml" has been created successfully!';
-
-        $output->writeln((string) '<info>' . $text . '</info>');
-
-        return 0;
+        return $exists ? $vendor : __DIR__ . '/../../';
     }
 }

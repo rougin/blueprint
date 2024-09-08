@@ -3,5 +3,3 @@ parameters:
   paths:
     - src
     - tests
-  ignoreErrors:
-    - '#^Class Rougin\\Blueprint\\Application implements generic interface ArrayAccess but does not specify its types\: TKey, TValue$#'
