@@ -38,7 +38,7 @@ class InitCommandTest extends Testcase
     {
         $exception = 'Symfony\Component\Console\Exception\CommandNotFoundException';
 
-        $this->expectException($exception);
+        $this->setExpectedException($exception);
 
         $app = Console::boot('blueprint.yml')->make();
 
