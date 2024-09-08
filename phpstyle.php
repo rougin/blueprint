@@ -1,7 +1,9 @@
 <?php
 
 // Specify the paths in this variable ---
-$paths = array(__DIR__ . '/src');
+$paths = array(__DIR__ . '/bin');
+
+$paths[] = __DIR__ . '/src';
 
 $paths[] = __DIR__ . '/tests';
 // --------------------------------------
