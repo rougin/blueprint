@@ -3,7 +3,6 @@
 namespace Rougin\Blueprint;
 
 use Rougin\Blueprint\Fixture\Packages\SamplePackage;
-use Rougin\Slytherin\Container\Container;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -28,11 +27,11 @@ class CommandTest extends Testcase
 
         $app = Console::boot('blueprint.yml', $root);
 
-        $app->setContainer(new Container);
+        $container = new Container;
 
-        $app->addPackage(new SamplePackage);
+        $container->addPackage(new SamplePackage);
 
-        $this->app = $app;
+        $this->app = $app->setContainer($container);
     }
 
     /**

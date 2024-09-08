@@ -5,8 +5,6 @@ namespace Rougin\Blueprint;
 use Rougin\Slytherin\Container\Container;
 use Rougin\Slytherin\Container\ContainerInterface;
 use Rougin\Slytherin\Container\ReflectionContainer;
-use Rougin\Slytherin\Integration\Configuration;
-use Rougin\Slytherin\Integration\IntegrationInterface;
 use Symfony\Component\Console\Application;
 
 /**
@@ -29,11 +27,6 @@ class Blueprint
     protected $name = '';
 
     /**
-     * @var \Rougin\Slytherin\Integration\IntegrationInterface[]
-     */
-    protected $packages = array();
-
-    /**
      * @var array<string, string>
      */
     protected $paths =
@@ -47,20 +40,6 @@ class Blueprint
      * @var string
      */
     protected $version = '';
-
-    /**
-     * Adds a package to the application.
-     *
-     * @param \Rougin\Slytherin\Integration\IntegrationInterface $package
-     *
-     * @return self
-     */
-    public function addPackage(IntegrationInterface $package)
-    {
-        $this->packages[] = $package;
-
-        return $this;
-    }
 
     /**
      * Gets the namespace of the commands path.
@@ -225,24 +204,10 @@ class Blueprint
      */
     protected function getCommands()
     {
-        $namespace = $this->getCommandNamespace();
-
         /** @var string[] */
         $files = glob($this->getCommandPath() . '/*.php');
 
-        // Initialize the Slytherin integrations ---------------
         $container = $this->getContainer();
-
-        if ($container)
-        {
-            $config = new Configuration;
-
-            foreach ($this->packages as $item)
-            {
-                $container = $item->define($container, $config);
-            }
-        }
-        // -----------------------------------------------------
 
         $container = new ReflectionContainer($container);
 
@@ -250,9 +215,7 @@ class Blueprint
 
         foreach ($files as $item)
         {
-            $name = substr(basename($item), 0, -4);
-
-            $class = $namespace . '\\' . $name;
+            $class = $this->getClassName($item);
 
             $command = $container->get($class);
 
@@ -266,5 +229,17 @@ class Blueprint
         }
 
         return $items;
+    }
+
+    /**
+     * Returns the class name based from the file name.
+     *
+     * @param string $file
+     *
+     * @return string
+     */
+    protected function getClassName($file)
+    {
+        return $this->getCommandNamespace() . '\\' . substr(basename($file), 0, -4);
     }
 }

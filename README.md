@@ -279,13 +279,15 @@ use Rougin\Slytherin\Container\Container;
 
 // ...
 
-// A Container based in Slytherin must be defined first ---
-$app->setContainer(new Container);
-// --------------------------------------------------------
+// Add the specified integration (or package) to the container ---
+$container = new Container;
 
-// Add the specified integration (or package) to the application ---
-$app->addPackage(new SamplePackage);
-// -----------------------------------------------------------------
+$container->addPackage(new SamplePackage);
+// ---------------------------------------------------------------
+
+// Set the container to the console application ---
+$app->setContainer($container);
+// ------------------------------------------------
 
 ```
 
