@@ -14,16 +14,16 @@ class Console
     /**
      * Prepares the Console application.
      *
-     * @param string      $file
+     * @param string|null $file
      * @param string|null $path
      *
      * @return \Rougin\Blueprint\Blueprint
      */
-    public static function boot($file, $path = null)
+    public static function boot($file = null, $path = null)
     {
         $item = self::defaults();
 
-        if ($path && file_exists($path . '/' . $file))
+        if ($file && $path && file_exists($path . '/' . $file))
         {
             $parsed = self::parse($file, $path);
 

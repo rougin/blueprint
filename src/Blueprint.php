@@ -135,7 +135,7 @@ class Blueprint
     }
 
     /**
-     * Sets the namespace of the commands path.
+     * Sets the namespace for the "commands" path.
      *
      * @param string $namespace
      *
@@ -149,7 +149,7 @@ class Blueprint
     }
 
     /**
-     * Sets the commands path.
+     * Sets the directory for the defined commands
      *
      * @param string $path
      *

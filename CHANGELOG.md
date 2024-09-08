@@ -4,10 +4,24 @@ All notable changes to `Blueprint` will be documented in this file.
 
 ## [0.7.0](https://github.com/rougin/blueprint/compare/v0.6.0...v0.7.0) - Unreleased
 
+> [!WARNING]
+> This release will introduce a backward compatability break if upgrading from `v0.6.0` release. This is only applicable if the `Blueprint` package was extended.
+
+### Added
+- `Command` class for an alternative way of creating commands
+
 ### Changed
 - Code documentation by `php-cs-fixer`, code quality by `phpstan`
 - Workflow from `Travis CI` to `Github Actions`
 - Code coverage from `Scrutinizer CI` to `Codecov`
+- Simplified code structure
+
+### Removed
+- `Application` class
+- `File` class
+- `league/flysystem` package
+- `twig/twig` package
+- `rdlowrey/auryn` package
 
 ## [0.6.0](https://github.com/rougin/blueprint/compare/v0.5.0...v0.6.0) - 2017-01-11
 

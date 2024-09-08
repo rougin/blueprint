@@ -11,7 +11,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  *
  * @author Rougin Gutib <rougingutib@gmail.com>
  */
-class InitCommandTest extends Testcase
+class InitializeCommandTest extends Testcase
 {
     /**
      * @return void

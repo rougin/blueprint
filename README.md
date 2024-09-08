@@ -113,6 +113,114 @@ $ vendor/bin/blueprint test
 Test
 ```
 
+## Extending Blueprint
+
+The `v0.7.0` version introduces a way to extend the `Blueprint` package to use it as the console application for specified projects.
+
+### Initializing the instance
+
+To initialize a console application, the `Blueprint` class must be created first:
+
+``` php
+// bin/app.php
+
+use Rougin\Blueprint\Blueprint;
+
+// Return the root directory of the project ---------
+$bin = (string) realpath(__DIR__ . '/../../');
+
+$exists = file_exists($bin . '/vendor/autoload.php');
+
+/** @var string */
+$root = realpath($exists ? $bin : __DIR__ . '/../');
+// --------------------------------------------------
+
+require $root . '/vendor/autoload.php';
+
+$app = new Blueprint;
+```
+
+After creating the `Blueprint` class, the following details can now be updated:
+
+``` php
+// bin/app.php
+
+// ...
+
+// Sets the name of the console application. ---
+$app->setName('Acme');
+// ---------------------------------------------
+
+// Sets the version of the console application. ---
+$app->setVersion('0.1.0');
+// ------------------------------------------------
+
+// Sets the directory for the defined commands. ---
+$app->setCommandPath($item['scripts']);
+// ------------------------------------------------
+
+// Sets the directory for the templates. Might be useful ------
+// if creaeting commands with template engines (e.g., Twig) ---
+$app->setTemplatePath($item['plates']);
+// ------------------------------------------------------------
+
+// Sets the namespace for the "commands" path. ---
+$namespace = 'Acme\Simplest\Commands';
+$app->setCommandNamespace($namespace);
+// -----------------------------------------------
+```
+
+Then run the console application in the terminal:
+
+``` bash
+$ php bin\app.php
+
+Acme 0.1.0
+
+Usage:
+  command [options] [arguments]
+
+Options:
+  -h, --help            Display help for the given command. When no command is given display help for the list command
+  -q, --quiet           Do not output any message
+  -V, --version         Display this application version
+      --ansi|--no-ansi  Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction  Do not ask any interactive question
+  -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+Available commands:
+  completion  Dump the shell completion script
+  help        Display help for a command
+  list        List commands
+```
+
+### Customized `Command` class
+
+`Blueprint` also provides an alternative `Command` class for creating commands with descriptive methods and less code:
+
+``` php
+// src/Commands/TestCommand.php
+
+namespace Acme\Commands;
+
+use Rougin\Blueprint\Command;
+
+class TestCommand extends Command
+{
+    protected $name = 'test';
+
+    protected $description = 'Returns a "Test" string';
+
+    public function execute()
+    {
+        $this->showPass('Test');
+    }
+}
+```
+
+> [!NOTE]
+> All of the functionalities for the `Command` class is derived from the [`Symfony's Console` component](https://symfony.com/doc/current/console.html#creating-a-command).
+
 ## Changelog
 
 Please see [CHANGELOG][link-changelog] for more information what has changed recently.

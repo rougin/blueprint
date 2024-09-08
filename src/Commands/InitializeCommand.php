@@ -9,7 +9,7 @@ use Rougin\Blueprint\Command;
  *
  * @author Rougin Gutib <rougingutib@gmail.com>
  */
-class InitCommand extends Command
+class InitializeCommand extends Command
 {
     /**
      * @var string[]
