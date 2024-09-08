@@ -108,7 +108,7 @@ class Wrapper extends Symfony
             /** @var integer */
             $mode = $item[4];
 
-            // Compatibility with the InputOption::VALUE_NEGATABLE (Symfony 5.3) ----------------------- 
+            // Compatibility with the InputOption::VALUE_NEGATABLE (Symfony 5.3) -----------------------
             if ($mode === Command::VALUE_NEGATABLE)
             {
                 $this->addOption($name, $shortcut, Command::VALUE_NONE, $description, $default);

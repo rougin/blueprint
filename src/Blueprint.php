@@ -2,8 +2,10 @@
 
 namespace Rougin\Blueprint;
 
-use Psr\Container\ContainerInterface;
+use Rougin\Slytherin\Container\Container;
+use Rougin\Slytherin\Container\ContainerInterface;
 use Rougin\Slytherin\Container\ReflectionContainer;
+use Rougin\Slytherin\Integration\Configuration;
 use Rougin\Slytherin\Integration\IntegrationInterface;
 use Symfony\Component\Console\Application;
 
@@ -17,7 +19,7 @@ class Blueprint
     const VERSION = '0.7.0';
 
     /**
-     * @var \Psr\Container\ContainerInterface|null
+     * @var \Rougin\Slytherin\Container\ContainerInterface|null
      */
     protected $container = null;
 
@@ -83,11 +85,11 @@ class Blueprint
     /**
      * Returns the specified PSR container.
      *
-     * @return \Psr\Container\ContainerInterface
+     * @return \Rougin\Slytherin\Container\ContainerInterface|null
      */
     public function getContainer()
     {
-        return $this->container ? $this->container : new ReflectionContainer;
+        return $this->container;
     }
 
     /**
@@ -163,7 +165,7 @@ class Blueprint
     /**
      * Sets the container for handling the commands.
      *
-     * @param \Psr\Container\ContainerInterface $container
+     * @param \Rougin\Slytherin\Container\ContainerInterface $container
      *
      * @return self
      */
@@ -228,13 +230,24 @@ class Blueprint
         /** @var string[] */
         $files = glob($this->getCommandPath() . '/*.php');
 
+        // Initialize the Slytherin integrations -----------
         $container = $this->getContainer();
+
+        $config = new Configuration;
+
+        foreach ($this->packages as $item)
+        {
+            $container = $item->define($container, $config);
+        }
+        // -------------------------------------------------
+
+        $container = new ReflectionContainer($container);
 
         $items = array();
 
-        foreach ($files as $file)
+        foreach ($files as $item)
         {
-            $name = substr(basename($file), 0, -4);
+            $name = substr(basename($item), 0, -4);
 
             $class = $namespace . '\\' . $name;
 

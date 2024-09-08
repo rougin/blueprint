@@ -2,6 +2,8 @@
 
 namespace Rougin\Blueprint;
 
+use Rougin\Blueprint\Fixture\Packages\SamplePackage;
+use Rougin\Slytherin\Container\Container;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -24,7 +26,13 @@ class CommandTest extends Testcase
         /** @var string */
         $root = realpath(__DIR__ . '/Fixture');
 
-        $this->app = Console::boot('blueprint.yml', $root);
+        $app = Console::boot('blueprint.yml', $root);
+
+        $app->setContainer(new Container);
+
+        $app->addPackage(new SamplePackage);
+
+        $this->app = $app;
     }
 
     /**
