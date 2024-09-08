@@ -2,10 +2,6 @@
 
 namespace Rougin\Blueprint;
 
-use Auryn\Injector;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
-use Symfony\Component\Console\Application as Symfony;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -16,101 +12,99 @@ use Symfony\Component\Yaml\Yaml;
 class Console
 {
     /**
-     * @var string
-     */
-    protected static $name = 'Blueprint';
-
-    /**
-     * @var string
-     */
-    protected static $version = '0.6.0';
-
-    /**
-     * Prepares the console application.
+     * Prepares the Console application.
      *
-     * @param string|null          $filename
-     * @param \Auryn\Injector|null $injector
-     * @param string|null          $directory
+     * @param string      $file
+     * @param string|null $path
      *
      * @return \Rougin\Blueprint\Blueprint
      */
-    public static function boot($filename = null, Injector $injector = null, $directory = null)
+    public static function boot($file, $path = null)
     {
-        $directory = $directory ? $directory : (string) getcwd();
+        $item = self::defaults();
 
-        $injector = $injector ? $injector : new Injector;
+        if ($path && file_exists($path . '/' . $file))
+        {
+            $parsed = self::parse($file, $path);
 
-        $system = new Filesystem(new Local($directory));
+            $item = array_merge($item, $parsed);
+        }
 
-        $injector->share($system);
+        $app = new Blueprint;
 
-        $console = new Symfony(self::$name, self::$version);
+        $app->setName($item['name']);
+        $app->setVersion($item['version']);
 
-        $blueprint = new Blueprint($console, $injector);
+        $app->setCommandNamespace($item['namespace']);
 
-        $filename = $filename ? $filename : 'blueprint.yml';
+        $app->setCommandPath($item['scripts']);
+        $app->setTemplatePath($item['plates']);
 
-        return self::paths($blueprint, $directory, $filename);
+        return $app;
     }
 
     /**
-     * Returns an array of default values.
+     * Returns the default variables.
      *
-     * @return array<string, array<string, string>>
+     * @return array<string, string>
      */
-    public static function defaults()
+    protected static function defaults()
     {
-        $defaults = array('paths' => array());
-        $defaults['namespaces'] = array();
+        $item = array('name' => 'Blueprint');
 
-        $templates = (string) __DIR__ . '/Templates';
-        $defaults['paths']['templates'] = $templates;
+        $item['version'] = Blueprint::VERSION;
 
-        $commands = (string) __DIR__ . '/Commands';
-        $defaults['paths']['commands'] = $commands;
+        $item['namespace'] = 'Rougin\Blueprint\Commands';
 
-        $commands = (string) 'Rougin\Blueprint\Commands';
-        $defaults['namespaces']['commands'] = $commands;
+        $item['plates'] = __DIR__ . '/Templates';
+        $item['scripts'] = __DIR__ . '/Commands';
 
-        return $defaults;
+        return $item;
     }
 
     /**
-     * Prepares the paths that are defined from a YAML file.
+     * Returns details from the specified file.
      *
-     * @param \Rougin\Blueprint\Blueprint $blueprint
-     * @param string                      $directory
-     * @param string                      $filename
+     * @param string $file
+     * @param string $path
      *
-     * @return \Rougin\Blueprint\Blueprint
+     * @return array<string, string>
      */
-    protected static function paths(Blueprint $blueprint, $directory, $filename)
+    protected static function parse($file, $path)
     {
-        $exists = file_exists($filename);
-
         /** @var string */
-        $yaml = $exists ? file_get_contents($filename) : '';
+        $file = file_get_contents($path . '/' . $file);
 
-        $slash = DIRECTORY_SEPARATOR;
-
-        $yaml = str_replace(array('\\', '/'), $slash, $yaml);
-
+        // Replace the constant with root path ----
         $search = '%%CURRENT_DIRECTORY%%';
 
-        $yaml = str_replace($search, $directory, $yaml);
+        $file = str_replace($search, $path, $file);
+        // ----------------------------------------
 
         /** @var array<string, array<string, string>> */
-        $result = Yaml::parse($yaml) ?: self::defaults();
+        $parsed = Yaml::parse($file);
 
-        $templates = $result['paths']['templates'];
-        $blueprint->setTemplatePath($templates);
+        $item = array();
 
-        $commands = $result['paths']['commands'];
-        $blueprint->setCommandPath($commands);
+        if (array_key_exists('name', $parsed))
+        {
+            /** @var string */
+            $name = $parsed['name'];
+            $item['name'] = $name;
+        }
 
-        $commands = $result['namespaces']['commands'];
-        $blueprint->setCommandNamespace($commands);
+        if (array_key_exists('version', $parsed))
+        {
+            /** @var string */
+            $version = $parsed['version'];
+            $item['version'] = $version;
+        }
 
-        return $blueprint;
+        $item['namespace'] = $parsed['namespaces']['commands'];
+
+        $item['plates'] = $parsed['paths']['templates'];
+        $item['scripts'] = $parsed['paths']['commands'];
+
+        return $item;
     }
 }

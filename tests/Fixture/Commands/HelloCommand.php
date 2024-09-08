@@ -9,17 +9,17 @@ use Rougin\Blueprint\Command;
  *
  * @author Rougin Gutib <rougingutib@gmail.com>
  */
-class GreetCommand extends Command
+class HelloCommand extends Command
 {
     /**
      * @var string
      */
-    protected $name = 'greet';
+    protected $name = 'hello';
 
     /**
      * @var string
      */
-    protected $description = 'Greet someone';
+    protected $description = 'Hello someone';
 
     /**
      * Configures the current command.
@@ -30,9 +30,9 @@ class GreetCommand extends Command
     {
         $this->addArgument('name', 'Name of the user to be greeted');
 
-        $this->addOptionalArrayArgument('aliases', 'Aliases of the user');
+        $this->addOptionalArgument('surname', 'Surname of the user');
 
-        $this->addNegatableOption('yell', 'If set, the task will yell in uppercase letters');
+        $this->addValueOption('age', 'Age of the user', 23);
     }
 
     /**
@@ -42,25 +42,16 @@ class GreetCommand extends Command
      */
     public function run()
     {
-        /** @var string */
         $name = $this->getArgument('name');
 
-        $text = sprintf('Hello %s!', $name);
+        $age = $this->getOption('age');
 
-        /** @var string[]|null */
-        $aliases = $this->getArgument('aliases');
-
-        if ($aliases)
+        if ($surname = $this->getArgument('surname'))
         {
-            $aliases = implode(', ', $aliases);
-
-            $text = sprintf('Hello %s alias %s!', $name, $aliases);
+            $name = $name . ' ' . $surname;
         }
 
-        if ($this->getOption('yell'))
-        {
-            $text = strtoupper($text);
-        }
+        $text = 'Hello ' . $name . '! You\'re age is ' . $age . '.';
 
         $this->showText($text);
 
