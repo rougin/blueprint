@@ -3,9 +3,7 @@
 namespace Rougin\Blueprint;
 
 use Symfony\Component\Console\Command\Command as Symfony;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -15,27 +13,60 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Command
 {
-    const INPUT_IS_ARRAY = InputArgument::IS_ARRAY;
+    /**
+     * @see \Symfony\Component\Console\Input\InputArgument::IS_ARRAY
+     */
+    const INPUT_IS_ARRAY = 4;
 
-    const INPUT_OPTIONAL = InputArgument::OPTIONAL;
+    /**
+     * @see \Symfony\Component\Console\Input\InputArgument::OPTIONAL
+     */
+    const INPUT_OPTIONAL = 2;
 
-    const INPUT_REQUIRED = InputArgument::REQUIRED;
+    /**
+     * @see \Symfony\Component\Console\Input\InputArgument::REQUIRED
+     */
+    const INPUT_REQUIRED = 1;
 
-    const RETURN_FAILURE = Symfony::FAILURE;
+    /**
+     * @see \Symfony\Component\Console\Command\Command::FAILURE
+     */
+    const RETURN_FAILURE = 1;
 
-    const RETURN_INVALID = Symfony::INVALID;
+    /**
+     * @see \Symfony\Component\Console\Command\Command::INVALID
+     */
+    const RETURN_INVALID = 2;
 
-    const RETURN_SUCCESS = Symfony::SUCCESS;
+    /**
+     * @see \Symfony\Component\Console\Command\Command::SUCCESS
+     */
+    const RETURN_SUCCESS = 0;
 
-    const VALUE_IS_ARRAY = InputOption::VALUE_IS_ARRAY;
+    /**
+     * @see \Symfony\Component\Console\Input\InputOption::VALUE_IS_ARRAY
+     */
+    const VALUE_IS_ARRAY = 8;
 
-    const VALUE_NEGATABLE = InputOption::VALUE_NEGATABLE;
+    /**
+     * @see \Symfony\Component\Console\Input\InputOption::VALUE_NEGATABLE
+     */
+    const VALUE_NEGATABLE = 16;
 
-    const VALUE_NONE = InputOption::VALUE_NONE;
+    /**
+     * @see \Symfony\Component\Console\Input\InputOption::VALUE_NONE
+     */
+    const VALUE_NONE = 1;
 
-    const VALUE_OPTIONAL = InputOption::VALUE_OPTIONAL;
+    /**
+     * @see \Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL
+     */
+    const VALUE_OPTIONAL = 4;
 
-    const VALUE_REQUIRED = InputOption::VALUE_REQUIRED;
+    /**
+     * @see \Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED
+     */
+    const VALUE_REQUIRED = 2;
 
     const TEXT_PASS = 0;
 
