@@ -27,8 +27,7 @@
   },
   "bin":
   [
-    "bin/blueprint",
-    "bin/blueprint.php"
+    "bin/blueprint"
   ],
   "autoload":
   {

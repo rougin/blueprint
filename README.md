@@ -162,10 +162,10 @@ $app->setVersion('0.1.0');
 $app->setCommandPath($root . '/src/Commands');
 // ------------------------------------------------
 
-// Sets the directory for the templates. Might be useful ------
-// if creaeting commands with template engines (e.g., Twig) ---
+// Sets the directory for the templates. Might be useful -----
+// if creating commands with template engines (e.g., Twig) ---
 $app->setTemplatePath($root . '/src/Templates');
-// ------------------------------------------------------------
+// -----------------------------------------------------------
 
 // Sets the namespace for the "commands" path. ---
 $namespace = 'Acme\Simplest\Commands';
