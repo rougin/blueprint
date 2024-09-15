@@ -12,6 +12,8 @@ $exists = file_exists($vendor . '/vendor/autoload.php');
 $root = $exists ? $vendor : __DIR__ . '/../';
 // -----------------------------------------------------
 
+// Load the Composer autoloader -------
 require $root . '/vendor/autoload.php';
+// ------------------------------------
 
 Console::boot('blueprint.yml', $root)->run();

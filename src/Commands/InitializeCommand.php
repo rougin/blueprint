@@ -12,14 +12,6 @@ use Rougin\Blueprint\Command;
 class InitializeCommand extends Command
 {
     /**
-     * @var string[]
-     */
-    protected $aliases =
-    [
-        'initialize'
-    ];
-
-    /**
      * @var string
      */
     protected $name = 'init';

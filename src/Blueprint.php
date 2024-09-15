@@ -2,7 +2,6 @@
 
 namespace Rougin\Blueprint;
 
-use Rougin\Slytherin\Container\Container;
 use Rougin\Slytherin\Container\ContainerInterface;
 use Rougin\Slytherin\Container\ReflectionContainer;
 use Symfony\Component\Console\Application;
