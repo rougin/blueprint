@@ -4,14 +4,13 @@
 
 use Rougin\Blueprint\Console;
 
-// Return the root directory of the project ---------
-$bin = (string) realpath(__DIR__ . '/../../');
+// Return the root directory of the project ------------
+$vendor = (string) __DIR__ . '/../../../../';
 
-$exists = file_exists($bin . '/vendor/autoload.php');
+$exists = file_exists($vendor . '/vendor/autoload.php');
 
-/** @var string */
-$root = realpath($exists ? $bin : __DIR__ . '/../');
-// --------------------------------------------------
+$root = $exists ? $vendor : __DIR__ . '/../';
+// -----------------------------------------------------
 
 require $root . '/vendor/autoload.php';
 
