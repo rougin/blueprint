@@ -129,14 +129,13 @@ To initialize a console application, the `Blueprint` class must be created first
 
 use Rougin\Blueprint\Blueprint;
 
-// Return the root directory of the project ---------
-$bin = (string) realpath(__DIR__ . '/../../');
+// Return the root directory of the project ------------
+$vendor = (string) __DIR__ . '/../../../../';
 
-$exists = file_exists($bin . '/vendor/autoload.php');
+$exists = file_exists($vendor . '/vendor/autoload.php');
 
-/** @var string */
-$root = realpath($exists ? $bin : __DIR__ . '/../');
-// --------------------------------------------------
+$root = $exists ? $vendor : __DIR__ . '/../';
+// -----------------------------------------------------
 
 require $root . '/vendor/autoload.php';
 
@@ -150,27 +149,31 @@ After creating the `Blueprint` class, the following details can now be updated:
 
 // ...
 
-// Sets the name of the console application. ---
+// Set the name of the console application. ----
 $app->setName('Acme');
 // ---------------------------------------------
 
-// Sets the version of the console application. ---
+// Set the version of the console application. ----
 $app->setVersion('0.1.0');
 // ------------------------------------------------
 
-// Sets the directory for the defined commands. ---
-$app->setCommandPath($root . '/src/Commands');
+// Set the directory for the defined commands. ----
+$app->setCommandPath(__DIR__ . '/../src/Commands');
 // ------------------------------------------------
 
-// Sets the directory for the templates. Might be useful -----
+// Set the directory for the templates. Might be useful ------
 // if creating commands with template engines (e.g., Twig) ---
-$app->setTemplatePath($root . '/src/Templates');
+$app->setTemplatePath(__DIR__ . '/../src/Templates');
 // -----------------------------------------------------------
 
-// Sets the namespace for the "commands" path. ---
+// Set the namespace for the "commands" path. ----
 $namespace = 'Acme\Simplest\Commands';
 $app->setCommandNamespace($namespace);
 // -----------------------------------------------
+
+// Run the console application ---
+$app->run();
+// -------------------------------
 ```
 
 > [!NOTE]
