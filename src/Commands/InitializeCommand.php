@@ -12,19 +12,35 @@ use Rougin\Blueprint\Command;
 class InitializeCommand extends Command
 {
     /**
+     * @var string[]
+     */
+    protected $aliases = array('initialize');
+
+    /**
+     * @var string
+     */
+    protected $file = 'blueprint.yml';
+
+    /**
      * @var string
      */
     protected $name = 'init';
 
     /**
-     * @var string
+     * Configures the current command.
+     *
+     * @return void
      */
-    protected $description = 'Creates a "blueprint.yml" file';
+    public function init()
+    {
+        $text = 'Creates a "' . $this->file . '" file';
 
-    /**
-     * @var string
-     */
-    protected $help = 'Allows to create a "blueprint.yml" file in the current working directory.';
+        $this->description = $text;
+
+        $text = 'Allows to create a "' . $this->file . '" file in the current working directory.';
+
+        $this->help = (string) $text;
+    }
 
     /**
      * Executes the command.
@@ -33,19 +49,18 @@ class InitializeCommand extends Command
      */
     public function run()
     {
-        /** @var string */
-        $path = realpath(__DIR__ . '/../Templates');
-
-        $name = 'blueprint.yml';
+        $path = $this->getPlatePath();
 
         /** @var string */
-        $file = file_get_contents($path . '/' . $name);
+        $file = file_get_contents($path . '/' . $this->file);
 
         $root = $this->getRootPath();
 
-        file_put_contents($root . '/' . $name, $file);
+        file_put_contents($root . '/' . $this->file, $file);
 
-        $this->showPass('"blueprint.yml" added successfully!');
+        $text = '"' . $this->file . '" added successfully!';
+
+        $this->showPass($text);
 
         return Command::RETURN_SUCCESS;
     }
@@ -57,7 +72,18 @@ class InitializeCommand extends Command
      */
     public function isEnabled()
     {
-        return ! file_exists($this->getRootPath() . '/blueprint.yml');
+        return ! file_exists($this->getRootPath() . '/' . $this->file);
+    }
+
+    /**
+     * Returns the source directory for the specified file.
+     *
+     * @return string
+     */
+    protected function getPlatePath()
+    {
+        /** @var string */
+        return realpath(__DIR__ . '/../Templates');
     }
 
     /**

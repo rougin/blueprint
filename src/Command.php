@@ -177,6 +177,8 @@ class Command
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * Configures the current command.
      *
      * @return void
