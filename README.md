@@ -6,7 +6,7 @@
 [![Coverage Status][ico-coverage]][link-coverage]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-Blueprint is a PHP package for bootstrapping file-generating console applications.
+Blueprint is a PHP package for bootstrapping console applications.
 
 ## Installation
 

@@ -27,12 +27,19 @@ class InitializeCommand extends Command
     protected $name = 'init';
 
     /**
+     * @var string
+     */
+    protected $path;
+
+    /**
      * Configures the current command.
      *
      * @return void
      */
     public function init()
     {
+        $this->path = $this->getPlatePath();
+
         $text = 'Creates a "' . $this->file . '" file';
 
         $this->description = $text;
@@ -49,10 +56,10 @@ class InitializeCommand extends Command
      */
     public function run()
     {
-        $path = $this->getPlatePath();
+        $file = $this->path . '/' . $this->file;
 
         /** @var string */
-        $file = file_get_contents($path . '/' . $this->file);
+        $file = file_get_contents($file);
 
         $root = $this->getRootPath();
 
