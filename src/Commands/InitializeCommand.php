@@ -12,11 +12,6 @@ use Rougin\Blueprint\Command;
 class InitializeCommand extends Command
 {
     /**
-     * @var string[]
-     */
-    protected $aliases = array('initialize');
-
-    /**
      * @var string
      */
     protected $file = 'blueprint.yml';
@@ -24,7 +19,7 @@ class InitializeCommand extends Command
     /**
      * @var string
      */
-    protected $name = 'init';
+    protected $name = 'initialize';
 
     /**
      * @var string
@@ -40,11 +35,11 @@ class InitializeCommand extends Command
     {
         $this->path = $this->getPlatePath();
 
-        $text = 'Creates a "' . $this->file . '" file';
+        $text = 'Create a "' . $this->file . '" file';
 
         $this->description = $text;
 
-        $text = 'Allows to create a "' . $this->file . '" file in the current working directory.';
+        $text = 'Create a new "' . $this->file . '" file in the current  directory.';
 
         $this->help = (string) $text;
     }
@@ -100,11 +95,10 @@ class InitializeCommand extends Command
      */
     protected function getRootPath()
     {
-        /** @var string */
-        $vendor = realpath(__DIR__ . '/../../../../../');
+        $root = (string) __DIR__ . '/../../../../../';
 
-        $exists = file_exists($vendor . '/../autoload.php');
+        $exists = file_exists($root . '/vendor/autoload.php');
 
-        return $exists ? $vendor : __DIR__ . '/../../';
+        return $exists ? $root : __DIR__ . '/../../';
     }
 }

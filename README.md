@@ -20,10 +20,10 @@ $ composer require rougin/blueprint
 
 ### Creating a new `blueprint.yml`
 
-Create a `blueprint.yml` file by running the `init` command:
+Create a `blueprint.yml` file by running the `initialize` command:
 
 ``` bash
-$ vendor/bin/blueprint init
+$ vendor/bin/blueprint initialize
 ```
 
 ``` yml

@@ -12,6 +12,11 @@ use Rougin\Blueprint\Command;
 class GreetCommand extends Command
 {
     /**
+     * @var string[]
+     */
+    protected $aliases = array('wave');
+
+    /**
      * @var string
      */
     protected $name = 'greet';
