@@ -19,6 +19,11 @@ class GreetCommand extends Command
     /**
      * @var string
      */
+    protected $help = 'Perform a greeting to a specified person.';
+
+    /**
+     * @var string
+     */
     protected $name = 'greet';
 
     /**

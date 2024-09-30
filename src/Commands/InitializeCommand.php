@@ -38,10 +38,6 @@ class InitializeCommand extends Command
         $text = 'Create a "' . $this->file . '" file';
 
         $this->description = $text;
-
-        $text = 'Create a new "' . $this->file . '" file in the current  directory.';
-
-        $this->help = (string) $text;
     }
 
     /**

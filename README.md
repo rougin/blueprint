@@ -129,13 +129,13 @@ To initialize a console application, the `Blueprint` class must be created first
 
 use Rougin\Blueprint\Blueprint;
 
-// Return the root directory of the project ------------
-$vendor = (string) __DIR__ . '/../../../../';
+// Return the root directory of the project ----------
+$root = (string) __DIR__ . '/../../../../';
 
-$exists = file_exists($vendor . '/vendor/autoload.php');
+$exists = file_exists($root . '/vendor/autoload.php');
 
-$root = $exists ? $vendor : __DIR__ . '/../';
-// -----------------------------------------------------
+$root = $exists ? $root : __DIR__ . '/../';
+// ---------------------------------------------------
 
 require $root . '/vendor/autoload.php';
 
