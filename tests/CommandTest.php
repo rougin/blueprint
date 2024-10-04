@@ -37,15 +37,15 @@ class CommandTest extends Testcase
     /**
      * @return void
      */
-    public function test_simple_command()
+    public function test_argument_as_array()
     {
-        $command = $this->findCommand('greet');
+        $command = $this->findCommand('words');
 
-        $input = array('name' => 'Rougin');
+        $input = array('words' => array('hello', 'world'));
 
         $command->execute($input);
 
-        $expected = 'Hello Rougin!';
+        $expected = 'hello, world';
 
         $actual = $this->getActualDisplay($command);
 
@@ -55,15 +55,55 @@ class CommandTest extends Testcase
     /**
      * @return void
      */
-    public function test_yell_option()
+    public function test_argument_as_optional()
     {
-        $command = $this->findCommand('greet');
+        $command = $this->findCommand('hello');
 
-        $input = array('name' => 'Rougin', '--yell' => true);
+        $input = array('name' => 'rougin', 'surname' => 'Gutib');
 
         $command->execute($input);
 
-        $expected = 'HELLO ROUGIN!';
+        $expected = 'Hello rougin Gutib! You\'re age is 23.';
+
+        $actual = $this->getActualDisplay($command);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_argument_as_optional_array()
+    {
+        $command = $this->findCommand('greet');
+
+        $input = array('name' => 'rougin');
+        $input['aliases'] = array('royce', 'blueprint');
+
+        $command->execute($input);
+
+        $expected = 'Hello rougin alias royce, blueprint!';
+
+        $actual = $this->getActualDisplay($command);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_colored_texts()
+    {
+        $command = $this->findCommand('text');
+
+        $command->execute(array());
+
+        $pass = '[PASS] This is a info text';
+        $fail = '[FAIL] This is a error text';
+        $info = '[INFO] This is a question text';
+        $warn = '[WARN] This is a comment text';
+
+        $expected = $pass . $fail . $info . $warn;
 
         $actual = $this->getActualDisplay($command);
 
@@ -91,18 +131,23 @@ class CommandTest extends Testcase
     /**
      * @return void
      */
-    public function test_colored_texts()
+    public function test_option_with_array_value()
     {
         $command = $this->findCommand('text');
 
-        $command->execute(array());
+        $input = array('--names' => array('rougin', 'blueprints'));
+        $input['--texts'] = array('hello', 'world');
 
+        $command->execute((array) $input);
+
+        $names = 'Names: rougin, blueprints';
+        $texts = 'Texts: hello, world';
         $pass = '[PASS] This is a info text';
         $fail = '[FAIL] This is a error text';
         $info = '[INFO] This is a question text';
         $warn = '[WARN] This is a comment text';
 
-        $expected = $pass . $fail . $info . $warn;
+        $expected = $names . $texts . $pass . $fail . $info . $warn;
 
         $actual = $this->getActualDisplay($command);
 
@@ -148,23 +193,15 @@ class CommandTest extends Testcase
     /**
      * @return void
      */
-    public function test_option_with_array_value()
+    public function test_run_command_inside_command()
     {
-        $command = $this->findCommand('text');
+        $command = $this->findCommand('test');
 
-        $input = array('--names' => array('rougin', 'blueprints'));
-        $input['--texts'] = array('hello', 'world');
+        $command->execute(array());
 
-        $command->execute((array) $input);
+        $expected = 'Hello Rougin! You\'re age is 23.';
 
-        $names = 'Names: rougin, blueprints';
-        $texts = 'Texts: hello, world';
-        $pass = '[PASS] This is a info text';
-        $fail = '[FAIL] This is a error text';
-        $info = '[INFO] This is a question text';
-        $warn = '[WARN] This is a comment text';
-
-        $expected = $names . $texts . $pass . $fail . $info . $warn;
+        $expected .= '[PASS] runCommand returned okay!';
 
         $actual = $this->getActualDisplay($command);
 
@@ -174,56 +211,47 @@ class CommandTest extends Testcase
     /**
      * @return void
      */
-    public function test_argument_as_optional()
-    {
-        $command = $this->findCommand('hello');
-
-        $input = array('name' => 'rougin', 'surname' => 'Gutib');
-
-        $command->execute($input);
-
-        $expected = 'Hello rougin Gutib! You\'re age is 23.';
-
-        $actual = $this->getActualDisplay($command);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @return void
-     */
-    public function test_argument_as_array()
-    {
-        $command = $this->findCommand('words');
-
-        $input = array('words' => array('hello', 'world'));
-
-        $command->execute($input);
-
-        $expected = 'hello, world';
-
-        $actual = $this->getActualDisplay($command);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @return void
-     */
-    public function test_argument_as_optional_array()
+    public function test_simple_command()
     {
         $command = $this->findCommand('greet');
 
-        $input = array('name' => 'rougin');
-        $input['aliases'] = array('royce', 'blueprint');
+        $input = array('name' => 'Rougin');
 
         $command->execute($input);
 
-        $expected = 'Hello rougin alias royce, blueprint!';
+        $expected = 'Hello Rougin!';
 
         $actual = $this->getActualDisplay($command);
 
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_yell_option()
+    {
+        $command = $this->findCommand('greet');
+
+        $input = array('name' => 'Rougin', '--yell' => true);
+
+        $command->execute($input);
+
+        $expected = 'HELLO ROUGIN!';
+
+        $actual = $this->getActualDisplay($command);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return \Symfony\Component\Console\Tester\CommandTester
+     */
+    protected function findCommand($name)
+    {
+        return new CommandTester($this->app->make()->find($name));
     }
 
     /**
@@ -238,15 +266,5 @@ class CommandTest extends Testcase
         $actual = str_replace("\r\n", '', $actual);
 
         return str_replace("\n", '', $actual);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return \Symfony\Component\Console\Tester\CommandTester
-     */
-    protected function findCommand($name)
-    {
-        return new CommandTester($this->app->make()->find($name));
     }
 }

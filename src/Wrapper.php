@@ -135,6 +135,11 @@ class Wrapper extends Symfony
 
         $this->command->setOutput($output);
 
+        /** @var \Symfony\Component\Console\Application */
+        $app = $this->getApplication();
+
+        $this->command->setConsole($app);
+
         return $this->command->run();
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Rougin\Blueprint;
 
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command as Symfony;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -85,6 +87,11 @@ class Command
      * @var mixed[][]
      */
     protected $arguments = array();
+
+    /**
+     * @var \Symfony\Component\Console\Application
+     */
+    protected $console;
 
     /**
      * @var string|null
@@ -207,6 +214,18 @@ class Command
     public function run()
     {
         return self::RETURN_SUCCESS;
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Application $app
+     *
+     * @return self
+     */
+    public function setConsole(Application $app)
+    {
+        $this->console = $app;
+
+        return $this;
     }
 
     /**
@@ -410,6 +429,25 @@ class Command
     protected function getOption($name)
     {
         return $this->input->getOption($name);
+    }
+
+    /**
+     * Runs another listed command.
+     *
+     * @param string               $name
+     * @param array<string, mixed> $input
+     *
+     * @return integer
+     */
+    protected function runCommand($name, $input = array())
+    {
+        $data = array('command' => $name);
+
+        $data = array_merge($data, $input);
+
+        $input = new ArrayInput($data);
+
+        return $this->console->doRun($input, $this->output);
     }
 
     /**
