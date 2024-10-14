@@ -1,6 +1,6 @@
 {
   "name": "rougin/blueprint",
-  "description": "A bootstrap for your console projects in PHP.",
+  "description": "A bootstrap for PHP console projects.",
   "keywords": [ "blueprint", "generator", "file-generator" ],
   "homepage": "https://roug.in/blueprint/",
   "license": "MIT",
