@@ -15,6 +15,7 @@ All notable changes to `Blueprint` will be documented in this file.
 - Code coverage to `Codecov`
 - Code documentation by `php-cs-fixer`
 - Improved code quality by `phpstan`
+- Minimum PHP version to `v5.3.0`
 - Simplified code structure
 - Workflow to `Github Actions`
 
