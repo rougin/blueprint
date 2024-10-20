@@ -28,12 +28,11 @@ class Blueprint
     /**
      * @var array<string, string>
      */
-    protected $paths =
-    [
+    protected $paths = array(
         'templates' => '',
         'commands' => '',
         'namespace' => '',
-    ];
+    );
 
     /**
      * @var string
