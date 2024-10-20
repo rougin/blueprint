@@ -2,7 +2,7 @@
 
 All notable changes to `Blueprint` will be documented in this file.
 
-## [0.7.0](https://github.com/rougin/blueprint/compare/v0.6.0...v0.7.0) - Unreleased
+## [0.7.0](https://github.com/rougin/blueprint/compare/v0.6.0...v0.7.0) - 2024-10-21
 
 > [!WARNING]
 > This release will introduce a backward compatability break if upgrading from `v0.6.0` release.
