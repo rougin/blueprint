@@ -4,16 +4,22 @@
 
 use Rougin\Blueprint\Console;
 
-// Return the root directory of the project ----------
-$root = (string) __DIR__ . '/../../../../';
+// Return the root from "vendor" --------
+$vendor = __DIR__ . '/../../../../';
 
-$exists = file_exists($root . '/vendor/autoload.php');
+$default = __DIR__ . '/../';
 
-$root = $exists ? $root : __DIR__ . '/../';
-// ---------------------------------------------------
+$loader = '/vendor/autoload.php';
+
+$exists = file_exists($vendor . $loader);
+
+$root = $exists ? $vendor : $default;
+// --------------------------------------
 
 // Load the Composer autoloader -------
 require $root . '/vendor/autoload.php';
 // ------------------------------------
 
-Console::boot('blueprint.yml', $root)->run();
+$file = 'blueprint.yml';
+
+Console::boot($file, $root)->run();
