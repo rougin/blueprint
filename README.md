@@ -332,17 +332,11 @@ Hello, Blueprint!
 
 ## Changelog
 
-Please see [CHANGELOG][link-changelog] for more information what has changed recently.
+Please see [CHANGELOG](CHANGELOG.md) for more recent changes.
 
-## Testing
+## Contributing
 
-``` bash
-$ composer test
-```
-
-## Credits
-
-- [All contributors][link-contributors]
+See [CONTRIBUTING](CONTRIBUTING.md) on how to contribute.
 
 ## License
 
@@ -356,6 +350,7 @@ The MIT License (MIT). Please see [LICENSE][link-license] for more information.
 
 [link-build]: https://github.com/rougin/blueprint/actions
 [link-changelog]: https://github.com/rougin/blueprint/blob/master/CHANGELOG.md
+[link-contributing]: https://github.com/rougin/blueprint/blob/master/CONTRIBUTING.md
 [link-contributors]: https://github.com/rougin/blueprint/contributors
 [link-coverage]: https://app.codecov.io/gh/rougin/blueprint
 [link-downloads]: https://packagist.org/packages/rougin/blueprint
