@@ -24,9 +24,7 @@ class GreetCommand extends Command
 
 ``` bash
 $ vendor/bin/blueprint test
-```
 
-``` bash
 Hello, World!
 ```
 
@@ -105,9 +103,7 @@ class GreetCommand extends Command
 
 ``` bash
 $ vendor/bin/blueprint greet "Bluey"
-```
 
-``` bash
 Hello, Bluey!
 ```
 
@@ -208,9 +204,7 @@ class GreetCommand extends Command
 
 ``` bash
 $ vendor/bin/blueprint greet "Bluey" --age=30
-```
 
-``` bash
 Hello, Bluey!
 Your age is 30
 ```

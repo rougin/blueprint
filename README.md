@@ -80,7 +80,7 @@ class TestCommand extends Command
 }
 ```
 
-Before running the newly created command, kindly check if its namespace is defined in `Composer`:
+Before running the command, kindly check if its namespace is defined in `Composer`:
 
 ``` json
 // composer.json
@@ -104,9 +104,7 @@ $ composer dump-autoload
 
 ``` bash
 $ vendor/bin/blueprint test
-```
 
-``` bash
 Test
 ```
 
@@ -180,9 +178,7 @@ Once configured, the console application can now be run in the terminal:
 
 ``` bash
 $ php bin\app.php
-```
 
-``` bash
 Acme 0.1.0
 
 Usage:
@@ -226,7 +222,7 @@ class TestCommand extends Command
 }
 ```
 
-Kindly see [COMMAND][link-command] for its documentation.
+Kindly see [COMMAND][link-command] for its available properties and methods.
 
 > [!NOTE]
 > All of the functionalities for the `Command` class is derived from the [`Symfony's Console` component](https://symfony.com/doc/current/console.html#creating-a-command).
