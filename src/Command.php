@@ -94,6 +94,8 @@ class Command
     protected $console;
 
     /**
+     * A short description of what the command does.
+     *
      * @var string|null
      */
     protected $description = null;
@@ -109,6 +111,8 @@ class Command
     protected $help = null;
 
     /**
+     * The name of the command.
+     *
      * @var string
      */
     protected $name;
@@ -186,7 +190,7 @@ class Command
     /**
      * @codeCoverageIgnore
      *
-     * Configures the current command.
+     * Configures the current command with arguments and options.
      *
      * @return void
      */
@@ -451,7 +455,7 @@ class Command
     }
 
     /**
-     * Shows a text with [FAIL] prefix.
+     * Shows a text with "[FAIL]" prefix.
      *
      * @param string $text
      *
@@ -463,7 +467,7 @@ class Command
     }
 
     /**
-     * Shows a text with [INFO] prefix.
+     * Shows a text with "[INFO]" prefix.
      *
      * @param string $text
      *
@@ -475,7 +479,7 @@ class Command
     }
 
     /**
-     * Shows a text with [PASS] prefix.
+     * Shows a text with "[PASS]" prefix.
      *
      * @param string $text
      *
@@ -519,7 +523,7 @@ class Command
     }
 
     /**
-     * Shows a text with [WARN] prefix.
+     * Shows a text with "[WARN]" prefix.
      *
      * @param string $text
      *

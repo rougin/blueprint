@@ -16,11 +16,9 @@ Install `Blueprint` via [Composer](https://getcomposer.org/):
 $ composer require rougin/blueprint
 ```
 
-## Basic Usage
+## Basic usage
 
-### Creating a new `blueprint.yml`
-
-Create a `blueprint.yml` file by running the `initialize` command:
+Create a `blueprint.yml` file using the `initialize` command:
 
 ``` bash
 $ vendor/bin/blueprint initialize
@@ -44,9 +42,7 @@ namespaces:
 > * Replace the values specified in the `blueprint.yml` file.
 > * Add commands and templates (if applicable) to their respective directories.
 
-### Creating a command
-
-Prior to creating a command, the `commands` property in `blueprint.yml` must be updated:
+To write a command, the `commands` property in `blueprint.yml` must be updated first:
 
 ``` yml
 # blueprint.yml
@@ -57,7 +53,7 @@ namespaces:
   commands: Acme\Commands
 ```
 
-Then create the command (e.g., `TestCommand`) to the specified directory:
+Then create the command (e.g., `TestCommand`) to its assigned directory (e.g., `src/Commands`):
 
 ``` php
 // src/Commands/TestCommand.php
@@ -72,7 +68,9 @@ class TestCommand extends Command
 {
     protected function configure()
     {
-        $this->setName('test')->setDescription('Returns a "Test" string');
+        $this->setName('test');
+
+        $this->setDescription('Returns a "Test" string');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -82,9 +80,7 @@ class TestCommand extends Command
 }
 ```
 
-### Updating the `composer.json`
-
-After creating the command (e.g., `TestCommand`), kindly check if its namespace is defined in `Composer`:
+Before running the newly created command, kindly check if its namespace is defined in `Composer`:
 
 ``` json
 // composer.json
@@ -106,84 +102,87 @@ After creating the command (e.g., `TestCommand`), kindly check if its namespace 
 $ composer dump-autoload
 ```
 
-### Running the command
-
-The created commands will be recognized automatically by Blueprint. With this, it could be executed in the same `blueprint` command:
-
 ``` bash
 $ vendor/bin/blueprint test
+```
 
+``` bash
 Test
 ```
 
 ## Extending Blueprint
 
-The `v0.7.0` version introduces a way to extend the `Blueprint` package to use it as the console application for specified projects.
-
-### Initializing the instance
-
-To initialize a console application, the `Blueprint` class must be created first:
+To use `Blueprint` as a console application, the `Blueprint` class must be created first:
 
 ``` php
 // bin/app.php
 
 use Rougin\Blueprint\Blueprint;
 
-// Return the root directory of the project ----------
-$root = (string) __DIR__ . '/../../../../';
+// Return the root from "vendor" --------
+$vendor = __DIR__ . '/../../../../';
 
-$exists = file_exists($root . '/vendor/autoload.php');
+$default = __DIR__ . '/../';
 
-$root = $exists ? $root : __DIR__ . '/../';
-// ---------------------------------------------------
+$loader = '/vendor/autoload.php';
 
+$exists = file_exists($vendor . $loader);
+
+$root = $exists ? $vendor : $default;
+// --------------------------------------
+
+// Load the Composer autoloader -------
 require $root . '/vendor/autoload.php';
+// ------------------------------------
 
 $app = new Blueprint;
 ```
 
-After creating the `Blueprint` class, the following details can now be updated:
+The following details can now be updated after creating the class:
 
 ``` php
 // bin/app.php
 
 // ...
 
-// Set the name of the console application. ----
-$app->setName('Acme');
-// ---------------------------------------------
-
-// Set the version of the console application. ----
-$app->setVersion('0.1.0');
-// ------------------------------------------------
-
-// Set the directory for the defined commands. ----
+// Sets the directory for the defined commands ----
 $app->setCommandPath(__DIR__ . '/../src/Commands');
 // ------------------------------------------------
 
-// Set the directory for the templates. Might be useful ------
-// if creating commands with template engines (e.g., Twig) ---
+// Sets the directory for the templates. Useful -----
+// for creating commands with template engines ------
 $app->setTemplatePath(__DIR__ . '/../src/Templates');
-// -----------------------------------------------------------
+// --------------------------------------------------
 
-// Set the namespace for the "commands" path. ----
-$namespace = 'Acme\Simplest\Commands';
-$app->setCommandNamespace($namespace);
+// Sets the name of the console application ----
+$app->setName('Acme');
+// ---------------------------------------------
+
+// Sets the version of the console application ---
+$app->setVersion('0.1.0');
 // -----------------------------------------------
 
-// Run the console application ---
+// Sets the namespace for the "commands" path ---
+$namespace = 'Acme\Simplest\Commands';
+
+$app->setCommandNamespace($namespace);
+// ----------------------------------------------
+
+// Runs the console application ---
 $app->run();
-// -------------------------------
+// --------------------------------
 ```
 
 > [!NOTE]
 > Using this approach means the `blueprint.yml` can now be omitted. This approach is also applicable to create customized console applications without the `Blueprint` branding.
 
-Then run the console application in the terminal:
+Once configured, the console application can now be run in the terminal:
 
 ``` bash
 $ php bin\app.php
+```
 
+``` bash
 Acme 0.1.0
 
 Usage:
@@ -203,7 +202,7 @@ Available commands:
   list        List commands
 ```
 
-### Customized `Command` class
+## Customized `Command`
 
 `Blueprint` also provides an alternative `Command` class for creating commands with descriptive methods and less code:
 
@@ -227,10 +226,12 @@ class TestCommand extends Command
 }
 ```
 
+Kindly see [COMMAND][link-command] for its documentation.
+
 > [!NOTE]
 > All of the functionalities for the `Command` class is derived from the [`Symfony's Console` component](https://symfony.com/doc/current/console.html#creating-a-command).
 
-### Injecting dependencies
+## Injecting dependencies
 
 To perform [automagic resolutions](https://github.com/rougin/slytherin/wiki/Container) in each defined commands, the `addPackage` can be used with the additional functionality from the `Container` class from [`Slytherin`](https://roug.in/slytherin/):
 
@@ -332,11 +333,11 @@ Hello, Blueprint!
 
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more recent changes.
+Please see [CHANGELOG][link-changelog] for more recent changes.
 
 ## Contributing
 
-See [CONTRIBUTING](CONTRIBUTING.md) on how to contribute.
+See [CONTRIBUTING][link-contributing] on how to contribute.
 
 ## License
 
@@ -350,10 +351,10 @@ The MIT License (MIT). Please see [LICENSE][link-license] for more information.
 
 [link-build]: https://github.com/rougin/blueprint/actions
 [link-changelog]: https://github.com/rougin/blueprint/blob/master/CHANGELOG.md
+[link-command]: https://github.com/rougin/blueprint/blob/master/COMMAND.md
 [link-contributing]: https://github.com/rougin/blueprint/blob/master/CONTRIBUTING.md
 [link-contributors]: https://github.com/rougin/blueprint/contributors
 [link-coverage]: https://app.codecov.io/gh/rougin/blueprint
 [link-downloads]: https://packagist.org/packages/rougin/blueprint
 [link-license]: https://github.com/rougin/blueprint/blob/master/LICENSE.md
 [link-packagist]: https://packagist.org/packages/rougin/blueprint
-[link-upgrading]: https://github.com/rougin/blueprint/blob/master/UPGRADING.md
