@@ -1,7 +1,10 @@
+.gemini
 .php-cs-fixer.cache
 .phpunit.result.cache
+AGENTS.md
 blueprint.yml
 build
 composer.lock
 docs
+GEMINI.md
 vendor
