@@ -2,7 +2,7 @@
 
 All notable changes to `Blueprint` will be documented in this file.
 
-## [0.7.1](https://github.com/rougin/blueprint/compare/v0.7.0...v0.7.1) - Unreleased
+## [0.7.1](https://github.com/rougin/blueprint/compare/v0.7.0...v0.7.1) - 2026-05-17
 
 ### Added
 - Support for `>=6.0` of `symfony/console`
