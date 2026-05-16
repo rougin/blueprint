@@ -16,7 +16,7 @@ class Blueprint
     const VERSION = '0.7.0';
 
     /**
-     * @var \Rougin\Slytherin\Container\ContainerInterface|null
+     * @var \Psr\Container\ContainerInterface
      */
     protected $container = null;
 
@@ -62,10 +62,15 @@ class Blueprint
     /**
      * Returns the specified PSR container.
      *
-     * @return \Rougin\Slytherin\Container\ContainerInterface|null
+     * @return \Psr\Container\ContainerInterface
      */
     public function getContainer()
     {
+        if (! $this->container)
+        {
+            return new Container;
+        }
+
         return $this->container;
     }
 
@@ -142,7 +147,7 @@ class Blueprint
     /**
      * Sets the container for handling the commands.
      *
-     * @param \Rougin\Slytherin\Container\ContainerInterface $container
+     * @param \Psr\Container\ContainerInterface $container
      *
      * @return self
      */
