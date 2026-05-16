@@ -26,9 +26,29 @@ class InitializeCommandTest extends Testcase
 
         $command->execute(array());
 
+        $file = __DIR__ . '/../../blueprint.php';
+
+        $this->assertFileExists($file);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_file_create_with_yml_format()
+    {
+        $app = Console::boot('blueprint.yml');
+
+        $init = $app->make()->find('init');
+
+        $command = new CommandTester($init);
+
+        $command->execute(array('--format' => 'yml'));
+
         $file = __DIR__ . '/../../blueprint.yml';
 
         $this->assertFileExists($file);
+
+        unlink($file);
     }
 
     /**
@@ -40,14 +60,43 @@ class InitializeCommandTest extends Testcase
 
         $this->doExpectException($exception);
 
+        $root = __DIR__ . '/../../';
+
+        $file = $root . 'blueprint.php';
+
+        if (! file_exists($file))
+        {
+            file_put_contents($file, '');
+        }
+
         $app = Console::boot('blueprint.yml')->make();
 
-        unlink(__DIR__ . '/../../blueprint.yml');
+        unlink($file);
 
         $init = $app->find('init');
 
         $command = new CommandTester($init);
 
         $command->execute(array());
+    }
+
+    /**
+     * @return void
+     */
+    public function doTearDown()
+    {
+        $phpFile = __DIR__ . '/../../blueprint.php';
+
+        if (file_exists($phpFile))
+        {
+            unlink($phpFile);
+        }
+
+        $ymlFile = __DIR__ . '/../../blueprint.yml';
+
+        if (file_exists($ymlFile))
+        {
+            unlink($ymlFile);
+        }
     }
 }

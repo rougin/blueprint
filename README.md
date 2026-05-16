@@ -28,7 +28,7 @@ $ vendor/bin/blueprint initialize
 # blueprint.yml
 
 name: Blueprint
-version: 0.7.0
+version: 0.7.1
 
 paths:
   templates: %%CURRENT_DIRECTORY%%/src/Templates

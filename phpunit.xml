@@ -19,11 +19,14 @@
     <log type="coverage-text" target="build/coverage.txt"/>
   </logging>
 
-  <coverage>
+   <coverage>
     <!-- Used for PHP versions 7.3-8.0 only -->
     <include>
       <directory suffix=".php">src</directory>
     </include>
+    <exclude>
+      <directory suffix=".php">src/Templates</directory>
+    </exclude>
 
     <!-- Used for PHP versions 5.3-5.5, 7.3-present -->
     <report>
@@ -34,9 +37,12 @@
   </coverage>
 
   <!-- Used for PHP versions 8.0-present -->
-  <source>
+   <source>
     <include>
       <directory suffix=".php">src</directory>
     </include>
+    <exclude>
+      <directory suffix=".php">src/Templates</directory>
+    </exclude>
   </source>
 </phpunit>

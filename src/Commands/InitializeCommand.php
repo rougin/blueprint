@@ -14,7 +14,7 @@ class InitializeCommand extends Command
     /**
      * @var string
      */
-    protected $file = 'blueprint.yml';
+    protected $file = 'blueprint.php';
 
     /**
      * @var string
@@ -38,6 +38,8 @@ class InitializeCommand extends Command
         $text = 'Create a "' . $this->file . '" file';
 
         $this->description = $text;
+
+        $this->addValueOption('--format', 'Format of the configuration file (php, yml)', 'php');
     }
 
     /**
@@ -47,6 +49,13 @@ class InitializeCommand extends Command
      */
     public function run()
     {
+        $format = $this->getOption('format');
+
+        if ($format === 'yml')
+        {
+            $this->file = 'blueprint.yml';
+        }
+
         $file = $this->path . '/' . $this->file;
 
         /** @var string */

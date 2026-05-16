@@ -20,6 +20,6 @@ $root = $exists ? $vendor : $default;
 require $root . '/vendor/autoload.php';
 // ------------------------------------
 
-$file = 'blueprint.yml';
+$file = 'blueprint';
 
 Console::boot($file, $root)->run();

@@ -13,7 +13,7 @@ use Symfony\Component\Console\Application;
  */
 class Blueprint
 {
-    const VERSION = '0.7.0';
+    const VERSION = '0.7.1';
 
     /**
      * @var \Psr\Container\ContainerInterface|null
