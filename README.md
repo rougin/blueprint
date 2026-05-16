@@ -24,8 +24,6 @@ Create a `blueprint.php` file using the `initialize` command:
 $ vendor/bin/blueprint initialize
 ```
 
-> To create a `blueprint.yml` instead, use `--format=yml`.
-
 ``` php
 // blueprint.php
 
