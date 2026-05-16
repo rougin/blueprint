@@ -1,23 +1,31 @@
 <?php
 
-return array(
+$file = array();
 
-    'name' => 'Blueprint',
+// Details for the console app ---
+$file['name'] = 'Blueprint';
 
-    'version' => '0.7.1',
+$file['version'] = '0.7.1';
+// -------------------------------
 
-    'paths' => array(
+// Path for the commands and templates ----
+$paths = array();
 
-        'templates' => '%%CURRENT_DIRECTORY%%/Templates',
+$root = '%%CURRENT_DIRECTORY%%';
 
-        'commands' => '%%CURRENT_DIRECTORY%%/Commands',
+$paths['templates'] = $root . '/Templates';
 
-    ),
+$paths['commands'] = $root . '/Commands';
 
-    'namespaces' => array(
+$file['paths'] = $paths;
+// ----------------------------------------
 
-        'commands' => 'Rougin\Blueprint\Fixture\Commands',
+$namespace = 'Rougin\Blueprint\Fixture\Commands';
 
-    ),
+// Namespaces for the commands ---------
+$data = array('commands' => $namespace);
 
-);
+$file['namespaces'] = $data;
+// -------------------------------------
+
+return $file;

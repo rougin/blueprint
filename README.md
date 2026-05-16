@@ -18,39 +18,62 @@ $ composer require rougin/blueprint
 
 ## Basic usage
 
-Create a `blueprint.yml` file using the `initialize` command:
+Create a `blueprint.php` file using the `initialize` command:
 
 ``` bash
 $ vendor/bin/blueprint initialize
 ```
 
-``` yml
-# blueprint.yml
+> To create a `blueprint.yml` instead, use `--format=yml`.
 
-name: Blueprint
-version: 0.7.1
+``` php
+// blueprint.php
 
-paths:
-  templates: %%CURRENT_DIRECTORY%%/src/Templates
-  commands: %%CURRENT_DIRECTORY%%/src/Commands
+$file = array();
 
-namespaces:
-  commands: Rougin\Blueprint\Commands
+// Details for the console app ---
+$file['name'] = 'Blueprint';
+
+$file['version'] = '0.7.1';
+// -------------------------------
+
+// Path for the commands and templates ----
+$paths = array();
+
+$root = '%%CURRENT_DIRECTORY%%';
+
+$paths['templates'] = $root . '/Templates';
+
+$paths['commands'] = $root . '/Commands';
+
+$file['paths'] = $paths;
+// ----------------------------------------
+
+// Namespace for the commands ----------
+$namespace = 'Acme\Commands';
+
+$data = array('commands' => $namespace);
+
+$file['namespaces'] = $data;
+// -------------------------------------
+
+return $file;
 ```
 
 > [!NOTE]
-> * Replace the values specified in the `blueprint.yml` file.
+> * Replace the values specified in the `blueprint.php` file.
 > * Add commands and templates (if applicable) to their respective directories.
+> * A `blueprint.yml` file is also supported (use `--format=yml`).
 
-To write a command, the `commands` property in `blueprint.yml` must be updated first:
+Before writing a command, the `commands` property in `blueprint.php` must be updated first:
 
-``` yml
-# blueprint.yml
+``` diff
+ // blueprint.php
 
-# ...
+ // ...
 
-namespaces:
-  commands: Acme\Commands
+-$namespace = 'Acme\Commands';
++$namespace = 'Rrsg\Commands';
 ```
 
 Then create the command (e.g., `TestCommand`) to its assigned directory (e.g., `src/Commands`):
@@ -58,7 +81,7 @@ Then create the command (e.g., `TestCommand`) to its assigned directory (e.g., `
 ``` php
 // src/Commands/TestCommand.php
 
-namespace Acme\Commands;
+namespace Rrsg\Commands;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -91,7 +114,7 @@ Before running the command, kindly check if its namespace is defined in `Compose
 {
   "psr-4":
   {
-    "Acme\\": "src"
+    "Rrsg\\": "src"
   }
 }
 
@@ -152,16 +175,16 @@ $app->setCommandPath(__DIR__ . '/../src/Commands');
 $app->setTemplatePath(__DIR__ . '/../src/Templates');
 // --------------------------------------------------
 
-// Sets the name of the console application ----
-$app->setName('Acme');
-// ---------------------------------------------
+// Sets the name of the console application ---
+$app->setName('Rrsg');
+// --------------------------------------------
 
 // Sets the version of the console application ---
 $app->setVersion('0.1.0');
 // -----------------------------------------------
 
 // Sets the namespace for the "commands" path ---
-$namespace = 'Acme\Simplest\Commands';
+$namespace = 'Rrsg\Simplest\Commands';
 
 $app->setCommandNamespace($namespace);
 // ----------------------------------------------
@@ -172,14 +195,14 @@ $app->run();
 ```
 
 > [!NOTE]
-> Using this approach means the `blueprint.yml` can now be omitted. This approach is also applicable to create customized console applications without the `Blueprint` branding.
+> Using this approach means the `blueprint.php` can now be omitted. This approach is also applicable to create customized console applications without the `Blueprint` branding.
 
 Once configured, the console application can now be run in the terminal:
 
 ``` bash
 $ php bin\app.php
 
-Acme 0.1.0
+Rrsg 0.1.0
 
 Usage:
   command [options] [arguments]
@@ -205,7 +228,7 @@ Available commands:
 ``` php
 // src/Commands/TestCommand.php
 
-namespace Acme\Commands;
+namespace Rrsg\Commands;
 
 use Rougin\Blueprint\Command;
 
@@ -234,7 +257,7 @@ To perform [automagic resolutions](https://github.com/rougin/slytherin/wiki/Cont
 ``` php
 // src/Sample.php
 
-namespace Acme;
+namespace Rrsg;
 
 class Sample
 {
@@ -255,9 +278,9 @@ class Sample
 ``` php
 // src/Packages/SamplePackage.php
 
-namespace Acme\Packages;
+namespace Rrsg\Packages;
 
-use Acme\Sample;
+use Rrsg\Sample;
 use Rougin\Slytherin\Container\ContainerInterface;
 use Rougin\Slytherin\Integration\Configuration;
 use Rougin\Slytherin\Integration\IntegrationInterface;
@@ -274,29 +297,28 @@ class SamplePackage implements IntegrationInterface
 ``` php
 // bin/app.php
 
-use Acme\Packages\SamplePackage;
+use Rrsg\Packages\SamplePackage;
 use Rougin\Slytherin\Container\Container;
 
 // ...
 
-// Add the specified integration (or package) to the container ---
+// Add the specified package to the container ---
 $container = new Container;
 
 $container->addPackage(new SamplePackage);
-// ---------------------------------------------------------------
+// ----------------------------------------------
 
-// Set the container to the console application ---
+// Then pass it to the console application ---
 $app->setContainer($container);
-// ------------------------------------------------
-
+// -------------------------------------------
 ```
 
 With the above-mentioned integration, for any command that uses the `Sample` class will get the `text` value as the `$name` property:
 
 ``` php
-namespace Acme\Commands;
+namespace Rrsg\Commands;
 
-use Acme\Sample;
+use Rrsg\Sample;
 use Rougin\Blueprint\Command;
 
 class TextCommand extends Command

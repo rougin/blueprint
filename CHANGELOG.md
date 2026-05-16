@@ -6,6 +6,10 @@ All notable changes to `Blueprint` will be documented in this file.
 
 ### Added
 - Support for `>=6.0` of `symfony/console`
+- Support for PHP-based configuration files
+
+### Changed
+- `initialize` creates `blueprint.php` by default
 
 ## [0.7.0](https://github.com/rougin/blueprint/compare/v0.6.0...v0.7.0) - 2024-10-21
 
