@@ -44,11 +44,16 @@ class HelloCommand extends Command
      */
     public function run()
     {
+        /** @var string */
         $name = $this->getArgument('name');
 
+        /** @var string */
         $age = $this->getOption('age');
 
-        if ($surname = $this->getArgument('surname'))
+        /** @var string|null */
+        $surname = $this->getArgument('surname');
+
+        if ($surname)
         {
             $name = $name . ' ' . $surname;
         }

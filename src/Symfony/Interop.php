@@ -20,6 +20,7 @@ class Interop
 
         $class = new \ReflectionMethod($class, $method);
 
+        /** @phpstan-ignore-next-line */
         return method_exists($class, 'hasReturnType')
             && $class->hasReturnType();
     }

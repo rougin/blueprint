@@ -21,7 +21,7 @@ class Container extends Slytherin
     /**
      * @param \Rougin\Slytherin\Integration\Configuration|null $config
      */
-    public function __construct(Configuration $config = null)
+    public function __construct($config = null)
     {
         $this->config = $config ? $config : new Configuration;
     }

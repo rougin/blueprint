@@ -16,8 +16,7 @@ class BlueprintTest extends Testcase
     {
         $expected = 'Symfony\Component\Console\Application';
 
-        /** @var string */
-        $root = realpath(__DIR__ . '/Fixture');
+        $root = __DIR__ . '/Fixture';
 
         $actual = Console::boot('blueprint.yml', $root);
 
@@ -31,8 +30,7 @@ class BlueprintTest extends Testcase
      */
     public function test_setting_template_path()
     {
-        /** @var string */
-        $root = realpath(__DIR__ . '/Fixture');
+        $root = __DIR__ . '/Fixture';
 
         $expected = $root . '/Templates';
 

@@ -16,7 +16,7 @@ class Blueprint
     const VERSION = '0.7.0';
 
     /**
-     * @var \Psr\Container\ContainerInterface
+     * @var \Psr\Container\ContainerInterface|null
      */
     protected $container = null;
 
@@ -66,7 +66,7 @@ class Blueprint
      */
     public function getContainer()
     {
-        if (! $this->container)
+        if ($this->container === null)
         {
             return new Container;
         }
@@ -147,7 +147,7 @@ class Blueprint
     /**
      * Sets the container for handling the commands.
      *
-     * @param \Psr\Container\ContainerInterface $container
+     * @param \Rougin\Slytherin\Container\ContainerInterface $container
      *
      * @return self
      */
@@ -207,8 +207,13 @@ class Blueprint
      */
     protected function getCommands()
     {
-        /** @var string[] */
-        $files = glob($this->getCommandPath() . '/*.php');
+        // Return the files from path -----
+        $path = $this->getCommandPath();
+
+        $files = glob($path . '/*.php');
+
+        $files = $files ? $files : array();
+        // --------------------------------
 
         $container = $this->getContainer();
 
@@ -224,6 +229,7 @@ class Blueprint
 
             if ($command instanceof Command)
             {
+                /** @phpstan-ignore-next-line */
                 $command = new Wrapper($command);
             }
 

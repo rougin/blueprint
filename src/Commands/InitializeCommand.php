@@ -80,8 +80,7 @@ class InitializeCommand extends Command
      */
     protected function getPlatePath()
     {
-        /** @var string */
-        return realpath(__DIR__ . '/../Templates');
+        return __DIR__ . '/../Templates';
     }
 
     /**

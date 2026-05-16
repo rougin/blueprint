@@ -459,11 +459,11 @@ class Command
      *
      * @param string $text
      *
-     * @return mixed
+     * @return void
      */
     protected function showFail($text)
     {
-        return $this->showText($text, self::TEXT_FAIL);
+        $this->showText($text, self::TEXT_FAIL);
     }
 
     /**
@@ -471,11 +471,11 @@ class Command
      *
      * @param string $text
      *
-     * @return mixed
+     * @return void
      */
     protected function showInfo($text)
     {
-        return $this->showText($text, self::TEXT_INFO);
+        $this->showText($text, self::TEXT_INFO);
     }
 
     /**
@@ -483,11 +483,11 @@ class Command
      *
      * @param string $text
      *
-     * @return mixed
+     * @return void
      */
     protected function showPass($text)
     {
-        return $this->showText($text, self::TEXT_PASS);
+        $this->showText($text, self::TEXT_PASS);
     }
 
     /**
@@ -496,13 +496,15 @@ class Command
      * @param string       $text
      * @param integer|null $type
      *
-     * @return mixed
+     * @return void
      */
     protected function showText($text, $type = null)
     {
         if ($type === null)
         {
-            return $this->output->writeln($text);
+            $this->output->writeln($text);
+
+            return;
         }
 
         $types = array(self::TEXT_PASS => 'info');
@@ -519,7 +521,7 @@ class Command
 
         $text = "<$code>{$texts[$type]} $text</$code>";
 
-        return $this->output->writeln($text);
+        $this->output->writeln($text);
     }
 
     /**
@@ -527,10 +529,10 @@ class Command
      *
      * @param string $text
      *
-     * @return mixed
+     * @return void
      */
     protected function showWarn($text)
     {
-        return $this->showText($text, self::TEXT_WARN);
+        $this->showText($text, self::TEXT_WARN);
     }
 }

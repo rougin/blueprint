@@ -22,8 +22,7 @@ class CommandTest extends Testcase
      */
     public function doSetUp()
     {
-        /** @var string */
-        $root = realpath(__DIR__ . '/Fixture');
+        $root = __DIR__ . '/Fixture';
 
         $app = Console::boot('blueprint.yml', $root);
 
