@@ -16,45 +16,7 @@ class InitializeCommandTest extends Testcase
     /**
      * @return void
      */
-    public function test_file_create()
-    {
-        $app = Console::boot('blueprint.yml');
-
-        $init = $app->make()->find('init');
-
-        $command = new CommandTester($init);
-
-        $command->execute(array());
-
-        $file = __DIR__ . '/../../blueprint.php';
-
-        $this->assertFileExists($file);
-    }
-
-    /**
-     * @return void
-     */
-    public function test_file_create_with_yml_format()
-    {
-        $app = Console::boot('blueprint.yml');
-
-        $init = $app->make()->find('init');
-
-        $command = new CommandTester($init);
-
-        $command->execute(array('--format' => 'yml'));
-
-        $file = __DIR__ . '/../../blueprint.yml';
-
-        $this->assertFileExists($file);
-
-        unlink($file);
-    }
-
-    /**
-     * @return void
-     */
-    public function test_file_already_exists()
+    public function test_failed_if_file_already_exists()
     {
         $exception = 'Symfony\Component\Console\Exception\CommandNotFoundException';
 
@@ -78,6 +40,44 @@ class InitializeCommandTest extends Testcase
         $command = new CommandTester($init);
 
         $command->execute(array());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_passed_if_php_file_created()
+    {
+        $app = Console::boot('blueprint.yml');
+
+        $init = $app->make()->find('init');
+
+        $command = new CommandTester($init);
+
+        $command->execute(array());
+
+        $file = __DIR__ . '/../../blueprint.php';
+
+        $this->assertFileExists($file);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_passed_if_yml_file_created()
+    {
+        $app = Console::boot('blueprint.yml');
+
+        $init = $app->make()->find('init');
+
+        $command = new CommandTester($init);
+
+        $command->execute(array('--format' => 'yml'));
+
+        $file = __DIR__ . '/../../blueprint.yml';
+
+        $this->assertFileExists($file);
+
+        unlink($file);
     }
 
     /**

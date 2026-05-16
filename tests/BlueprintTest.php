@@ -12,23 +12,7 @@ class BlueprintTest extends Testcase
     /**
      * @return void
      */
-    public function test_console_application()
-    {
-        $expected = 'Symfony\Component\Console\Application';
-
-        $root = __DIR__ . '/Fixture';
-
-        $actual = Console::boot('blueprint.yml', $root);
-
-        $actual = $actual->make();
-
-        $this->assertInstanceOf($expected, $actual);
-    }
-
-    /**
-     * @return void
-     */
-    public function test_no_configuration()
+    public function test_passed_if_no_config_uses_defaults()
     {
         $expected = 'Symfony\Component\Console\Application';
 
@@ -44,7 +28,7 @@ class BlueprintTest extends Testcase
     /**
      * @return void
      */
-    public function test_php_configuration()
+    public function test_passed_if_php_config_loaded()
     {
         $expected = 'Symfony\Component\Console\Application';
 
@@ -60,7 +44,7 @@ class BlueprintTest extends Testcase
     /**
      * @return void
      */
-    public function test_setting_template_path()
+    public function test_passed_if_template_path_set()
     {
         $root = __DIR__ . '/Fixture';
 
@@ -78,7 +62,23 @@ class BlueprintTest extends Testcase
     /**
      * @return void
      */
-    public function test_yml_fallback()
+    public function test_passed_if_yml_config_loaded()
+    {
+        $expected = 'Symfony\Component\Console\Application';
+
+        $root = __DIR__ . '/Fixture';
+
+        $actual = Console::boot('blueprint.yml', $root);
+
+        $actual = $actual->make();
+
+        $this->assertInstanceOf($expected, $actual);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_passed_if_yml_fallback_works()
     {
         $expected = 'Symfony\Component\Console\Application';
 
